@@ -133,7 +133,7 @@ Vector.prototype = {
         
     },
     
-    rotate = function(angle) {
+    rotate: function(angle) {
     
         return new Vector(
             Math.cos(angle) * this.x - Math.sin(angle) * this.y,
@@ -142,7 +142,7 @@ Vector.prototype = {
         
     },
     
-    rotateSelf = function(angle) {
+    rotateSelf: function(angle) {
     
         var vector = new Vector(
             Math.cos(angle) * this.x - Math.sin(angle) * this.y,

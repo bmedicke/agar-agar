@@ -9,10 +9,18 @@ var canvas,
 function initialize() {
     
     canvas = document.getElementById("canvas");
-    canvas.width = window.innerWidth - 20;
-    canvas.height = window.innerHeight - 20;
+    
+    // canvas.width = window.innerWidth - 20;
+    // canvas.height = window.innerHeight - 20;
+    
+    canvas.width = 800;
+    canvas.height = 600;
     
     context = canvas.getContext("experimental-webgl");
+    
+    context.viewport(0, 0, 800, 600);
+    
+    context.drawRect(0, 0, -.3, .5);
     
     // game = new Game();
     
@@ -28,14 +36,13 @@ function run() {
 window.onload = function() {   
      
     initialize();
-    run();
+    // run();
 
 };
 
 /* agar-agar inheritance test */
 
 var Particle = function(size) {
-    log(1);
     this.size = size;
 };
 
