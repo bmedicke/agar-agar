@@ -1,4 +1,6 @@
-var c = console;
+var log = function() {
+    console.log.apply(console, arguments);
+};
 
 var canvas,
     context,
