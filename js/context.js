@@ -130,13 +130,6 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     this.enableVertexAttribArray(vertexPositionAttribute);
     
     this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
-	
-	// var colors = [
-        // 1.0, 0, 0, 1.0
-    // ];
-
-    // var colorUniform = this.getUniformLocation(this.defaultShader, "color");
-    // this.uniform4fv(colorUniform, new Float32Array(colors));
 
 	
     var matrix = [
@@ -151,5 +144,39 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
 
 
     this.drawArrays(this.TRIANGLE_STRIP, 0, 4);
+    
+};
+
+WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
+    
+    var vertexBuffer = this.createBuffer();
+
+    this.bindBuffer(this.ARRAY_BUFFER, vertexBuffer);
+
+    var vertices = [
+        x1, y1, 0,
+        x2, y2, 0
+    ];
+
+    this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
+	
+	var vertexPositionAttribute = this.getAttribLocation(this.defaultShader, "position");
+    this.enableVertexAttribArray(vertexPositionAttribute);
+    
+    this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
+
+	
+    var matrix = [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    ];
+
+    var mUniform = this.getUniformLocation(this.defaultShader, "matrix");
+    this.uniformMatrix4fv(mUniform, false, new Float32Array(matrix));
+
+
+    this.drawArrays(this.LINE_STRIP, 0, 2);
     
 };
