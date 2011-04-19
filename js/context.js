@@ -132,6 +132,14 @@ WebGLRenderingContext.prototype.passVerticesToShader = function(vertices, shader
 	
 };
 
+WebGLRenderingContext.prototype.passColorToShader = function(shader) {
+
+	var colorUniform = this.getUniformLocation(shader, "color");
+	this.uniform4fv(colorUniform, new Float32Array(this.color));
+
+};
+
+
 WebGLRenderingContext.prototype.passMatrixToShader = function(shader) {
 
 	this.uniformMatrix4fv(
@@ -153,12 +161,11 @@ WebGLRenderingContext.prototype.setupDefaultShader = function() {
 	
 };
 
+WebGLRenderingContext.prototype.color = [0, 0, 0, 1];
+
 WebGLRenderingContext.prototype.setColor = function(r, g, b, a) {
 
-	var colors = [ r, g, b, a ];
-
-	var colorUniform = this.getUniformLocation(this.defaultShader, "color");
-	this.uniform4fv(colorUniform, new Float32Array(colors));
+	this.color = [ r, g, b, a ];
 
 };
 
@@ -200,6 +207,7 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
 
 	this.passVerticesToShader(vertices, this.defaultShader);
 
+	this.passColorToShader(this.defaultShader);
 	
 	this.passMatrixToShader(this.defaultShader);
 
@@ -218,6 +226,7 @@ WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
 	
 	this.passVerticesToShader(vertices, this.defaultShader);
 	
+	this.passColorToShader(this.defaultShader);
 	
 	this.passMatrixToShader(this.defaultShader);
 
@@ -235,7 +244,7 @@ WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
 	var vector = new Vector(radius, 0, 1);
 	var vertices = [];
 	
-	var resolution = 50;
+	var resolution = 15;
 	for(var i = 0; i < resolution; i++) {
 	
 		vertices.push(vector.x, vector.y, vector.z);
@@ -246,6 +255,7 @@ WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
 	
 	this.passVerticesToShader(vertices, this.defaultShader);
 	
+	this.passColorToShader(this.defaultShader);
 	
 	this.passMatrixToShader(this.defaultShader);
 
