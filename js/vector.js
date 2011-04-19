@@ -1,25 +1,33 @@
 
-var Vector = function(x, y) {
+var Vector = function(x, y, z) {
 
-    return this.set(x, y);
+    return this.set(
+        x || 0, 
+        y || 0, 
+        z || 0
+    );
 
 };
 
 Vector.prototype = {
     
-    set: function(x, y) {
+    set: function(x, y, z) {
         
-        this.x = (typeof x !== 'undefined' ? x : 0);
-        this.y = (typeof y !== 'undefined' ? y : 0);
+        this.x = x;
+        this.y = y;
+        this.z = z;
         
         return this;
         
     },
     
-    copyFrom: function(vector) {
+    copy: function(vector) {
         
-        this.x = vector.x;
-        this.y = vector.y;
+        this.set(
+            vector.x,
+            vector.y,
+            vector.z
+        );
         
         return this;
         
@@ -29,15 +37,17 @@ Vector.prototype = {
 
         return new Vector(
             this.x + vector.x, 
-            this.y + vector.y
+            this.y + vector.y,
+            this.z + vector.z
         );
 
     },
 
     addSelf: function(vector) {
 
-        this.x + vector.x;
-        this.y + vector.y;
+        this.x += vector.x;
+        this.y += vector.y;
+        this.z += vector.z;
 
         return this;
 
@@ -47,15 +57,17 @@ Vector.prototype = {
 
         return new Vector(
             this.x - vector.x, 
-            this.y - vector.y
+            this.y - vector.y,
+            this.z - vector.z
         );
 
     },
 
     subSelf: function(vector) {
 
-        this.x - vector.x;
-        this.y - vector.y;
+        this.x -= vector.x;
+        this.y -= vector.y;
+        this.z -= vector.z;
 
         return this;
 
@@ -65,15 +77,17 @@ Vector.prototype = {
 
         return new Vector(
             this.x * value, 
-            this.y * value
+            this.y * value,
+            this.z * value
         );
 
     },
     
     mulSelf: function(value) {
 
-        this.x * value;
-        this.y * value;
+        this.x *= value;
+        this.y *= value;
+        this.z *= value;
             
         return this;
 
@@ -89,29 +103,29 @@ Vector.prototype = {
 
         return new Vector(
             this.x / value, 
-            this.y / value
+            this.y / value,
+            this.z / value
         );
 
     },
     
     divSelf: function(value) {
         
-        if (!value) {
+        if (value) {
             
-            return this;
+            this.x /= value;
+            this.y /= value;
+            this.z /= value;
             
         }
-
-        this.x / value;
-        this.y / value;
-
+        
         return this;
 
     },
     
     dot: function(vector) {
         
-        return (this.x * vector.x + this.y * vector.y);
+        return (this.x * vector.x + this.y * vector.y + this.z * vector.z);
         
     },
     
@@ -133,27 +147,51 @@ Vector.prototype = {
         
     },
     
-    rotate: function(angle) {
+    normalizeSelf: function() {
+        
+        return this.divSelf(this.norm());
+        
+    },
     
+    cross: function(vector) {
+        
         return new Vector(
-            Math.cos(angle) * this.x - Math.sin(angle) * this.y,
-            Math.sin(angle) * this.x + Math.cos(angle) * this.y
+            this.y * vector.z - this.z * vector.y,
+            this.z * vector.x - this.x * vector.z,
+            this.x * vector.y - this.y * vector.x
         );
         
     },
     
-    rotateSelf: function(angle) {
-    
-        var vector = new Vector(
-            Math.cos(angle) * this.x - Math.sin(angle) * this.y,
-            Math.sin(angle) * this.x + Math.cos(angle) * this.y
+    crossSelf: function(vector) {
+        
+        this.set(
+            this.y * vector.z - this.z * vector.y,
+            this.z * vector.x - this.x * vector.z,
+            this.x * vector.y - this.y * vector.x
         );
         
-        this.copyFrom(vector);
+    },
+    
+    angle: function(vector) {
         
-        delete vector;
+        return (this.dot(vector) / this.norm() / vector.norm());
         
-        return this;
+    },
+    
+    rotate2D: function(angle) {
+    
+        return new Vector(
+            Math.cos(angle) * this.x - Math.sin(angle) * this.y,
+            Math.sin(angle) * this.x + Math.cos(angle) * this.y,
+            this.z
+        );
+        
+    },
+    
+    rotate2DSelf: function(angle) {
+        
+        return this.copy(this.rotate2D(angle));
         
     }
 };
