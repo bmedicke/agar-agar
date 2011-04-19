@@ -1,44 +1,61 @@
-
-var vertexShaderScript = [
-
-    "attribute vec3 position;",
-    "attribute vec4 color;",
-
-    "uniform mat4 matrix;",
-
-    "varying vec4 vColor;",
-
-    "void main(void) {",
+WebGLRenderingContext.prototype.loadShader = function(id) {
     
-        "gl_Position = matrix * vec4(position, 1.0);",
+    var shaderScript = document.getElementById(id);
+
+    if (!shaderScript) {
+        return null;
+    }
+
+    // Walk through the source element's children, building the
+    // shader source string.
+
+    var shaderSource = "",
+        textNodeType = 3,
+        currentChild = shaderScript.firstChild;
+
+    while(currentChild) {
         
-        "vColor = color;",
+        if (currentChild.nodeType == textNodeType) {
+            
+            shaderSource += currentChild.textContent;
+            
+        }
         
-        //"vColor = vec4(position, 1.0) * 0.5 + vec4(0.5, 0.5, 0.5, 0.5);",
+        currentChild = currentChild.nextSibling;
+    }
+
+
+    var shader;
+
+    if (shaderScript.type == "x-shader/x-fragment") {
+ 
+        shader = this.createShader(this.FRAGMENT_SHADER);
+
+    } else if (shaderScript.type == "x-shader/x-vertex") {
+ 
+        shader = this.createShader(this.VERTEX_SHADER);
+
+    } else {
+ 
+        return null;
+
+    }
+
+
+    this.shaderSource(shader, shaderSource);
+
+    this.compileShader(shader);
+
+    if (!this.getShaderParameter(shader, this.COMPILE_STATUS)) {
         
-    "}"
-  
-].join("\n");
-
-
-var fragmentShaderScript = [
-
-    "#ifdef GL_ES",
-        "precision highp float;",
-    "#endif",
-
-    "varying vec4 vColor;",
-
-    "void main(void) {",
-    
-        "gl_FragColor = vColor;",
+        log("An error occurred compiling the shaders: " + this.getShaderInfoLog(shader));
+        return null;
         
-    "}"
-    
-].join("\n");
+    }
 
+    return shader;
 
-
+};
 
 WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     
@@ -67,34 +84,14 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     this.bindBuffer(this.ARRAY_BUFFER, colorBuffer);
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(colors), this.STATIC_DRAW);
     
-    var vertexShader = this.createShader(this.VERTEX_SHADER);
-    this.shaderSource(vertexShader, vertexShaderScript);
-    this.compileShader(vertexShader);
-    
-    if (!this.getShaderParameter(vertexShader, this.COMPILE_STATUS)) {
-          
-        log("An error occurred compiling the shaders: " + this.getShaderInfoLog(vertexShader));
-        return null;
-
-    }
-
-
-    var fragmentShader = this.createShader(this.FRAGMENT_SHADER);
-    this.shaderSource(fragmentShader, fragmentShaderScript);
-    this.compileShader(fragmentShader);
-    
-    if (!this.getShaderParameter(fragmentShader, this.COMPILE_STATUS)) {
-        
-        log("An error occurred compiling the shaders: " + this.getShaderInfoLog(fragmentShader));
-        return null;
-        
-    }
-
+    var vertexShader = this.loadShader("vertex-shader");
+    var fragmentShader = this.loadShader("fragment-shader");
 
     var shaderProgram = this.createProgram();
 
     this.attachShader(shaderProgram, vertexShader);
     this.attachShader(shaderProgram, fragmentShader);
+    
 
     this.linkProgram(shaderProgram);
 
