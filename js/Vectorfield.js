@@ -1,18 +1,10 @@
 var Vectorfield = function(width, height) {
     
-    if (width < height) {
-        
-        this.cols = this.minCellsPerDimension;
-        this.cellSize = width / this.minCellsPerDimension;
-        this.rows = Math.floor(height / this.cellSize);
-        
-    } else {
-        
-        this.rows = this.minCellsPerDimension;
-        this.cellSize = height / this.minCellsPerDimension;
-        this.cols = Math.floor(width / this.cellSize);
-        
-    }
+    this.cellSize = Math.sqrt(width * height / this.numberOfCells);
+    this.cols = Math.floor(width / this.cellSize);
+    this.rows = Math.floor(height / this.cellSize);
+    
+    console.log(this.cellSize, this.cols, this.rows);
     
     this.vectors = {};
     
@@ -20,7 +12,7 @@ var Vectorfield = function(width, height) {
 
 Vectorfield.prototype = {
     
-    minCellsPerDimension : 30,
+    numberOfCells : 1000,
     
     maxForce : 1,
     
