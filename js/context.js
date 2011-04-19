@@ -145,7 +145,7 @@ WebGLRenderingContext.prototype.passMatrixToShader = function(shader) {
 	this.uniformMatrix4fv(
 		this.getUniformLocation(shader, "matrix"), 
 		false, 
-		new Float32Array(this.matrix.flatten4D())
+		new Float32Array(this.matrix.transpose().flatten4D())
 	);
 	
 };
