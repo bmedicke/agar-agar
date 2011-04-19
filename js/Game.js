@@ -2,9 +2,11 @@ var Game = function(width, height) {
     
     this.vectorfield = new Vectorfield(width, height);
     // this.controller = new Controller();
-    // this.inputHandler = new InputHandler();
+    this.inputHandler = new InputHandler();
     // this.generator = new Generator();
     // this.fader = new Fader();
+    
+    this.isPaused = false;
     
 };
 
@@ -39,6 +41,12 @@ Game.prototype = {
         //     this.inputHandler.draw(gl);
         //     
         // }
+        
+    },
+    
+    pause : function() {
+        
+        this.isPaused = !this.isPaused;
         
     }
     

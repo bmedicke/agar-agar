@@ -39,20 +39,24 @@ function initialize() {
 
 function run() {
 
-    //requestAnimationFrame(run, canvas);
-    
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    requestAnimationFrame(run, canvas);
     
     var t = (new Date()).getTime();
     var dt = t-time;
     time = t;
     
-    // gl.rotate(0.05);
-    gl.setColor(1, 0, 0, 1);
-    gl.drawRect(0, 0, 1, 1);
-    
-    game.update(dt);
-    game.draw(gl);
+    if (!game.isPaused) {
+        
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+        gl.rotate(0.05);
+        gl.setColor(1, 0, 0, 1);
+        gl.drawRect(0, 0, 1, 1);
+        
+        game.update(dt);
+        game.draw(gl);
+        
+    }
     
 };
 
