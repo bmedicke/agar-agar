@@ -13,9 +13,9 @@ var InputHandler = function(vectorfield) {
 
     var self = this;
 
-    // document.body.onmousedown = function(event) {
-    //     self.onMouseDown(event);
-    // };
+    document.body.onmousedown = function(event) {
+        self.onMouseDown(event);
+    };
     // 
     // document.body.onmouseup = function(event) {
     //     self.onMouseUp(event);
@@ -40,6 +40,14 @@ InputHandler.prototype = {
             game.pause();
             
         }
+        
+    },
+    
+    onMouseDown: function(event) {
+        
+        var mouse = getRelativeCoordinates(event, canvas);
+        
+        this.vectorfield.applyForceField(new Vector(mouse.x, mouse.y, 0));
         
     }
     

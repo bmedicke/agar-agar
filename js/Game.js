@@ -2,7 +2,7 @@ var Game = function(width, height) {
     
     this.vectorfield = new Vectorfield(width, height);
     // this.controller = new Controller();
-    this.inputHandler = new InputHandler();
+    this.inputHandler = new InputHandler(this.vectorfield);
     // this.generator = new Generator();
     // this.fader = new Fader();
     

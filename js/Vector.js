@@ -153,6 +153,18 @@ Vector.prototype = {
         
     },
     
+    clamp: function(value) {
+        
+        if (this.normSquared() > value * value) {
+            
+            this.normalize().mul(value);
+            
+        }
+        
+        return this;
+        
+    },
+    
     cross: function(vector) {
         
         return new Vector(

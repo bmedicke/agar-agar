@@ -31,7 +31,9 @@ function initialize() {
     // gl.enable(gl.DEPTH_TEST);
     
     gl.viewport(0, 0, width, height);
-    gl.scale(1 / (width / 2) * cellSize, 1 / (height / 2) * cellSize);
+    
+    gl.translate(-1, 1);
+    gl.scale(1 / (width / 2) * cellSize, -1 / (height / 2) * cellSize);
     
     gl.setupDefaultShader();
     
@@ -49,7 +51,7 @@ function run() {
         
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-        gl.rotate(0.05);
+        //gl.rotate(0.05);
         gl.setColor(1, 0, 0, 1);
         gl.drawRect(0, 0, 1, 1);
         
