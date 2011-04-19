@@ -20,6 +20,42 @@
     
 <canvas id="canvas">Your browser does not support &lt;canvas&gt;.</canvas>
 
+<script id="vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    attribute vec3 position;
+    uniform vec4 color;
+    
+    uniform mat4 matrix;
+    
+    varying vec4 vColor;
+    
+    void main(void) {
+    
+       gl_Position = matrix * vec4(position, 1.0);
+    
+       vColor = color;
+    
+       //vColor = vec4(position, 1.0) * 0.5 + vec4(0.5, 0.5, 0.5, 0.5);
+    }
+    
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    #ifdef GL_ES
+       precision highp float;
+    #endif
+    
+    varying vec4 vColor;
+    
+    void main(void) {
+    
+       gl_FragColor = vColor;
+       
+    }
+    
+</script>
+
 <script type="text/javascript" src="./js/requestAnimationFrame.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/inheritance.js" charset="utf-8"></script>
 

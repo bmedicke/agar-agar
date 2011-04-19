@@ -17,10 +17,13 @@ function initialize() {
     canvas.height = 600;
     
     context = canvas.getContext("experimental-webgl");
+	
+	context.setupDefaultShader();
     
     context.viewport(0, 0, 800, 600);
     
-    context.drawRect(0, 0, -.3, .5);
+    context.drawRect(0, 0, .3, .5);
+	context.drawRect(-0.3, 0.3, .5, .5);
     
     // game = new Game();
     

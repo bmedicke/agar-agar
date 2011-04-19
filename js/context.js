@@ -1,44 +1,109 @@
-
-var vertexShaderScript = [
-
-    "attribute vec3 position;",
-    "attribute vec4 color;",
-
-    "uniform mat4 matrix;",
-
-    "varying vec4 vColor;",
-
-    "void main(void) {",
+WebGLRenderingContext.prototype.loadShader = function(id) {
     
-        "gl_Position = matrix * vec4(position, 1.0);",
+    var shaderScript = document.getElementById(id);
+
+    if (!shaderScript) {
+        return null;
+    }
+
+    // Walk through the source element's children, building the
+    // shader source string.
+
+    var shaderSource = "",
+        textNodeType = 3,
+        currentChild = shaderScript.firstChild;
+
+    while(currentChild) {
         
-        "vColor = color;",
+        if (currentChild.nodeType == textNodeType) {
+            
+            shaderSource += currentChild.textContent;
+            
+        }
         
-        //"vColor = vec4(position, 1.0) * 0.5 + vec4(0.5, 0.5, 0.5, 0.5);",
+        currentChild = currentChild.nextSibling;
+    }
+
+
+    var shader;
+
+    if (shaderScript.type == "x-shader/x-fragment") {
+ 
+        shader = this.createShader(this.FRAGMENT_SHADER);
+
+    } else if (shaderScript.type == "x-shader/x-vertex") {
+ 
+        shader = this.createShader(this.VERTEX_SHADER);
+
+    } else {
+ 
+        return null;
+
+    }
+
+
+    this.shaderSource(shader, shaderSource);
+
+    this.compileShader(shader);
+
+    if (!this.getShaderParameter(shader, this.COMPILE_STATUS)) {
         
-    "}"
+        log("An error occurred compiling the shaders: " + this.getShaderInfoLog(shader));
+        return null;
+        
+    }
+
+    return shader;
+
+};
+
+WebGLRenderingContext.prototype.linkShaderProgram = function(vertexShader, fragmentShader) {
+
+	var shaderProgram = this.createProgram();
+
+    this.attachShader(shaderProgram, vertexShader);
+    this.attachShader(shaderProgram, fragmentShader);
+    
+
+    this.linkProgram(shaderProgram);
+
+
+    if (!this.getProgramParameter(shaderProgram, this.LINK_STATUS)) {
   
-].join("\n");
+        log("Unable to initialize the shader program.");
 
+    }
+	
+	return shaderProgram;
+	
+};
 
-var fragmentShaderScript = [
+WebGLRenderingContext.prototype.setupDefaultShader = function() {
 
-    "#ifdef GL_ES",
-        "precision highp float;",
-    "#endif",
+	var vertexShader = this.loadShader("vertex-shader");
+	var fragmentShader = this.loadShader("fragment-shader");
+	
+	this.defaultShader = this.linkShaderProgram(vertexShader, fragmentShader);
+	
+	this.useProgram(this.defaultShader);
+	
+};
 
-    "varying vec4 vColor;",
+/*WebGLRenderingContext.prototype.setColor = function(r, g, b, a) {
 
-    "void main(void) {",
+	var colors = [
+        1.0, 0, 0, 1.0,
+        0, 0, 0, 1.0,
+        0, 0, 0, 1.0,
+        0, 0, 0, 1.0
+    ];
+
+    colorBuffer = this.createBuffer();
     
-        "gl_FragColor = vColor;",
-        
-    "}"
-    
-].join("\n");
+    this.bindBuffer(this.ARRAY_BUFFER, colorBuffer);
+    this.bufferData(this.ARRAY_BUFFER, new Float32Array(colors), this.STATIC_DRAW);
 
-
-
+};*/
 
 WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     
@@ -54,73 +119,20 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     ];
 
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
+	
+	var vertexPositionAttribute = this.getAttribLocation(this.defaultShader, "position");
+    this.enableVertexAttribArray(vertexPositionAttribute);
     
-    var colors = [
-        1.0, 0, 0, 1.0,
-        0, 0, 0, 1.0,
-        0, 0, 0, 1.0,
-        0, 0, 0, 1.0
+    this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
+	
+	var colors = [
+        1.0, 0, 0, 1.0
     ];
 
-    colorBuffer = this.createBuffer();
-    
-    this.bindBuffer(this.ARRAY_BUFFER, colorBuffer);
-    this.bufferData(this.ARRAY_BUFFER, new Float32Array(colors), this.STATIC_DRAW);
-    
-    var vertexShader = this.createShader(this.VERTEX_SHADER);
-    this.shaderSource(vertexShader, vertexShaderScript);
-    this.compileShader(vertexShader);
-    
-    if (!this.getShaderParameter(vertexShader, this.COMPILE_STATUS)) {
-          
-        log("An error occurred compiling the shaders: " + this.getShaderInfoLog(vertexShader));
-        return null;
+    var colorUniform = this.getUniformLocation(this.defaultShader, "color");
+    this.uniform4fv(colorUniform, new Float32Array(colors));
 
-    }
-
-
-    var fragmentShader = this.createShader(this.FRAGMENT_SHADER);
-    this.shaderSource(fragmentShader, fragmentShaderScript);
-    this.compileShader(fragmentShader);
-    
-    if (!this.getShaderParameter(fragmentShader, this.COMPILE_STATUS)) {
-        
-        log("An error occurred compiling the shaders: " + this.getShaderInfoLog(fragmentShader));
-        return null;
-        
-    }
-
-
-    var shaderProgram = this.createProgram();
-
-    this.attachShader(shaderProgram, vertexShader);
-    this.attachShader(shaderProgram, fragmentShader);
-
-    this.linkProgram(shaderProgram);
-
-
-    if (!this.getProgramParameter(shaderProgram, this.LINK_STATUS)) {
-  
-        alert("Unable to initialize the shader program.");
-
-    }
-
-    this.useProgram(shaderProgram);
-
-    var vertexPositionAttribute = this.getAttribLocation(shaderProgram, "position");
-    this.enableVertexAttribArray(vertexPositionAttribute);
-
-    var vertexColorAttribute = this.getAttribLocation(shaderProgram, "color");
-    this.enableVertexAttribArray(vertexColorAttribute);
-    
-    
-    this.bindBuffer(this.ARRAY_BUFFER, vertexBuffer);
-    this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
-
-    this.bindBuffer(this.ARRAY_BUFFER, colorBuffer);
-    this.vertexAttribPointer(vertexColorAttribute, 4, this.FLOAT, false, 0, 0);
-
-
+	
     var matrix = [
         1, 0, 0, 0,
         0, 1, 0, 0,
@@ -128,7 +140,7 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
         0, 0, 0, 1
     ];
 
-    var mUniform = this.getUniformLocation(shaderProgram, "matrix");
+    var mUniform = this.getUniformLocation(this.defaultShader, "matrix");
     this.uniformMatrix4fv(mUniform, false, new Float32Array(matrix));
 
 
