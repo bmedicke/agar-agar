@@ -16,7 +16,7 @@ function initialize() {
     canvas.width = 800;
     canvas.height = 600;
     
-    gl = canvas.getgl("experimental-webgl");
+    gl = canvas.getContext("experimental-webgl");
 	
 	gl.setupDefaultShader();
     
@@ -25,8 +25,10 @@ function initialize() {
 	gl.enableAlpha();
     
     //gl.translate(.1, 0);
+	gl.fill();
 	gl.setColor(1, 0, 0, .8);
     gl.drawRect(0, 0, .3, .5);
+	gl.noFill();
 	
 	gl.setColor(0, 0, 1, 0.5);
 	gl.drawRect(-0.3, 0.3, .5, .5);
@@ -45,6 +47,11 @@ function initialize() {
         
     gl.popMatrix();
     
+	gl.noFill();
+	gl.setColor(0, 1, 0, 1);
+	gl.drawCircle(0, 0, .1);
+	gl.noFill();
+	
 	gl.disableAlpha();
 	
     // game = new Game();
