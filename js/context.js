@@ -4,7 +4,9 @@ WebGLRenderingContext.prototype.matrixStack = [];
 
 WebGLRenderingContext.prototype.pushMatrix = function() {
     
-    this.matrixStack.push(this.matrix);
+    var m = (new Matrix()).copy(this.matrix);
+    
+    this.matrixStack.push(m);
     
 };
 

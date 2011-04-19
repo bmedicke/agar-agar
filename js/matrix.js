@@ -23,6 +23,16 @@ Matrix.prototype = {
         
     },
     
+    copy: function(matrix) {
+        
+        this.a.set(matrix.a.x, matrix.a.y, matrix.a.z);
+        this.b.set(matrix.b.x, matrix.b.y, matrix.b.z);
+        this.c.set(matrix.c.x, matrix.c.y, matrix.c.z);
+        
+        return this;
+        
+    },
+    
     transpose: function() {
         
         return new Matrix(

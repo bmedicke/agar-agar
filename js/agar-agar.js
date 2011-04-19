@@ -30,12 +30,6 @@ function initialize() {
 	
 	context.setColor(0, 0, 1, 0.5);
 	context.drawRect(-0.3, 0.3, .5, .5);
-	
-	context.setColor(0, 0, 0, 1);
-	context.drawLine(-1, 1, 1, -1);
-	
-	context.setColor(0, 1, 0, .2);
-	context.drawLine(-.5, -.5, .5, .5);
     
     context.pushMatrix();
     
@@ -44,6 +38,12 @@ function initialize() {
     	context.drawRect(-0.3, 0.3, .5, .5);
         
     context.popMatrix();
+    
+    context.setColor(0, 0, 0, 1);
+	context.drawLine(-1, 1, 1, -1);
+	
+	context.setColor(0, 1, 0, .2);
+	context.drawLine(-.5, -.5, .5, .5);
     
 	context.disableAlpha();
 	
