@@ -4,45 +4,56 @@ var log = function() {
 
 var canvas,
     gl,
-    game;
+    game,
+    time;
 
 function initialize() {
     
+    time = (new Date()).getTime();
+    
     canvas = document.getElementById("canvas");
     
-    // canvas.width = window.innerWidth - 20;
-    // canvas.height = window.innerHeight - 20;
+    var width = window.innerWidth - 10;
+    var height = window.innerHeight - 10;
     
-    canvas.width = 800;
-    canvas.height = 600;
+    game = new Game(width, height);
+    
+    
+    var cellSize = game.vectorfield.cellSize;
+    
+    canvas.width = width = Math.floor(width / cellSize) * cellSize;
+    canvas.height = height = Math.floor(height / cellSize) * cellSize;
+    
     
     gl = canvas.getContext("experimental-webgl");
-	
-	gl.clearColor(1.0, 1.0, 1.0, 1.0);
-    // gl.enable(gl.DEPTH_TEST);
-	
-	gl.setupDefaultShader();
     
-    gl.viewport(0, 0, 800, 600);
-	
-	
-    // game = new Game();
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    // gl.enable(gl.DEPTH_TEST);
+    
+    gl.viewport(0, 0, width, height);
+    gl.scale(1 / (width / 2) * cellSize, 1 / (height / 2) * cellSize);
+    
+    gl.setupDefaultShader();
     
 };
 
 function run() {
 
-    requestAnimationFrame(run, canvas);
-	
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	
-	gl.rotate(0.05);
-	gl.setColor(1, 0, 0, 1);
-	gl.drawRect(0, 0, 0.3, 0.3);
+    //requestAnimationFrame(run, canvas);
     
-    // game.update();
-    // game.draw(gl);
-	
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    
+    var t = (new Date()).getTime();
+    var dt = t-time;
+    time = t;
+    
+    // gl.rotate(0.05);
+    gl.setColor(1, 0, 0, 1);
+    gl.drawRect(0, 0, 1, 1);
+    
+    game.update(dt);
+    game.draw(gl);
+    
 };
 
 window.onload = function() {   
