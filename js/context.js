@@ -118,6 +118,17 @@ WebGLRenderingContext.prototype.linkShaderProgram = function(vertexShader, fragm
 	
 };
 
+WebGLRenderingContext.prototype.passVerticesToShader = function(vertices) {
+
+	this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
+		
+	var vertexPositionAttribute = this.getAttribLocation(this.defaultShader, "position");
+	this.enableVertexAttribArray(vertexPositionAttribute);
+
+	this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
+	
+};
+
 WebGLRenderingContext.prototype.passMatrixToShader = function(shader) {
 
     this.uniformMatrix4fv(
@@ -174,12 +185,7 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
         x + width, y + height, 1
     ];
 
-    this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
-	
-	var vertexPositionAttribute = this.getAttribLocation(this.defaultShader, "position");
-    this.enableVertexAttribArray(vertexPositionAttribute);
-    
-    this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
+    this.passVerticesToShader(vertices);
 
 	
 	this.passMatrixToShader(this.defaultShader);
@@ -199,17 +205,13 @@ WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
         x1, y1, 0,
         x2, y2, 0
     ];
-
-    this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
 	
-	var vertexPositionAttribute = this.getAttribLocation(this.defaultShader, "position");
-    this.enableVertexAttribArray(vertexPositionAttribute);
-    
-    this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
-
+	this.passVerticesToShader(vertices);
+	
 	
     this.passMatrixToShader(this.defaultShader);
 
+	
     this.drawArrays(this.LINE_STRIP, 0, 2);
     
 };

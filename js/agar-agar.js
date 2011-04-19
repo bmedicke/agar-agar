@@ -3,7 +3,7 @@ var log = function() {
 };
 
 var canvas,
-    context,
+    gl,
     game;
 
 function initialize() {
@@ -16,36 +16,36 @@ function initialize() {
     canvas.width = 800;
     canvas.height = 600;
     
-    context = canvas.getContext("experimental-webgl");
+    gl = canvas.getContext("experimental-webgl");
 	
-	context.setupDefaultShader();
+	gl.setupDefaultShader();
     
-    context.viewport(0, 0, 800, 600);
+    gl.viewport(0, 0, 800, 600);
 	
-	context.enableAlpha();
+	gl.enableAlpha();
     
-    //context.translate(.1, 0);
-	context.setColor(1, 0, 0, .8);
-    context.drawRect(0, 0, .3, .5);
+    //gl.translate(.1, 0);
+	gl.setColor(1, 0, 0, .8);
+    gl.drawRect(0, 0, .3, .5);
 	
-	context.setColor(0, 0, 1, 0.5);
-	context.drawRect(-0.3, 0.3, .5, .5);
+	gl.setColor(0, 0, 1, 0.5);
+	gl.drawRect(-0.3, 0.3, .5, .5);
     
-    context.pushMatrix();
+    gl.pushMatrix();
     
-        context.rotate(Math.PI / 4);
-        context.setColor(0, 0, 1, 0.5);
-    	context.drawRect(-0.3, 0.3, .5, .5);
+        gl.rotate(Math.PI / 4);
+        gl.setColor(0, 0, 1, 0.5);
+    	gl.drawRect(-0.3, 0.3, .5, .5);
         
-    context.popMatrix();
+    gl.popMatrix();
     
-    context.setColor(0, 0, 0, 1);
-	context.drawLine(-1, 1, 1, -1);
+    gl.setColor(0, 0, 0, 1);
+	gl.drawLine(-1, 1, 1, -1);
 	
-	context.setColor(0, 1, 0, .2);
-	context.drawLine(-.5, -.5, .5, .5);
+	gl.setColor(0, 1, 0, .2);
+	gl.drawLine(-.5, -.5, .5, .5);
     
-	context.disableAlpha();
+	gl.disableAlpha();
 	
     // game = new Game();
     
@@ -55,7 +55,7 @@ function run() {
     requestAnimationFrame(run, canvas);
     
     // game.update();
-    // game.draw(context);
+    // game.draw(gl);
 };
 
 window.onload = function() {   
