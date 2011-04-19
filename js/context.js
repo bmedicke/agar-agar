@@ -1,3 +1,41 @@
+
+WebGLRenderingContext.prototype.matrix = new Matrix();
+WebGLRenderingContext.prototype.matrixStack = [];
+
+WebGLRenderingContext.prototype.pushMatrix = function() {
+    
+    this.matrixStack.push(this.matrix);
+    
+};
+
+WebGLRenderingContext.prototype.popMatrix = function() {
+    
+    if (this.matrixStack.length) {
+        
+        this.matrix = this.matrixStack.pop();
+        
+    }
+    
+};
+
+WebGLRenderingContext.prototype.rotate = function(phi) {
+    
+    this.matrix.rotate2DSelf(phi);
+    
+};
+
+WebGLRenderingContext.prototype.scale = function(x, y) {
+    
+    this.matrix.scale2DSelf(x, y);
+    
+};
+
+WebGLRenderingContext.prototype.translate = function(x, y) {
+    
+    this.matrix.translate2DSelf(x, y);
+    
+};
+
 WebGLRenderingContext.prototype.loadShader = function(id) {
     
     var shaderScript = document.getElementById(id);
@@ -78,6 +116,16 @@ WebGLRenderingContext.prototype.linkShaderProgram = function(vertexShader, fragm
 	
 };
 
+WebGLRenderingContext.prototype.passMatrixToShader = function(shader) {
+
+    this.uniformMatrix4fv(
+        this.getUniformLocation(shader, "matrix"), 
+        false, 
+        new Float32Array(this.matrix.flatten4D())
+    );
+    
+};
+
 WebGLRenderingContext.prototype.setupDefaultShader = function() {
 
 	var vertexShader = this.loadShader("vertex-shader");
@@ -118,10 +166,10 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     this.bindBuffer(this.ARRAY_BUFFER, vertexBuffer);
 
     var vertices = [
-        x, y, 0,
-        x + width, y, 0,
-        x, y + height, 0,
-        x + width, y + height, 0
+        x, y, 1,
+        x + width, y, 1,
+        x, y + height, 1,
+        x + width, y + height, 1
     ];
 
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
@@ -132,17 +180,9 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
 
 	
-    var matrix = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ];
+	this.passMatrixToShader(this.defaultShader);
 
-    var mUniform = this.getUniformLocation(this.defaultShader, "matrix");
-    this.uniformMatrix4fv(mUniform, false, new Float32Array(matrix));
-
-
+	
     this.drawArrays(this.TRIANGLE_STRIP, 0, 4);
     
 };
@@ -166,16 +206,7 @@ WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
     this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
 
 	
-    var matrix = [
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ];
-
-    var mUniform = this.getUniformLocation(this.defaultShader, "matrix");
-    this.uniformMatrix4fv(mUniform, false, new Float32Array(matrix));
-
+    this.passMatrixToShader(this.defaultShader);
 
     this.drawArrays(this.LINE_STRIP, 0, 2);
     

@@ -24,6 +24,7 @@ function initialize() {
 	
 	context.enableAlpha();
     
+    //context.translate(.1, 0);
 	context.setColor(1, 0, 0, .8);
     context.drawRect(0, 0, .3, .5);
 	
@@ -35,9 +36,17 @@ function initialize() {
 	
 	context.setColor(0, 1, 0, .2);
 	context.drawLine(-.5, -.5, .5, .5);
-	
-	context.disableAlpha();
     
+    context.pushMatrix();
+    
+        context.rotate(Math.PI / 4);
+        context.setColor(0, 0, 1, 0.5);
+    	context.drawRect(-0.3, 0.3, .5, .5);
+        
+    context.popMatrix();
+    
+	context.disableAlpha();
+	
     // game = new Game();
     
 };
