@@ -22,8 +22,13 @@ function initialize() {
     
     context.viewport(0, 0, 800, 600);
     
-    context.drawRect(0, 0, .3, .5);
-	context.drawRect(-0.3, 0.3, .5, .5);
+    //context.translate(.1, 0);
+    context.drawRect(0, 0, .1, .1);
+    
+    context.pushMatrix();
+        context.rotate(Math.PI / 4);
+        context.drawRect(-0.3, 0.3, .5, .7);
+    context.popMatrix();
     
     // game = new Game();
     
