@@ -21,9 +21,16 @@ function initialize() {
 	context.setupDefaultShader();
     
     context.viewport(0, 0, 800, 600);
+	
+	context.enableAlpha();
     
+	context.setColor(1, 0, 0, .8);
     context.drawRect(0, 0, .3, .5);
+	
+	context.setColor(0, 0, 1, 0.5);
 	context.drawRect(-0.3, 0.3, .5, .5);
+	
+	context.disableAlpha();
     
     // game = new Game();
     

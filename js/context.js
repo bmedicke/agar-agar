@@ -89,21 +89,27 @@ WebGLRenderingContext.prototype.setupDefaultShader = function() {
 	
 };
 
-/*WebGLRenderingContext.prototype.setColor = function(r, g, b, a) {
+WebGLRenderingContext.prototype.setColor = function(r, g, b, a) {
 
-	var colors = [
-        1.0, 0, 0, 1.0,
-        0, 0, 0, 1.0,
-        0, 0, 0, 1.0,
-        0, 0, 0, 1.0
-    ];
+	var colors = [ r, g, b, a ];
 
-    colorBuffer = this.createBuffer();
-    
-    this.bindBuffer(this.ARRAY_BUFFER, colorBuffer);
-    this.bufferData(this.ARRAY_BUFFER, new Float32Array(colors), this.STATIC_DRAW);
+    var colorUniform = this.getUniformLocation(this.defaultShader, "color");
+    this.uniform4fv(colorUniform, new Float32Array(colors));
 
-};*/
+};
+
+WebGLRenderingContext.prototype.enableAlpha = function() {
+
+	this.enable(this.BLEND);
+	this.blendFunc(this.SRC_ALPHA, this.ONE_MINUS_SRC_ALPHA);
+	
+};
+
+WebGLRenderingContext.prototype.disableAlpha = function() {
+
+	this.disable(this.BLEND);
+	
+};
 
 WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     
@@ -125,12 +131,12 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     
     this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
 	
-	var colors = [
-        1.0, 0, 0, 1.0
-    ];
+	// var colors = [
+        // 1.0, 0, 0, 1.0
+    // ];
 
-    var colorUniform = this.getUniformLocation(this.defaultShader, "color");
-    this.uniform4fv(colorUniform, new Float32Array(colors));
+    // var colorUniform = this.getUniformLocation(this.defaultShader, "color");
+    // this.uniform4fv(colorUniform, new Float32Array(colors));
 
 	
     var matrix = [
