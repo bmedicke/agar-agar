@@ -32,12 +32,6 @@ function initialize() {
 	
 	gl.setColor(0, 0, 1, 0.5);
 	gl.drawRect(-0.3, 0.3, .5, .5);
-	
-	gl.setColor(0, 0, 0, 1);
-	gl.drawLine(-1, 1, 1, -1);
-	
-	gl.setColor(0, 1, 0, .2);
-	gl.drawLine(-.5, -.5, .5, .5);
     
     gl.pushMatrix();
     
@@ -46,12 +40,18 @@ function initialize() {
     	gl.drawRect(-0.3, 0.3, .5, .5);
         
     gl.popMatrix();
-    
+
 	gl.noFill();
 	gl.setColor(0, 1, 0, 1);
 	gl.drawCircle(0, 0, .1);
 	gl.noFill();
+
+    gl.setColor(0, 0, 0, 1);
+	gl.drawLine(-1, 1, 1, -1);
 	
+	gl.setColor(0, 1, 0, .2);
+	gl.drawLine(-.5, -.5, .5, .5);
+
 	gl.disableAlpha();
 	
     // game = new Game();
