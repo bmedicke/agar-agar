@@ -11,7 +11,7 @@ Entity.prototype = {
     
     mass : 1,
     
-    radius : 0.1,
+    entityRadius : 0.1,
     
     dampCoefficient : 0.001,
     
@@ -29,10 +29,11 @@ Entity.prototype = {
     },
     
     draw : function(gl) {
+
         gl.setColor(1, 0, 0, 1);
         gl.fill();
-        // gl.drawCircle(this.position.x, this.position.y, this.radius);
-        gl.drawRect(this.position.x, this.position.y, this.radius, this.radius);
+        gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
+
     },
     
     applyForce : function(force) {

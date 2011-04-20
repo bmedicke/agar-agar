@@ -53,7 +53,7 @@ Vector.prototype = {
 
     },
     
-    sub: function(b) {
+    sub: function(vector) {
 
         return new Vector(
             this.x - vector.x, 

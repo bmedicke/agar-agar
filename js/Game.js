@@ -4,7 +4,7 @@ var Game = function(width, height) {
     this.inputHandler = new InputHandler(this.vectorfield);
 	this.controller = new Controller(this.vectorfield);
     
-    this.controller.addParticles(1);
+    this.controller.addParticles(100);
     
     // this.generator = new Generator();
     // this.fader = new Fader();

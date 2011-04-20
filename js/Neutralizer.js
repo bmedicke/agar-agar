@@ -1,6 +1,6 @@
-var Neutralizer = function() {
+var Neutralizer = function(position) {
 
-	Entity.call(this);
+	Entity.call(this, position);
 	
 };
 
