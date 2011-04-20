@@ -12,7 +12,7 @@ Controller.prototype = {
 
     separationFactor : 7,
     
-    cohesionFactor : .1,
+    cohesionFactor : .5,
 
     update : function(dt) {
     

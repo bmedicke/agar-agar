@@ -51,10 +51,16 @@ InputHandler.prototype = {
                 
             } else {
                 
-                this.vectorfield.applyForceField(
-                    this.touchPosition, 
-                    this.oldTouchPosition.subSelf(this.touchPosition).mulSelf(-1).normalizeSelf()
-                );
+                var vector = this.touchPosition.sub(this.oldTouchPosition).normalizeSelf().mulSelf(this.vectorfield.forceRadius / 2);
+                
+                do {
+                    
+                    this.vectorfield.applyForceField(
+                        this.oldTouchPosition, 
+                        this.oldTouchPosition.add(vector)
+                    );
+                    
+                } while (this.oldTouchPosition.addSelf(vector.mul(.25)).sub(this.touchPosition).normSquared() > vector.mul(.25).normSquared());
                 
             }
             
