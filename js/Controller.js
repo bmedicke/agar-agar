@@ -15,14 +15,12 @@ Controller.prototype = {
     cohesionFactor : .5,
 
     update : function(dt) {
-    
-        var particleDistances = this.getParticleDistances();
                 
         for(var i = 0; i < this.leukocytes.length; i++) {
             
             var leukocyte = this.leukocytes[i];
             
-            var nearest = new Vector(Infinity, Infinity, Infinity);            
+            var nearest = new Vector(Infinity, Infinity, 1);            
             
             for (var j = 0; j < this.particles.length; j++) {
             
@@ -36,16 +34,39 @@ Controller.prototype = {
                 
                 }
                 
+                if(current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
+                
+                    this.particles.splice(j, 1);
+                
+                }
+                
+            }
+            
+            for(var j = 0; j < i; j++) {
+            
+                this.collision(leukocyte, this.leukocytes[j]);
+            
             }
             
             leukocyte.applyForce(
                 this.vectorfield.getVector(leukocyte.position)
             );
-            leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
+            
+                        
+            if(this.particles.length > 0) {
+            
+                leukocyte.orientation = nearest;
+                leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
+
+            }
+            
+            leukocyte.boundaryCheck(this.vectorfield);
             
             leukocyte.update(dt);
             
         }
+        
+        var particleDistances = this.getParticleDistances();
         
         for(var i = 0; i < this.particles.length; i++) {
             
@@ -82,6 +103,20 @@ Controller.prototype = {
         
         }
 
+    },
+    
+    collision : function(entity1, entity2) {
+    
+        var vector = entity1.position.sub(entity2.position);
+        
+        if(vector.normSquared() < (entity1.entityRadius + entity2.entityRadius) *
+           (entity1.entityRadius + entity2.entityRadius)) {
+            
+            entity1.applyForce(vector.normalize().mulSelf(entity1.moveSpeed));
+            entity2.applyForce(vector.normalize().mulSelf(entity2.moveSpeed * -1));
+        
+        }
+    
     },
     
     applySwarmBehaviour : function(distances, particle) {
@@ -163,6 +198,9 @@ Controller.prototype = {
                 new Vector(Math.random() * this.vectorfield.cols,
                            Math.random() * this.vectorfield.rows))
             );
+            // this.particles.push(new Particle(
+                // new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 1))
+            // );
             
         }
     

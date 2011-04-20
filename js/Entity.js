@@ -39,6 +39,27 @@ Entity.prototype = {
         
         this.force.addSelf(force);
         
-    }
+    },
     
+    boundaryCheck : function(vectorfield) {
+    
+        if (this.position.x <= .1) {
+            
+            this.applyForce(new Vector(1, 0, 0));
+            
+        } else if (this.position.x >= vectorfield.cols - .1) {
+            
+            this.applyForce(new Vector(-1, 0, 0));
+            
+        } else if (this.position.y <= .1) {
+
+            this.applyForce(new Vector(0, 1, 0));
+            
+        } else if (this.position.y >= vectorfield.rows - .1) {
+            
+            this.applyForce(new Vector(0, -1, 0));
+            
+        }
+    }
+        
 };
