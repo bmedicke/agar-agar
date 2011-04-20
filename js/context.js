@@ -51,7 +51,7 @@ WebGLRenderingContext.prototype.translate = function(x, y) {
 WebGLRenderingContext.prototype.setColor = function(r, g, b, a) {
     
     this.uniform4fv(
-        this.getUniformLocation(this.defaultShader, "color"), 
+        this.colorUniformLocation, 
         new Float32Array([ r, g, b, a ])
     );
 
@@ -170,16 +170,22 @@ WebGLRenderingContext.prototype.initBuffers = function() {
     this.bindBuffer(this.ARRAY_BUFFER, this.circleBuffer);
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(circleVertices), this.STATIC_DRAW);
     
+    var positionAttribLocation = 0;
+    this.enableVertexAttribArray(positionAttribLocation);
+    
 };
 
 WebGLRenderingContext.prototype.setupDefaultShader = function() {
 
-    var vertexShader = this.loadShader("vertex-shader");
-    var fragmentShader = this.loadShader("fragment-shader");
+    var vertexShader = this.loadShader("vertex-shader"),
+        fragmentShader = this.loadShader("fragment-shader");
     
     this.defaultShader = this.linkShaderProgram(vertexShader, fragmentShader);
     
     this.useProgram(this.defaultShader);
+    
+    this.matrixUniformLocation = this.getUniformLocation(this.defaultShader, "matrix");
+    this.colorUniformLocation = this.getUniformLocation(this.defaultShader, "color");
     
     this.setColor(0, 0, 0, 1.0);
     
@@ -265,11 +271,9 @@ WebGLRenderingContext.prototype.linkShaderProgram = function(vertexShader, fragm
 };
 
 WebGLRenderingContext.prototype.passVerticesToShader = function(shader) {
-
-    var vertexPositionAttribute = this.getAttribLocation(shader, "position");
     
-    this.enableVertexAttribArray(vertexPositionAttribute);
-    this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
+    var positionAttribLocation = 0;
+    this.vertexAttribPointer(positionAttribLocation, 3, this.FLOAT, false, 0, 0);
     
     this.passMatrixToShader(this.defaultShader);
     
@@ -283,7 +287,7 @@ WebGLRenderingContext.prototype.passMatrixToShader = function(shader) {
         this.matrixChanged = false;
 
         this.uniformMatrix4fv(
-            this.getUniformLocation(shader, "matrix"), 
+            this.matrixUniformLocation, 
             false, 
             new Float32Array(this.matrix.transpose().flatten4D())
         );
