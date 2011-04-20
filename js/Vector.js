@@ -187,7 +187,9 @@ Vector.prototype = {
     
     angle: function(vector) {
         
-        return (this.dot(vector) / this.norm() / vector.norm());
+        vector = vector || new Vector(1, 0, 0);
+
+        return Math.acos(this.dot(vector) / this.norm() / vector.norm());
         
     },
     

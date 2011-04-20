@@ -7,8 +7,8 @@ var InputHandler = function(vectorfield) {
     this.clickTimeoutID = null;
     this.clickTime = 250;
     
-    this.touches = {};
-    this.touchID = 0;
+    this.oldTouchPosition = new Vector();
+    this.touchPosition = new Vector();
     
     this.mouse = new Vector();
 
@@ -36,8 +36,18 @@ InputHandler.prototype = {
     
     update : function(dt) {
         
+        if (this.state === "down") {
+            
+            var angle = this.oldTouchPosition.subSelf(this.touchPosition).mulSelf(-1).angle();
+            
+            this.vectorfield.applyForceField(
+                this.touchPosition, 
+                angle
+            );
         
-        
+            this.oldTouchPosition.copy(this.touchPosition);
+            
+        }
     },
     
     draw : function(gl) {
@@ -52,15 +62,16 @@ InputHandler.prototype = {
         
         this.state = "down";
         
-        var self = this;
+        // var self = this;
+        // 
+        // this.clickTimeoutID = setTimeout(function() {
+        //     
+        //     self.onClickTimeout();
+        //     
+        // }, this.clickTime);
         
-        this.clickTimeoutID = setTimeout(function() {
-            
-            self.onClickTimeout();
-            
-        }, this.clickTime);
-        
-        //this.vectorfield.applyForceField(this.mouse);
+        this.touchPosition.copy(this.mouse);
+        this.oldTouchPosition.copy(this.mouse);
         
     },
     
@@ -68,11 +79,13 @@ InputHandler.prototype = {
         
         this.setMousePosition(event);
         
-        if (this.state === "down") {
-            
-            this.state = "drag";
-            
-        }
+        // if (this.state === "down") {
+        //     
+        //     this.state = "drag";
+        //     
+        // }
+        
+        this.touchPosition.copy(this.mouse);
         
     },
     
@@ -89,7 +102,7 @@ InputHandler.prototype = {
             
         }
         
-        this.vectorfield.applyForceField(this.mouse);
+        this.touchPosition.copy(this.mouse);
         
     },
     
@@ -125,113 +138,5 @@ InputHandler.prototype = {
         this.mouse.set(coords.x / this.vectorfield.cellSize, coords.y / this.vectorfield.cellSize, 0);
         
     }
-    
-  // onMouseDown: function(event) {
-  //   var coordinates = getRelativeCoordinates(event, $("editor"));
-  // 
-  //   var myEvent = new Event("mouseDown");
-  //       myEvent.parameter = event;
-  //       myEvent.mouseX = coordinates.x;
-  //       myEvent.mouseY = coordinates.y;
-  // 
-  //   this.dispatchEvent(myEvent);
-  // 
-  //   this.state = {type: "down", x: coordinates.x, y: coordinates.y};
-  // 
-  //   var myScope = this;
-  //   
-  //   this.clickTimeoutID = setTimeout(
-  //     
-  //     function(coordinates, event) {
-  //       myScope.onClickTimeout(coordinates, event);
-  //     },
-  //      
-  //     this.clickTime, coordinates, event
-  //   );
-  // }, 
-  // 
-  // onMouseUp: function(event) {
-  //   
-  //   if (this.clickTimeoutID) {
-  //     clearTimeout(this.clickTimeoutID);
-  //     this.clickTimeoutID = null;
-  //   }
-  // 
-  //   var type;
-  // 
-  //   if (this.state.type === "drag") {
-  //     
-  //     type = "stopDrag";
-  //     
-  //   } else if (this.state.type === "down") {
-  //     
-  //     type = "click";
-  //     
-  //   }
-  // 
-  //   var coordinates = getRelativeCoordinates(event, $("editor"));
-  // 
-  //   var myEvent = new Event(type);
-  //       myEvent.parameter = event;
-  //       myEvent.mouseX = coordinates.x;
-  //       myEvent.mouseY = coordinates.y;
-  // 
-  //   this.state.type = "up";
-  // 
-  //   this.dispatchEvent(myEvent);
-  // },
-  // 
-  // onMouseMove: function(event) {
-  //   
-  //   var coordinates = getRelativeCoordinates(event, $("editor"));
-  //   
-  //   var myEvent = new Event("mouseMove");
-  //       myEvent.parameter = event;
-  //       myEvent.mouseX = coordinates.x;
-  //       myEvent.mouseY = coordinates.y;
-  // 
-  //   this.dispatchEvent(myEvent);
-  // 
-  //   if (this.state.type !== "up") {
-  //     
-  //     myEvent.type = "drag";
-  //     this.dispatchEvent(myEvent);
-  //     
-  //   }
-  // 
-  //   if (this.state.type === "down") {
-  //     var distance = (function(oldX, oldY, newX, newY) {
-  //       
-  //       var x = newX - oldX;
-  //       var y = newY - oldY;
-  // 
-  //       return Math.sqrt(x * x + y * y);
-  //     }(this.state.x, this.state.y, coordinates.x, coordinates.y));
-  // 
-  //     if (distance > 5) {
-  //       
-  //       this.onClickTimeout({x: this.state.x, y: this.state.y});
-  // 
-  //     }
-  //   }
-  // },
-  // 
-  // onClickTimeout: function(coordinates, event) {
-  // 
-  //   if (this.state.type !== "down") {
-  //     return;
-  //   }
-  // 
-  //   this.clickTimeoutID = null;
-  // 
-  //   this.state.type = "drag";
-  // 
-  //   var myEvent = new Event("startDrag");
-  //       myEvent.parameter = event;
-  //       myEvent.mouseX = coordinates.x;
-  //       myEvent.mouseY = coordinates.y;
-  // 
-  //   this.dispatchEvent(myEvent);
-  // }
 
 };
