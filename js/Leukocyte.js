@@ -12,13 +12,18 @@ Leukocyte.prototype.entityRadius = 1.0;
 Leukocyte.prototype.moveSpeed = 1;
 
 Leukocyte.prototype.draw = function(gl) {
+
+    // this.orientation.y *= -1;
+    // this.orientation = new Vector(0, -1, 0);
     
     gl.fill();
     
     gl.pushMatrix();
         
         gl.translate(this.position.x, this.position.y);
-        gl.rotate(this.orientation.angle());
+        var angle = this.orientation.angle();
+        
+        gl.rotate(this.orientation.y < 0 ? -angle : angle);
         
         gl.setColor(0, 1, 1, 1);
         gl.drawCircle(0, 0, this.entityRadius);
