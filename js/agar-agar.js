@@ -56,7 +56,7 @@ function run() {
         
         game.update(dt);
         game.draw(gl);
-        
+
     }
     
 };
@@ -70,36 +70,36 @@ window.onload = function() {
 
 /* agar-agar inheritance test */
 
-var Particle = function(size) {
-    this.size = size;
-};
+// var Particle = function(size) {
+    // this.size = size;
+// };
 
-Particle.prototype.draw = function() {
-    log("particle");
-};
+// Particle.prototype.draw = function() {
+    // log("particle");
+// };
 
-Particle.prototype.muh = function() {
-    log(this.size);
-};
+// Particle.prototype.muh = function() {
+    // log(this.size);
+// };
 
-var Obstacle = function(size, speed) {
+// var Obstacle = function(size, speed) {
     
-    Particle.call(this, size);
+    // Particle.call(this, size);
     
-    this.speed = speed;
+    // this.speed = speed;
 
-};
+// };
 
-Obstacle.prototype = new Particle;
+// Obstacle.prototype = new Particle;
 
-Obstacle.prototype.draw = function() {
+// Obstacle.prototype.draw = function() {
     
-    Particle.prototype.draw.call(this);
+    // Particle.prototype.draw.call(this);
     
-    log("obstacle");
-};
+    // log("obstacle");
+// };
 
-var particle = new Particle(5);
-var obstacle = new Obstacle(3, 7);
-var obstacle2 = new Obstacle(4, 8);
+// var particle = new Particle(5);
+// var obstacle = new Obstacle(3, 7);
+// var obstacle2 = new Obstacle(4, 8);
 

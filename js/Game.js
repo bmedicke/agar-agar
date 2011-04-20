@@ -1,8 +1,11 @@
 var Game = function(width, height) {
     
-    this.vectorfield = new Vectorfield(width, height);
-    // this.controller = new Controller();
+    this.vectorfield = new Vectorfield(width, height);    
     this.inputHandler = new InputHandler(this.vectorfield);
+	this.controller = new Controller(this.vectorfield);
+    
+    this.controller.addParticles(1);
+    
     // this.generator = new Generator();
     // this.fader = new Fader();
     
@@ -21,8 +24,8 @@ Game.prototype = {
         // } else {
         //     
             this.vectorfield.update(dt);
-        //     this.controller.update(dt);
             this.inputHandler.update(dt);
+            this.controller.update(dt);
         //     
         // }
         
@@ -37,7 +40,7 @@ Game.prototype = {
         // } else {
         //     
             this.vectorfield.draw(gl);
-        //     this.controller.draw(gl);
+            this.controller.draw(gl);
             this.inputHandler.draw(gl);
         //     
         // }

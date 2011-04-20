@@ -13,21 +13,26 @@ Entity.prototype = {
     
     radius : 0.1,
     
+    dampCoefficient : 0.001,
+    
     update : function(dt) {
         
         var acceleration = this.force.div(this.mass);
         
-    	force.set(0, 0, 0);
+    	this.force.set(0, 0, 0);
 
     	this.velocity.addSelf(acceleration.mul(dt));
     	this.position.addSelf(this.velocity.mul(dt)).addSelf(acceleration.mul(0.5 * dt * dt));
+        
+        this.velocity.mulSelf(1 - this.dampCoefficient * dt);
         
     },
     
     draw : function(gl) {
         gl.setColor(1, 0, 0, 1);
         gl.fill();
-        gl.drawCircle(this.position.x, this.position.y, this.radius);
+        // gl.drawCircle(this.position.x, this.position.y, this.radius);
+        gl.drawRect(this.position.x, this.position.y, this.radius, this.radius);
     },
     
     applyForce : function(force) {
