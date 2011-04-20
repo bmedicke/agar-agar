@@ -1,6 +1,8 @@
 
 WebGLRenderingContext.prototype.matrix = new Matrix();
 WebGLRenderingContext.prototype.matrixStack = [];
+WebGLRenderingContext.prototype.matrixChanged = false;
+
 
 WebGLRenderingContext.prototype.pushMatrix = function() {
     
@@ -16,7 +18,7 @@ WebGLRenderingContext.prototype.popMatrix = function() {
         
         this.matrix = this.matrixStack.pop();
         
-        this.passMatrixToShader(this.defaultShader);
+        this.matrixChanged = true;
         
     }
     
@@ -26,7 +28,7 @@ WebGLRenderingContext.prototype.rotate = function(phi) {
     
     this.matrix.rotate2DSelf(phi);
     
-    this.passMatrixToShader(this.defaultShader);
+    this.matrixChanged = true;
     
 };
 
@@ -34,7 +36,7 @@ WebGLRenderingContext.prototype.scale = function(x, y) {
     
     this.matrix.scale2DSelf(x, y);
     
-    this.passMatrixToShader(this.defaultShader);
+    this.matrixChanged = true;
     
 };
 
@@ -42,7 +44,7 @@ WebGLRenderingContext.prototype.translate = function(x, y) {
     
     this.matrix.translate2DSelf(x, y);
     
-    this.passMatrixToShader(this.defaultShader);
+    this.matrixChanged = true;
     
 };
 
@@ -268,6 +270,13 @@ WebGLRenderingContext.prototype.passVerticesToShader = function(shader) {
     
     this.enableVertexAttribArray(vertexPositionAttribute);
     this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
+    
+    if (this.matrixChanged) {
+        
+        this.matrixChanged = false;
+        this.passMatrixToShader(this.defaultShader);
+        
+    }
     
 };
 
