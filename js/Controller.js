@@ -10,7 +10,94 @@ var Controller = function(vectorfield) {
 
 Controller.prototype = {
 
+    separationFactor : 7,
+    
+    cohesionFactor : .1,
+
     update : function(dt) {
+    
+        var distances = this.getParticleDistances();
+
+        for (var i = 0; i < this.particles.length; i++) {
+            
+            var particle = this.particles[i];
+            
+            
+            particle.applyForce(
+                this.vectorfield.getVector(particle.position)
+            );
+            
+            
+            this.calculateSwarmBehaviour(distances[i], particle);
+            
+            
+            particle.update(dt);
+            
+        }    
+    
+    },
+    
+    draw : function(gl) {
+    
+        for(var i = 0; i < this.particles.length; i++) {
+        
+           this.particles[i].draw(gl);
+        
+        }
+
+    },
+    
+    calculateSwarmBehaviour : function(distances, particle) {
+    
+        var separationCenter = new Vector(),
+            separationCount = 0,
+            cohesionCenter = new Vector(),
+            cohesionCount = 0;
+    
+        for (var j = 0; j < this.particles.length; j++) {
+                
+            if (typeof distances[j] === 'undefined') {
+            
+                continue;
+                
+            }
+            
+            if (distances[j] < particle.separationRadius * particle.separationRadius) {
+            
+                separationCenter.addSelf(this.particles[j].position);
+                separationCount++;
+            
+            } else if (distances[j] < particle.cohesionRadius * particle.cohesionRadius) {
+                
+                cohesionCenter.addSelf(this.particles[j].position);
+                cohesionCount++;
+                
+            }
+        
+        }
+    
+        
+        if(cohesionCount) {
+        
+            cohesionCenter.divSelf(cohesionCount).subSelf(particle.position);
+            
+            cohesionCenter.mulSelf((1 / particle.cohesionRadius * cohesionCenter.norm()) * this.cohesionFactor);
+        
+        }
+        
+        if (separationCount) {
+            
+            separationCenter.divSelf(separationCount).subSelf(particle.position);
+            
+            separationCenter.mulSelf((1 / particle.separationRadius * separationCenter.norm() - 1) * this.separationFactor);
+            
+        }
+        
+        particle.applyForce(separationCenter.addSelf(cohesionCenter));
+    
+    },
+    
+    getParticleDistances : function() {
     
         var distances = [];
         
@@ -27,59 +114,8 @@ Controller.prototype = {
         
         }
         
-        
-        for (var i = 0; i < this.particles.length; i++) {
-            
-            var particle = this.particles[i],
-                separationCenter = new Vector(),
-                separationCount = 0;
-            
-            particle.applyForce(this.vectorfield.getVector(particle.position));
-            
-            
-            for (var j = 0; j < this.particles.length; j++) {
-            
-                if (j === i) {
-                
-                    continue;
-                    
-                }
-                    
-                if (distances[i][j] < particle.separationRadius * particle.separationRadius) {
-                
-                    separationCenter.addSelf(this.particles[j].position);
-                    separationCount++;
-                
-                }
-            
-            }
-            
-            
-            if (separationCount) {
-                
-                separationCenter.divSelf(separationCount).subSelf(particle.position);
-                
-                separationCenter.mulSelf(1 / particle.separationRadius * separationCenter.norm() - 1);
-                
-                particle.applyForce(separationCenter);
-                
-            }
-            
-            
-            this.particles[i].update(dt);
-            
-        }    
+        return distances;
     
-    },
-    
-    draw : function(gl) {
-    
-        for(var i = 0; i < this.particles.length; i++) {
-        
-           this.particles[i].draw(gl);
-        
-        }
-
     },
     
     addParticles : function(amount) {
