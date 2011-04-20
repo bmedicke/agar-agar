@@ -4,8 +4,6 @@ var Vectorfield = function(width, height) {
     this.cols = Math.floor(width / this.cellSize);
     this.rows = Math.floor(height / this.cellSize);
     
-    console.log(this.cellSize, this.cols, this.rows);
-    
     this.vectors = {};
     
 };
@@ -18,9 +16,24 @@ Vectorfield.prototype = {
     
     forceRadius : 5,
     
+    dampCoefficient : 0.001,
+    
     update : function(dt) {
         
-        
+        for (var cellID in this.vectors) {
+            
+            if (this.vectors.hasOwnProperty(cellID)) {
+                
+                this.vectors[cellID].mulSelf(1 - this.dampCoefficient * dt);
+                
+                if (this.vectors[cellID].normSquared() < 0.01) {
+                
+                    delete this.vectors[cellID];
+                
+                }
+                
+            }
+        }
         
     },
     
@@ -39,6 +52,8 @@ Vectorfield.prototype = {
             gl.drawLine(0, i, this.cols, i);
             
         }
+        
+        gl.setColor(0.8, 0.4, 0.4, 1.0);
         
         var cell = new Vector();
         

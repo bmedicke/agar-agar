@@ -33,9 +33,9 @@ function initialize() {
     
     gl.translate(-1, 1);
     gl.scale(1 / (width / 2) * cellSize, -1 / (height / 2) * cellSize);
-    
+
+    gl.setupDefaultShader();    
     gl.initBuffers();
-    gl.setupDefaultShader();
     
 };
 

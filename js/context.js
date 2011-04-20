@@ -16,6 +16,8 @@ WebGLRenderingContext.prototype.popMatrix = function() {
         
         this.matrix = this.matrixStack.pop();
         
+        this.passMatrixToShader(this.defaultShader);
+        
     }
     
 };
@@ -24,11 +26,15 @@ WebGLRenderingContext.prototype.rotate = function(phi) {
     
     this.matrix.rotate2DSelf(phi);
     
+    this.passMatrixToShader(this.defaultShader);
+    
 };
 
 WebGLRenderingContext.prototype.scale = function(x, y) {
     
     this.matrix.scale2DSelf(x, y);
+    
+    this.passMatrixToShader(this.defaultShader);
     
 };
 
@@ -36,13 +42,16 @@ WebGLRenderingContext.prototype.translate = function(x, y) {
     
     this.matrix.translate2DSelf(x, y);
     
+    this.passMatrixToShader(this.defaultShader);
+    
 };
 
-WebGLRenderingContext.prototype.color = [0, 0, 0, 1];
-
 WebGLRenderingContext.prototype.setColor = function(r, g, b, a) {
-
-    this.color = [ r, g, b, a ];
+    
+    this.uniform4fv(
+        this.getUniformLocation(this.defaultShader, "color"), 
+        new Float32Array([ r, g, b, a ])
+    );
 
 };
 
@@ -74,22 +83,19 @@ WebGLRenderingContext.prototype.noFill = function() {
 };
 
 WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
-
-    var vertices = [
-        x, y, 1,
-        x + width, y, 1,
-        x + width, y + height, 1,
-        x, y + height, 1
-    ];
-
-    this.passVerticesToShader(vertices, this.defaultShader);
-
-    this.passColorToShader(this.defaultShader);
     
-    this.passMatrixToShader(this.defaultShader);
+    this.pushMatrix();
+    
+    this.translate(x, y);
+    this.scale(width, height);
+
+    this.bindBuffer(this.ARRAY_BUFFER, this.rectBuffer);
+    this.passVerticesToShader(this.defaultShader);
 
     var drawMode = this.isFilled ? this.TRIANGLE_FAN : this.LINE_LOOP;
     this.drawArrays(drawMode, 0, 4);
+    
+    this.popMatrix();
     
 };
 
@@ -100,11 +106,10 @@ WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
         x2, y2, 1
     ];
     
-    this.passVerticesToShader(vertices, this.defaultShader);
+    this.bindBuffer(this.ARRAY_BUFFER, this.vertexBuffer);
+    this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
     
-    this.passColorToShader(this.defaultShader);
-    
-    this.passMatrixToShader(this.defaultShader);
+    this.passVerticesToShader(this.defaultShader);
 
     this.drawArrays(this.LINE_STRIP, 0, 2);
     
@@ -113,29 +118,15 @@ WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
 WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
     
     this.pushMatrix();
+    
     this.translate(x, y);
-    
-    var vector = new Vector(radius, 0, 1),
-        vertices = [],
-        resolution = 15;
-        
-    for (var i = 0; i < resolution; i++) {
-    
-        vertices.push(vector.x, vector.y, vector.z);
-        
-        vector.rotate2DSelf((Math.PI * 2) / resolution);
-    
-    }
-    
-    this.passVerticesToShader(vertices, this.defaultShader);
-    
-    this.passColorToShader(this.defaultShader);
-    
-    this.passMatrixToShader(this.defaultShader);
+    this.scale(radius);
 
+    this.bindBuffer(this.ARRAY_BUFFER, this.circleBuffer);
+    this.passVerticesToShader(this.defaultShader);
     
     var drawMode = this.isFilled ? this.TRIANGLE_FAN : this.LINE_LOOP;
-    this.drawArrays(drawMode, 0, resolution);
+    this.drawArrays(drawMode, 0, this.circleResolution);
     
     this.popMatrix();
     
@@ -144,6 +135,38 @@ WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
 WebGLRenderingContext.prototype.initBuffers = function() {
 
     this.vertexBuffer = this.createBuffer();
+    
+    
+    var rectVertices = [
+        0, 0, 1,
+        1, 0, 1,
+        1, 1, 1,
+        0, 1, 1
+    ];
+    
+    this.rectBuffer = this.createBuffer();
+        
+    this.bindBuffer(this.ARRAY_BUFFER, this.rectBuffer);
+    this.bufferData(this.ARRAY_BUFFER, new Float32Array(rectVertices), this.STATIC_DRAW);
+    
+    
+    this.circleResolution = 24;
+    
+    var vertex = new Vector(1, 0, 1),
+        circleVertices = [];
+        
+    for (var i = 0; i < this.circleResolution; i++) {
+    
+        circleVertices.push(vertex.x, vertex.y, vertex.z);
+        
+        vertex.rotate2DSelf((Math.PI * 2) / this.circleResolution);
+    
+    }
+    
+    this.circleBuffer = this.createBuffer();
+    
+    this.bindBuffer(this.ARRAY_BUFFER, this.circleBuffer);
+    this.bufferData(this.ARRAY_BUFFER, new Float32Array(circleVertices), this.STATIC_DRAW);
     
 };
 
@@ -155,6 +178,8 @@ WebGLRenderingContext.prototype.setupDefaultShader = function() {
     this.defaultShader = this.linkShaderProgram(vertexShader, fragmentShader);
     
     this.useProgram(this.defaultShader);
+    
+    this.setColor(0, 0, 0, 1.0);
     
 };
 
@@ -237,25 +262,13 @@ WebGLRenderingContext.prototype.linkShaderProgram = function(vertexShader, fragm
     
 };
 
-WebGLRenderingContext.prototype.passVerticesToShader = function(vertices, shader) {
+WebGLRenderingContext.prototype.passVerticesToShader = function(shader) {
 
-    this.bindBuffer(this.ARRAY_BUFFER, this.vertexBuffer);
-    this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
-        
     var vertexPositionAttribute = this.getAttribLocation(shader, "position");
     
     this.enableVertexAttribArray(vertexPositionAttribute);
     this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
     
-};
-
-WebGLRenderingContext.prototype.passColorToShader = function(shader) {
-
-    this.uniform4fv(
-        this.getUniformLocation(shader, "color"), 
-        new Float32Array(this.color)
-    );
-
 };
 
 
