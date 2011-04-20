@@ -122,7 +122,7 @@ WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
     this.pushMatrix();
     
     this.translate(x, y);
-    this.scale(radius);
+    this.scale(radius, radius);
 
     this.bindBuffer(this.ARRAY_BUFFER, this.circleBuffer);
     this.passVerticesToShader(this.defaultShader);
@@ -271,22 +271,23 @@ WebGLRenderingContext.prototype.passVerticesToShader = function(shader) {
     this.enableVertexAttribArray(vertexPositionAttribute);
     this.vertexAttribPointer(vertexPositionAttribute, 3, this.FLOAT, false, 0, 0);
     
-    if (this.matrixChanged) {
-        
-        this.matrixChanged = false;
-        this.passMatrixToShader(this.defaultShader);
-        
-    }
+    this.passMatrixToShader(this.defaultShader);
     
 };
 
 
 WebGLRenderingContext.prototype.passMatrixToShader = function(shader) {
+    
+    if (this.matrixChanged) {
 
-    this.uniformMatrix4fv(
-        this.getUniformLocation(shader, "matrix"), 
-        false, 
-        new Float32Array(this.matrix.transpose().flatten4D())
-    );
+        this.matrixChanged = false;
+
+        this.uniformMatrix4fv(
+            this.getUniformLocation(shader, "matrix"), 
+            false, 
+            new Float32Array(this.matrix.transpose().flatten4D())
+        );
+    
+    }
     
 };

@@ -1,29 +1,30 @@
 var InputHandler = function(vectorfield) {
     
     this.vectorfield = vectorfield;
-    
-    // startDrag, stopDrag, click, mouseDown, mouseUp, mouseMove
 
-    this.state = {type: "unknown"};
-    this.latestEvent = null;
+    this.state = null;
     
-    this.clickTimeout = null;
-    this.clickTime = 250; // in milliseconds;
+    this.clickTimeoutID = null;
+    this.clickTime = 250;
     
+    this.touches = {};
+    this.touchID = 0;
+    
+    this.mouse = new Vector();
 
     var self = this;
 
     document.body.onmousedown = function(event) {
         self.onMouseDown(event);
     };
-    // 
-    // document.body.onmouseup = function(event) {
-    //     self.onMouseUp(event);
-    // };
-    // 
-    // document.body.onmousemove = function(event) {
-    //     self.onMouseMove(event);
-    // };
+    
+    document.body.onmousemove = function(event) {
+        self.onMouseMove(event);
+    };
+    
+    document.body.onmouseup = function(event) {
+        self.onMouseUp(event);
+    };
     
     document.body.onkeydown = function(event) {
         self.onKeyDown(event);
@@ -33,9 +34,84 @@ var InputHandler = function(vectorfield) {
 
 InputHandler.prototype = {
     
+    update : function(dt) {
+        
+        
+        
+    },
+    
+    draw : function(gl) {
+        
+        
+        
+    },
+    
+    onMouseDown : function(event) {
+        
+        this.setMousePosition(event);
+        
+        this.state = "down";
+        
+        var self = this;
+        
+        this.clickTimeoutID = setTimeout(function() {
+            
+            self.onClickTimeout();
+            
+        }, this.clickTime);
+        
+        //this.vectorfield.applyForceField(this.mouse);
+        
+    },
+    
+    onMouseMove : function(event) {
+        
+        this.setMousePosition(event);
+        
+        if (this.state === "down") {
+            
+            this.state = "drag";
+            
+        }
+        
+    },
+    
+    onMouseUp : function(event) {
+        
+        this.setMousePosition(event);
+        
+        this.state = "up";
+        
+        if (this.clickTimeoutID) {
+            
+            clearTimeout(this.clickTimeoutID);
+            this.clickTimeoutID = null;
+            
+        }
+        
+        this.vectorfield.applyForceField(this.mouse);
+        
+    },
+    
+    onClickTimeout : function() {
+        
+        if (this.state !== "down") {
+            
+            return;
+            
+        }
+        
+        this.state = "drag";
+        
+    },
+    
     onKeyDown : function(event) {
         
-        if(event.keyCode === 27) {
+        if (event.keyCode === 32) {
+            
+            
+            
+        } else if (event.keyCode === 27) {
             
             game.pause();
             
@@ -43,11 +119,10 @@ InputHandler.prototype = {
         
     },
     
-    onMouseDown: function(event) {
+    setMousePosition : function(event) {
         
-        var mouse = getRelativeCoordinates(event, canvas);
-        
-        this.vectorfield.applyForceField(new Vector(mouse.x, mouse.y, 0));
+        var coords = getRelativeCoordinates(event, canvas);
+        this.mouse.set(coords.x / this.vectorfield.cellSize, coords.y / this.vectorfield.cellSize, 0);
         
     }
     

@@ -99,8 +99,6 @@ Vectorfield.prototype = {
     
     applyForceField : function(position) {
         
-        position.divSelf(this.cellSize);
-        
         var cell = this.getCell(position),
             left = cell.x - this.forceRadius,
             right = cell.x + this.forceRadius,

@@ -22,7 +22,7 @@ Game.prototype = {
         //     
             this.vectorfield.update(dt);
         //     this.controller.update(dt);
-        //     this.inputHandler.update(dt);
+            this.inputHandler.update(dt);
         //     
         // }
         
@@ -38,7 +38,7 @@ Game.prototype = {
         //     
             this.vectorfield.draw(gl);
         //     this.controller.draw(gl);
-        //     this.inputHandler.draw(gl);
+            this.inputHandler.draw(gl);
         //     
         // }
         
