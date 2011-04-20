@@ -157,7 +157,7 @@ Vector.prototype = {
         
         if (this.normSquared() > value * value) {
             
-            this.normalize().mul(value);
+            return this.normalize().mul(value);
             
         }
         
