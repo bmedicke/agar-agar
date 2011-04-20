@@ -38,10 +38,20 @@ Controller.prototype = {
                 
             }
             
+            leukocyte.orientation = nearest;
+            
+            for(var j = 0; j < i; j++) {
+            
+                this.collision(leukocyte, this.leukocytes[j]);
+            
+            }
+            
             leukocyte.applyForce(
                 this.vectorfield.getVector(leukocyte.position)
             );
             leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
+            
+            leukocyte.boundaryCheck(this.vectorfield);
             
             leukocyte.update(dt);
             
@@ -82,6 +92,20 @@ Controller.prototype = {
         
         }
 
+    },
+    
+    collision : function(entity1, entity2) {
+    
+        var vector = entity1.position.sub(entity2.position);
+        
+        if(vector.normSquared() < (entity1.entityRadius + entity2.entityRadius) *
+           (entity1.entityRadius + entity2.entityRadius)) {
+            
+            entity1.applyForce(vector.normalize().mulSelf(entity1.moveSpeed));
+            entity2.applyForce(vector.normalize().mulSelf(entity2.moveSpeed * -1));
+        
+        }
+    
     },
     
     applySwarmBehaviour : function(distances, particle) {
