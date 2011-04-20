@@ -97,9 +97,9 @@ Vectorfield.prototype = {
         
     },
     
-    applyForceField : function(position, forceDirection) {
+    applyForceField : function(position, direction) {
         
-        forceDirection = forceDirection || 0;
+        direction = direction || 0;
                 
         var cell = this.getCell(position),
             left = cell.x - this.forceRadius,
@@ -125,13 +125,15 @@ Vectorfield.prototype = {
                 
                 if (cellVector.normSquared() < this.forceRadius * this.forceRadius) {
                     
-                    cellVector.mulSelf(-1).divSelf(cellVector.normSquared());
-                    
-                    // if (forceDirection) {
-                    //     
-                    //     cellVector.rotate2DSelf(forceDirection - cellVector.angle());
-                    //     
-                    // }
+                    if (direction) {
+                        
+                        cellVector = direction.div(cellVector.norm());
+                        
+                    } else {
+                        
+                        cellVector.mulSelf(-1).divSelf(cellVector.normSquared());
+                        
+                    }
                     
                     this.setVector(i + j * this.cols, cellVector);
                     
