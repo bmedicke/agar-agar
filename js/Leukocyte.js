@@ -7,9 +7,9 @@ var Leukocyte = function(position) {
 Leukocyte.prototype = new Entity();
 Leukocyte.prototype.constructor = Entity;
 
-Leukocyte.prototype.mass = 10;
+Leukocyte.prototype.mass = 900000;
 Leukocyte.prototype.radius = 0.5;
-Leukocyte.prototype.moveSpeed = 0.00001;
+Leukocyte.prototype.moveSpeed = 1;
 
 Leukocyte.prototype.draw = function(gl) {
     

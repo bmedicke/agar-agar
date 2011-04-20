@@ -38,6 +38,9 @@ Controller.prototype = {
                 
             }
             
+            leukocyte.applyForce(
+                this.vectorfield.getVector(leukocyte.position)
+            );
             leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
             
             leukocyte.update(dt);
@@ -55,6 +58,7 @@ Controller.prototype = {
             
             this.applySwarmBehaviour(particleDistances[i], particle);
             
+            particle.boundaryCheck(this.vectorfield);
             
             particle.update(dt);
         
@@ -63,6 +67,8 @@ Controller.prototype = {
     },
     
     draw : function(gl) {
+        
+        gl.setColor(1, 0, 0, 1);
     
         for(var i = 0; i < this.particles.length; i++) {
         
@@ -170,11 +176,6 @@ Controller.prototype = {
             radiusVector.addSelf(radiusVector.rotate2D(Math.random() * Math.PI * 2));
         
             this.leukocytes.push(new Leukocyte(radiusVector));
-            
-            // this.leukocytes.push(new Leukocyte(
-                // new Vector(Math.random() * this.vectorfield.cols,
-                           // Math.random() * this.vectorfield.rows))
-            // );
             
         }
     
