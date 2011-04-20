@@ -61,10 +61,6 @@ Matrix.prototype = {
             new Vector(this.a.dot(t.a), this.a.dot(t.b), this.a.dot(t.c)),
             new Vector(this.b.dot(t.a), this.b.dot(t.b), this.b.dot(t.c)),
             new Vector(this.c.dot(t.a), this.c.dot(t.b), this.c.dot(t.c))
-            
-            // new Vector(matrix.a.dot(t.a), matrix.a.dot(t.b), matrix.a.dot(t.c)),
-            // new Vector(matrix.b.dot(t.a), matrix.b.dot(t.b), matrix.b.dot(t.c)),
-            // new Vector(matrix.c.dot(t.a), matrix.c.dot(t.b), matrix.c.dot(t.c))
         );
         
     },
@@ -77,10 +73,6 @@ Matrix.prototype = {
             new Vector(this.a.dot(t.a), this.a.dot(t.b), this.a.dot(t.c)),
             new Vector(this.b.dot(t.a), this.b.dot(t.b), this.b.dot(t.c)),
             new Vector(this.c.dot(t.a), this.c.dot(t.b), this.c.dot(t.c))
-            
-            // new Vector(matrix.a.dot(this.a), matrix.a.dot(this.b), matrix.a.dot(this.c)),
-            // new Vector(matrix.b.dot(this.a), matrix.b.dot(this.b), matrix.b.dot(this.c)),
-            // new Vector(matrix.c.dot(this.a), matrix.c.dot(this.b), matrix.c.dot(this.c))
         );
         
     },

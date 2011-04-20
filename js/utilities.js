@@ -1,3 +1,7 @@
+var log = function() {
+    console.log.apply(console, arguments);
+};
+
 function getAbsolutePosition(element) {
     
   var r = { x: element.offsetLeft, y: element.offsetTop };

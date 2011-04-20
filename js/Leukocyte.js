@@ -12,11 +12,6 @@ Leukocyte.prototype.entityRadius = 1.0;
 Leukocyte.prototype.moveSpeed = 1;
 
 Leukocyte.prototype.draw = function(gl) {
-
-    // this.orientation.y *= -1;
-    // this.orientation = new Vector(0, -1, 0);
-    
-    gl.fill();
     
     gl.pushMatrix();
         
@@ -30,10 +25,6 @@ Leukocyte.prototype.draw = function(gl) {
         
         gl.setColor(1, 1, 0, 1);
         gl.drawCircle(this.entityRadius, 0, this.entityRadius / 4);
-        
-        gl.noFill();
-        gl.setColor(0, 0, 0, 1);
-        gl.drawCircle(0, 0, this.entityRadius);
         
     gl.popMatrix();
 

@@ -16,25 +16,23 @@ Controller.prototype = {
 
     update : function(dt) {
                 
-        for(var i = 0; i < this.leukocytes.length; i++) {
+        for (var i = 0; i < this.leukocytes.length; i++) {
             
-            var leukocyte = this.leukocytes[i];
-            
-            var nearest = new Vector(Infinity, Infinity, 1);            
+            var leukocyte = this.leukocytes[i],
+                nearest = new Vector(Infinity, Infinity, 0);            
             
             for (var j = 0; j < this.particles.length; j++) {
             
-                var particle = this.particles[j];
+                var particle = this.particles[j],
+                    current = (particle.position.sub(leukocyte.position));
                 
-                var current = (particle.position.sub(leukocyte.position));
-                
-                if(current.normSquared() < nearest.normSquared()) {
+                if (current.normSquared() < nearest.normSquared()) {
                 
                     nearest = current;
                 
                 }
                 
-                if(current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
+                if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
                 
                     this.particles.splice(j, 1);
                 
@@ -42,7 +40,7 @@ Controller.prototype = {
                 
             }
             
-            for(var j = 0; j < i; j++) {
+            for (var j = 0; j < i; j++) {
             
                 this.collision(leukocyte, this.leukocytes[j]);
             
@@ -53,7 +51,7 @@ Controller.prototype = {
             );
             
                         
-            if(this.particles.length > 0) {
+            if (this.particles.length > 0) {
             
                 leukocyte.orientation = nearest;
                 leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
@@ -68,7 +66,7 @@ Controller.prototype = {
         
         var particleDistances = this.getParticleDistances();
         
-        for(var i = 0; i < this.particles.length; i++) {
+        for (var i = 0; i < this.particles.length; i++) {
             
             var particle = this.particles[i];
             
@@ -91,13 +89,13 @@ Controller.prototype = {
         
         gl.setColor(1, 0, 0, 1);
     
-        for(var i = 0; i < this.particles.length; i++) {
+        for (var i = 0; i < this.particles.length; i++) {
         
            this.particles[i].draw(gl);
         
         }
         
-        for(var i = 0; i < this.leukocytes.length; i++) {
+        for (var i = 0; i < this.leukocytes.length; i++) {
         
            this.leukocytes[i].draw(gl);
         
@@ -109,7 +107,7 @@ Controller.prototype = {
     
         var vector = entity1.position.sub(entity2.position);
         
-        if(vector.normSquared() < (entity1.entityRadius + entity2.entityRadius) *
+        if (vector.normSquared() < (entity1.entityRadius + entity2.entityRadius) *
            (entity1.entityRadius + entity2.entityRadius)) {
             
             entity1.applyForce(vector.normalize().mulSelf(entity1.moveSpeed));

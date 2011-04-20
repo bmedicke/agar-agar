@@ -199,9 +199,6 @@ WebGLRenderingContext.prototype.loadShader = function(id) {
         return null;
     }
 
-    // Walk through the source element's children, building the
-    // shader source string.
-
     var shaderSource = "",
         textNodeType = 3,
         currentChild = shaderScript.firstChild;
