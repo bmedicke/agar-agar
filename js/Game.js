@@ -5,6 +5,7 @@ var Game = function(width, height) {
 	this.controller = new Controller(this.vectorfield);
     
     this.controller.addParticles(100);
+    this.controller.addLeukocytes(50);
     
     // this.generator = new Generator();
     // this.fader = new Fader();

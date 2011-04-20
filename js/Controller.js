@@ -3,7 +3,7 @@ var Controller = function(vectorfield) {
     this.vectorfield = vectorfield;
     
     this.particles = [];
-    this.neutralizers = [];    
+    this.leukocytes = [];    
     // this.blackholes = [];
 
 };
@@ -12,28 +12,53 @@ Controller.prototype = {
 
     separationFactor : 7,
     
-    cohesionFactor : .1,
+    cohesionFactor : .5,
 
     update : function(dt) {
     
-        var distances = this.getParticleDistances();
-
-        for (var i = 0; i < this.particles.length; i++) {
+        var particleDistances = this.getParticleDistances();
+                
+        for(var i = 0; i < this.leukocytes.length; i++) {
+            
+            var leukocyte = this.leukocytes[i];
+            
+            var nearest = new Vector(Infinity, Infinity, Infinity);            
+            
+            for (var j = 0; j < this.particles.length; j++) {
+            
+                var particle = this.particles[j];
+                
+                var current = (particle.position.sub(leukocyte.position));
+                
+                if(current.normSquared() < nearest.normSquared()) {
+                
+                    nearest = current;
+                
+                }
+                
+            }
+            
+            leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
+            
+            leukocyte.update(dt);
+            
+        }
+        
+        for(var i = 0; i < this.particles.length; i++) {
             
             var particle = this.particles[i];
-            
             
             particle.applyForce(
                 this.vectorfield.getVector(particle.position)
             );
             
             
-            this.calculateSwarmBehaviour(distances[i], particle);
+            this.applySwarmBehaviour(particleDistances[i], particle);
             
             
             particle.update(dt);
-            
-        }    
+        
+        }
     
     },
     
@@ -44,10 +69,16 @@ Controller.prototype = {
            this.particles[i].draw(gl);
         
         }
+        
+        for(var i = 0; i < this.leukocytes.length; i++) {
+        
+           this.leukocytes[i].draw(gl);
+        
+        }
 
     },
     
-    calculateSwarmBehaviour : function(distances, particle) {
+    applySwarmBehaviour : function(distances, particle) {
     
         var separationCenter = new Vector(),
             separationCount = 0,
@@ -121,10 +152,30 @@ Controller.prototype = {
     addParticles : function(amount) {
     
         for(var i = 0; i < amount; i++) {
+        
             this.particles.push(new Particle(
                 new Vector(Math.random() * this.vectorfield.cols,
                            Math.random() * this.vectorfield.rows))
             );
+            
+        }
+    
+    },
+    
+    addLeukocytes : function(amount) {
+    
+        for(var i = 0; i < amount; i++) {
+        
+            var radiusVector = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0);
+            radiusVector.addSelf(radiusVector.rotate2D(Math.random() * Math.PI * 2));
+        
+            this.leukocytes.push(new Leukocyte(radiusVector));
+            
+            // this.leukocytes.push(new Leukocyte(
+                // new Vector(Math.random() * this.vectorfield.cols,
+                           // Math.random() * this.vectorfield.rows))
+            // );
+            
         }
     
     }

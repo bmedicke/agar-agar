@@ -16,12 +16,12 @@ Particle.prototype.draw = function(gl) {
 
     Entity.prototype.draw.call(this, gl);
     
-    gl.noFill();
+    // gl.noFill();
 
-    gl.setColor(0, 1, 0, 1);    
-    gl.drawCircle(this.position.x, this.position.y, this.separationRadius);
+    // gl.setColor(0, 1, 0, 1);    
+    // gl.drawCircle(this.position.x, this.position.y, this.separationRadius);
     
-    gl.setColor(0, 0, 1, 1);
-    gl.drawCircle(this.position.x, this.position.y, this.cohesionRadius);
+    // gl.setColor(0, 0, 1, 1);
+    // gl.drawCircle(this.position.x, this.position.y, this.cohesionRadius);
 
 };
