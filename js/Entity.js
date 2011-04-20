@@ -30,7 +30,6 @@ Entity.prototype = {
     
     draw : function(gl) {
 
-        gl.setColor(1, 0, 0, 1);
         gl.fill();
         gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
 

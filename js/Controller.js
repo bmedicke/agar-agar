@@ -30,6 +30,7 @@ Controller.prototype = {
             
             this.calculateSwarmBehaviour(distances[i], particle);
             
+            particle.boundaryCheck(this.vectorfield);
             
             particle.update(dt);
             
@@ -38,6 +39,8 @@ Controller.prototype = {
     },
     
     draw : function(gl) {
+        
+        gl.setColor(1, 0, 0, 1);
     
         for(var i = 0; i < this.particles.length; i++) {
         
