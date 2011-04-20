@@ -14,12 +14,12 @@ Controller.prototype = {
     
         var distances = [];
         
-        for(var i = 0; i < this.particles.length; i++) {
+        for (var i = 0; i < this.particles.length; i++) {
         
             distances[i] = [];
             var particle = this.particles[i];
             
-            for(var j = 0; j < i; j++) {
+            for (var j = 0; j < i; j++) {
             
                 distances[i][j] = distances[j][i] = (particle.position.sub(this.particles[j].position)).normSquared();
             
@@ -28,27 +28,24 @@ Controller.prototype = {
         }
         
         
-        for(var i = 0; i < this.particles.length; i++) {
+        for (var i = 0; i < this.particles.length; i++) {
             
-            var particle = this.particles[i];
+            var particle = this.particles[i],
+                separationCenter = new Vector(),
+                separationCount = 0;
             
-            particle.applyForce(
-                this.vectorfield.getVector(particle.position)
-            );
+            particle.applyForce(this.vectorfield.getVector(particle.position));
             
             
-            var separationCenter = new Vector();
-            var separationCount = 0;
+            for (var j = 0; j < this.particles.length; j++) {
             
-            for(var j = 0; j < this.particles.length; j++) {
-            
-                if(j === i) {
+                if (j === i) {
                 
                     continue;
                     
                 }
                     
-                if(distances[i][j] < particle.separationRadius * particle.separationRadius) {
+                if (distances[i][j] < particle.separationRadius * particle.separationRadius) {
                 
                     separationCenter.addSelf(this.particles[j].position);
                     separationCount++;
@@ -57,9 +54,16 @@ Controller.prototype = {
             
             }
             
-            separationCenter.divSelf(separationCount);
             
-            particle.applyForce(separationCenter.subSelf(particle.position).mulSelf(-1));
+            if (separationCount) {
+                
+                separationCenter.divSelf(separationCount).subSelf(particle.position);
+                
+                separationCenter.mulSelf(1 / particle.separationRadius * separationCenter.norm() - 1);
+                
+                particle.applyForce(separationCenter);
+                
+            }
             
             
             this.particles[i].update(dt);
