@@ -190,7 +190,9 @@ Controller.prototype = {
             
             this.applyDevourerTarget(devourer);
             
-            this.devourers[i].update(dt);
+            devourer.boundaryCheck(this.vectorfield);
+            
+            devourer.update(dt);
             
         }
         
@@ -349,6 +351,14 @@ Controller.prototype = {
                 this.collision(cytoplast, this.leukocytes[j]);
             
             }
+            
+            cytoplast.applyForce(
+                this.vectorfield.getVector(cytoplast.position)
+            );
+            
+            cytoplast.boundaryCheck(this.vectorfield);
+            
+            cytoplast.update(dt);
         
         }
     
@@ -369,6 +379,39 @@ Controller.prototype = {
             
         }
         
+    },
+    
+    reset : function() {
+        
+        this.particles = [];
+        this.cytoplasts = [];
+        this.leukocytes = [];    
+        this.devourers = [];
+    
+    },
+    
+    addElement : function(type, position) {
+            
+        switch(type) {
+        
+            case "Particle":
+                this.particles.push(new Particle(position));
+                break;
+                
+            case "Devourer":
+                this.devourers.push(new Devourer(position));
+                break;
+                
+            case "Cytoplast":
+                this.cytoplasts.push(new Cytoplast(position));
+                break;
+                
+            case "Leukocyte":
+                addLeukocytes(1);
+                break;
+                
+        }
+    
     },
     
     addParticles : function(amount) {
