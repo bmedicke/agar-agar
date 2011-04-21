@@ -200,9 +200,10 @@ Controller.prototype = {
     
     updateParticles : function(dt) {
         
-        var particleDistances = this.getParticleDistances();
+        var particleDistances = this.getParticleDistances(),
+            particleCount = this.particles.length;
         
-        for (var i = 0; i < this.particles.length; i++) {
+        for (var i = 0; i < particleCount; i++) {
             
             var particle = this.particles[i];
             
@@ -210,8 +211,7 @@ Controller.prototype = {
                 this.vectorfield.getVector(particle.position)
             );
             
-            
-            this.applySwarmBehaviour(particleDistances[i], particle);
+            this.applySwarmBehaviourAndReproduction(particleDistances[i], particle, particleCount);
             
             particle.boundaryCheck(this.vectorfield);
             
@@ -221,14 +221,14 @@ Controller.prototype = {
         
     },
     
-    applySwarmBehaviour : function(distances, particle) {
+    applySwarmBehaviourAndReproduction : function(distances, particle, particleCount) {
     
         var separationCenter = new Vector(),
             separationCount = 0,
             cohesionCenter = new Vector(),
             cohesionCount = 0;
     
-        for (var j = 0; j < this.particles.length; j++) {
+        for (var j = 0; j < particleCount; j++) {
                 
             if (typeof distances[j] === 'undefined') {
             
@@ -245,6 +245,35 @@ Controller.prototype = {
                 
                 cohesionCenter.addSelf(this.particles[j].position);
                 cohesionCount++;
+                
+                if (particleCount <= particle.maxCount &&
+                    particle.reproductionPotency && 
+                    this.particles[j].reproductionPotency && 
+                    distances[j] < particle.reproductionRadius * particle.reproductionRadius) {
+                    
+                    for (var k = 0; k < particleCount; k++) {
+                        
+                        if (this.particles[k].reproductionPotency &&
+                            j != k &&
+                            typeof distances[j] !== 'undefined' &&
+                            this.particles[j].position.sub(this.particles[k].position).normSquared() < 
+                                particle.reproductionRadius * particle.reproductionRadius) {
+                           
+                            var averagePosition = particle.position.add(this.particles[j].position.add(this.particles[k].position)).divSelf(3);
+                            
+                            this.particles.push(new Particle(averagePosition));
+                            
+                            particle.resetReproduction();
+                            this.particles[j].resetReproduction();
+                            this.particles[k].resetReproduction();
+                            
+                            break;
+                            
+                        }
+                        
+                    }
+                    
+                }
                 
             }
         
