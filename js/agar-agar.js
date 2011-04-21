@@ -39,8 +39,9 @@ function run() {
 
     requestAnimationFrame(run, canvas);
     
-    var t = (new Date()).getTime();
-    var dt = t-time;
+    var t = (new Date()).getTime(),
+        dt = t - time;
+        
     time = t;
     
     if (!game.isPaused) {
