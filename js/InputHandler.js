@@ -166,7 +166,15 @@ InputHandler.prototype = {
             
             this.touchStop();
             
-        } 
+        } else if (event.keyCode == 82) {
+            
+            game.resetLevel();
+            
+        } else if (event.keyCode == 78) {
+
+            game.resetLevel(true);
+
+        }
         
     },
     

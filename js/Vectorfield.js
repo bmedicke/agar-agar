@@ -74,6 +74,12 @@ Vectorfield.prototype = {
         
     },
     
+    reset : function() {
+        
+        this.vectors = {};
+        
+    },
+    
     getCell : function(position) {
         
         return {x: Math.floor(position.x), y: Math.floor(position.y)};

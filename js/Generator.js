@@ -1,26 +1,31 @@
 var Generator = function() {
     
-    this.level.particles = [];
-    this.level.cytoplasts = [];
-    this.level.devourers = [];
-    
-    this.level.leukoRate = 0;
-    this.level.leukoAmount = 0;
+    this.level = {};
 
 };
 
 Generator.prototype = {
 
-    level : {},
     particleCount : 200,
     devourerCount : 1,
     cytoplastCount : 1,
     
+    reset : function() {
+        
+        this.level = {
+            particles : [],
+            cytoplasts : [],
+            devourers : [],
+
+            leukoRate : 0,
+            leukoAmount : 0
+        };
+        
+    },
+    
     generate : function(width, height) {
         
-        this.level.particles = [];
-        this.level.cytoplasts = [];
-        this.level.devourers = [];
+        this.reset();
         
         //TODO: make this dependent from level of difficulty
         this.level.leukoRate = 50000;
@@ -70,13 +75,6 @@ Generator.prototype = {
             controller.addElement("Cytoplast", new Vector(this.level.cytoplasts[i], this.level.cytoplasts[i+1]));
         
         }
-    
-    },
-    
-    resetLevel : function(controller) {
-    
-        controller.reset();
-        this.buildLevel(controller);
     
     }
 

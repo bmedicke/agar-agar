@@ -16,8 +16,7 @@ Game.prototype = {
 
     initialize : function() {
     
-        this.generator.generate(this.vectorfield.cols, this.vectorfield.rows);
-        this.generator.buildLevel(this.controller);
+        this.resetLevel(true);
     
     },
     
@@ -68,6 +67,21 @@ Game.prototype = {
         
         this.isPaused = !this.isPaused;
         
+    },
+    
+    resetLevel : function(generateNewLevel) {
+    
+        this.controller.reset();
+        this.vectorfield.reset();
+        
+        if (generateNewLevel) {
+            
+             this.generator.generate(this.vectorfield.cols, this.vectorfield.rows);
+            
+        }
+        
+        this.generator.buildLevel(this.controller);
+    
     }
     
 };
