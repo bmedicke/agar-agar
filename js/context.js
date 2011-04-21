@@ -50,10 +50,7 @@ WebGLRenderingContext.prototype.translate = function(x, y) {
 
 WebGLRenderingContext.prototype.setColor = function(r, g, b, a) {
     
-    this.uniform4fv(
-        this.colorUniformLocation, 
-        new Float32Array([ r, g, b, a ])
-    );
+    this.defaultShader.passColor(gl, [ r, g, b, a ]);
 
 };
 
@@ -91,8 +88,7 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
     this.translate(x, y);
     this.scale(width, height);
 
-    this.bindBuffer(this.ARRAY_BUFFER, this.rectBuffer);
-    this.passVerticesToShader(this.defaultShader);
+    this.defaultShader.passVertices(this, this.rectBuffer);
 
     var drawMode = this.isFilled ? this.TRIANGLE_FAN : this.LINE_LOOP;
     this.drawArrays(drawMode, 0, 4);
@@ -111,7 +107,7 @@ WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
     this.bindBuffer(this.ARRAY_BUFFER, this.vertexBuffer);
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
     
-    this.passVerticesToShader(this.defaultShader);
+    this.defaultShader.passVertices(this, this.vertexBuffer);
 
     this.drawArrays(this.LINE_STRIP, 0, 2);
     
@@ -124,8 +120,7 @@ WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
     this.translate(x, y);
     this.scale(radius, radius);
 
-    this.bindBuffer(this.ARRAY_BUFFER, this.circleBuffer);
-    this.passVerticesToShader(this.defaultShader);
+    this.defaultShader.passVertices(this, this.circleBuffer);
     
     var drawMode = this.isFilled ? this.TRIANGLE_FAN : this.LINE_LOOP;
     this.drawArrays(drawMode, 0, this.circleResolution);
@@ -137,6 +132,7 @@ WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
 WebGLRenderingContext.prototype.initBuffers = function() {
 
     this.vertexBuffer = this.createBuffer();
+    this.vertexBuffer.itemSize = 3;
     
     
     var rectVertices = [
@@ -147,6 +143,7 @@ WebGLRenderingContext.prototype.initBuffers = function() {
     ];
     
     this.rectBuffer = this.createBuffer();
+    this.rectBuffer.itemSize = 3;
         
     this.bindBuffer(this.ARRAY_BUFFER, this.rectBuffer);
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(rectVertices), this.STATIC_DRAW);
@@ -166,129 +163,17 @@ WebGLRenderingContext.prototype.initBuffers = function() {
     }
     
     this.circleBuffer = this.createBuffer();
+    this.circleBuffer.itemSize = 3;
     
     this.bindBuffer(this.ARRAY_BUFFER, this.circleBuffer);
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(circleVertices), this.STATIC_DRAW);
     
-    var positionAttribLocation = 0;
-    this.enableVertexAttribArray(positionAttribLocation);
-    
 };
 
 WebGLRenderingContext.prototype.setupDefaultShader = function() {
-
-    var vertexShader = this.loadShader("vertex-shader"),
-        fragmentShader = this.loadShader("fragment-shader");
     
-    this.defaultShader = this.linkShaderProgram(vertexShader, fragmentShader);
-    
-    this.useProgram(this.defaultShader);
-    
-    this.matrixUniformLocation = this.getUniformLocation(this.defaultShader, "matrix");
-    this.colorUniformLocation = this.getUniformLocation(this.defaultShader, "color");
+    this.defaultShader = new Shader(this, "vertex-shader", "fragment-shader");
     
     this.setColor(0, 0, 0, 1.0);
-    
-};
-
-WebGLRenderingContext.prototype.loadShader = function(id) {
-    
-    var shaderScript = document.getElementById(id);
-
-    if (!shaderScript) {
-        return null;
-    }
-
-    var shaderSource = "",
-        textNodeType = 3,
-        currentChild = shaderScript.firstChild;
-
-    while (currentChild) {
-        
-        if (currentChild.nodeType == textNodeType) {
-            
-            shaderSource += currentChild.textContent;
-            
-        }
-        
-        currentChild = currentChild.nextSibling;
-    }
-
-
-    var shader;
-
-    if (shaderScript.type == "x-shader/x-fragment") {
-
-        shader = this.createShader(this.FRAGMENT_SHADER);
-
-    } else if (shaderScript.type == "x-shader/x-vertex") {
-
-        shader = this.createShader(this.VERTEX_SHADER);
-
-    } else {
-
-        return null;
-
-    }
-
-
-    this.shaderSource(shader, shaderSource);
-
-    this.compileShader(shader);
-
-    if (!this.getShaderParameter(shader, this.COMPILE_STATUS)) {
-        
-        log("An error occurred compiling the shaders: " + this.getShaderInfoLog(shader));
-        return null;
-        
-    }
-
-    return shader;
-
-};
-
-WebGLRenderingContext.prototype.linkShaderProgram = function(vertexShader, fragmentShader) {
-
-    var shaderProgram = this.createProgram();
-
-    this.attachShader(shaderProgram, vertexShader);
-    this.attachShader(shaderProgram, fragmentShader);
-    
-    this.linkProgram(shaderProgram);
-
-
-    if (!this.getProgramParameter(shaderProgram, this.LINK_STATUS)) {
-
-        log("Unable to initialize the shader program.");
-
-    }
-    
-    return shaderProgram;
-    
-};
-
-WebGLRenderingContext.prototype.passVerticesToShader = function(shader) {
-    
-    var positionAttribLocation = 0;
-    this.vertexAttribPointer(positionAttribLocation, 3, this.FLOAT, false, 0, 0);
-    
-    this.passMatrixToShader(this.defaultShader);
-    
-};
-
-
-WebGLRenderingContext.prototype.passMatrixToShader = function(shader) {
-    
-    if (this.matrixChanged) {
-
-        this.matrixChanged = false;
-
-        this.uniformMatrix4fv(
-            this.matrixUniformLocation, 
-            false, 
-            new Float32Array(this.matrix.transpose().flatten4D())
-        );
-    
-    }
     
 };
