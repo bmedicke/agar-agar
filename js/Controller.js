@@ -17,89 +17,9 @@ Controller.prototype = {
 
     update : function(dt) {
                 
-        for (var i = 0; i < this.leukocytes.length; i++) {
-            
-            var leukocyte = this.leukocytes[i],
-                nearest = new Vector(Infinity, Infinity, 0);            
-            
-            for (var j = 0; j < this.particles.length; j++) {
-            
-                var particle = this.particles[j],
-                    current = (particle.position.sub(leukocyte.position));
-                
-                if (current.normSquared() < nearest.normSquared()) {
-                
-                    nearest = current;
-                
-                }
-                
-                if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
-                
-                    this.particles.splice(j, 1);
-                
-                }
-                
-            }
-            
-            for (var j = 0; j < i; j++) {
-            
-                this.collision(leukocyte, this.leukocytes[j]);
-            
-            }
-            
-            leukocyte.applyForce(
-                this.vectorfield.getVector(leukocyte.position)
-            );
-            
-                        
-            if (this.particles.length > 0) {
-            
-                leukocyte.orientation = nearest;
-                leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
-
-            }
-            
-            leukocyte.boundaryCheck(this.vectorfield);
-            
-            leukocyte.update(dt);
-            
-        }
+        this.updateLeukocytes(dt);
         
-        for (var i = 0; i < this.devourers.length; i++) {
-            
-            var devourer = this.devourers[i];
-            
-            for (var j = 0; j < this.particles.length; j++) {
-                
-                var particle = this.particles[j];
-                
-                var distance = particle.position.sub(devourer.position).normSquared();
-                
-                if (distance < devourer.entityRadius * devourer.entityRadius) {
-                    
-                    this.particles.splice(j, 1);
-                    
-                }
-                
-            }
-            
-            for (var j = 0; j < this.leukocytes.length; j++) {
-                
-                var leukocyte = this.leukocytes[j];
-                
-                var distance = leukocyte.position.sub(devourer.position).normSquared();
-                
-                if (distance < devourer.entityRadius * devourer.entityRadius) {
-                    
-                    this.leukocytes.splice(j, 1);
-                    
-                }
-                
-            }
-            
-            devourer.update(dt);
-            
-        }
+        this.updateDevourers(dt);
     
         this.updateCytoplasts(dt);
         
@@ -152,7 +72,98 @@ Controller.prototype = {
     
     },
     
-    updateParticles: function(dt) {
+    killAndSearch : function(leukocyte) {
+        
+        nearest = new Vector(Infinity, Infinity, 0);            
+    
+        for (var j = 0; j < this.particles.length; j++) {
+    
+            var particle = this.particles[j],
+                current = (particle.position.sub(leukocyte.position));
+        
+            if (current.normSquared() < nearest.normSquared()) {
+        
+                nearest = current;
+        
+            }
+        
+            if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
+        
+                this.particles.splice(j, 1);
+        
+            }
+        
+        }
+        
+        return nearest;
+        
+    },
+    
+    updateLeukocytes : function(dt) {
+        
+        for (var i = 0; i < this.leukocytes.length; i++) {
+            
+            var leukocyte = this.leukocytes[i],
+                nearest = this.killAndSearch(leukocyte);                
+            
+            for (var j = 0; j < i; j++) {
+            
+                this.collision(leukocyte, this.leukocytes[j]);
+            
+            }
+            
+            leukocyte.applyForce(
+                this.vectorfield.getVector(leukocyte.position)
+            );
+            
+                        
+            if (this.particles.length > 0) {
+            
+                leukocyte.orientation = nearest;
+                leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
+
+            }
+            
+            leukocyte.boundaryCheck(this.vectorfield);
+            
+            leukocyte.update(dt);
+            
+        }
+        
+    },
+    
+    devourerCollision : function(devourer, entities) {
+        
+        for (var j = 0; j < entities.length; j++) {
+            
+            var entity = entities[j];
+            
+            var distance = entity.position.sub(devourer.position).normSquared();
+            
+            if (distance < devourer.entityRadius * devourer.entityRadius) {
+                
+                entities.splice(j, 1);
+                
+            }
+            
+        }
+    
+    },
+    
+    updateDevourers : function(dt) {
+        
+        for (var i = 0; i < this.devourers.length; i++) {
+                            
+            this.devourerCollision(this.devourers[i], this.particles);
+            this.devourerCollision(this.devourers[i], this.particles);
+            
+            this.devourers[i].update(dt);
+            
+        }
+        
+    },
+    
+    updateParticles : function(dt) {
         
         var particleDistances = this.getParticleDistances();
         
