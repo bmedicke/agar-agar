@@ -14,9 +14,10 @@ Vectorfield.prototype = {
     
     maxForce : 1,
     
-    forceRadius : 5,
-    
     dampCoefficient : 0.001,
+    forceCoefficient : 0.005,
+    
+    minLength : 0.001,
     
     update : function(dt) {
         
@@ -26,7 +27,7 @@ Vectorfield.prototype = {
                 
                 this.vectors[cellID].mulSelf(1 - this.dampCoefficient * dt);
                 
-                if (this.vectors[cellID].normSquared() < 0.01) {
+                if (this.vectors[cellID].normSquared() < this.minLength) {
                 
                     delete this.vectors[cellID];
                 
@@ -93,28 +94,27 @@ Vectorfield.prototype = {
     
     setVector : function(cellID, vector) {
         
+        this.vectors[cellID] = (this.vectors[cellID] || new Vector()).copy(vector).clamp(this.maxForce);
+        
+    },
+    
+    addVector : function(cellID, vector) {
+        
         this.vectors[cellID] = (this.vectors[cellID] || new Vector()).addSelf(vector).clamp(this.maxForce);
         
     },
     
-    applyForceField : function(position, point, angle) {
+    applyForceField : function(dt, radius, position, setHard, point, angle) {
         
         point = point || 0;
         angle = angle || 0;
                 
         var cell = this.getCell(position),
-            left = cell.x - this.forceRadius,
-            right = cell.x + this.forceRadius,
-            top = cell.y - this.forceRadius,
-            bottom = cell.y + this.forceRadius,
+            left = cell.x - radius < 0 ? 0 : cell.x - radius,
+            right = cell.x + radius > this.cols ? this.cols : cell.x + radius,
+            top = cell.y - radius < 0 ? 0 : cell.y - radius,
+            bottom = cell.y + radius > this.rows ? this.rows : cell.y + radius,
             cellVector = new Vector();
-            
-                    
-        if (right > this.cols) right = this.cols;
-        else if (left < 0) left = 0;
-        
-        if (bottom > this.rows) bottom = this.rows;
-        else if (top < 0) top = 0;
         
         for (var i = left; i < right; i++) {
             
@@ -122,7 +122,7 @@ Vectorfield.prototype = {
                 
                 cellVector.set(i + .5, j + .5, 0);
                 
-                if (cellVector.sub(position).normSquared() < this.forceRadius * this.forceRadius) {
+                if (cellVector.sub(position).normSquared() < radius * radius) {
                     
                     if (point) {
                         
@@ -139,7 +139,15 @@ Vectorfield.prototype = {
                         
                     }
                     
-                    this.setVector(i + j * this.cols, cellVector);
+                    if (setHard) {
+                    
+                        this.setVector(i + j * this.cols, cellVector);
+                        
+                    } else {
+                        
+                        this.addVector(i + j * this.cols, cellVector.mulSelf(this.forceCoefficient * dt));
+                        
+                    }
                     
                 }
                 
