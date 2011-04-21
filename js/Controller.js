@@ -152,7 +152,11 @@ Controller.prototype = {
     
     applyDevourerTarget : function(devourer) {
         
-        devourer.applyForce(this.cytoplasts[0].position.sub(devourer.position).normalizeSelf());
+        if(this.cytoplasts.length > 0) {
+        
+            devourer.applyForce(this.cytoplasts[0].position.sub(devourer.position).normalizeSelf());
+        
+        }
     
     },
     
@@ -174,6 +178,25 @@ Controller.prototype = {
             
             this.devourerCollision(devourer, this.particles);
             this.devourerCollision(devourer, this.leukocytes);
+            
+            for(var j = 0; j < i; j++) {
+            
+                this.collision(devourer, this.devourers[j]);
+                
+            }
+            
+            for(var j = 0; j < this.cytoplasts.length; j++) {
+            
+                var cytoplast = this.cytoplasts[j];
+            
+                if(cytoplast.position.sub(devourer.position).normSquared() <
+                   (cytoplast.entityRadius + devourer.entityRadius) * (cytoplast.entityRadius + devourer.entityRadius)) {
+                   
+                    this.cytoplasts.splice(j, 1);
+                
+                }
+            
+            }
             
             this.applyDevourerTarget(devourer);
             
@@ -278,6 +301,37 @@ Controller.prototype = {
     },
     
     updateCytoplasts : function(dt) {
+    
+        for(var i = 0; i < this.cytoplasts.length; i++) {
+        
+            var cytoplast = this.cytoplasts[i];
+            
+            for(var j = 0; j < this.particles.length; j++) {
+            
+                if(this.particles[j].position.sub(cytoplast.position).normSquared() <
+                   cytoplast.entityRadius * cytoplast.entityRadius) {
+                
+                    this.particles.splice(j, 1);
+                    cytoplast.currentFill++;
+                
+                }
+                
+                if(cytoplast.currentFill >= cytoplast.maxFill) {
+                
+                    //do stuff
+                    log("cytoplast full");
+                
+                }
+            
+            }
+            
+            for(var j = 0; j < this.leukocytes.length; j++) {
+            
+                this.collision(cytoplast, this.leukocytes[j]);
+            
+            }
+        
+        }
     
     },
     
