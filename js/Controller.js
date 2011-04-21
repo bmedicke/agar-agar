@@ -370,10 +370,10 @@ Controller.prototype = {
             
             this.vectorfield.applyForceField(
                 dt,
+                Devourer.prototype.force,
                 Devourer.prototype.forceRadius,
                 this.devourers[i].position, 
-                true,
-                0, 
+                false,
                 - Math.PI / 4
             );
             

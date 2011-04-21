@@ -44,6 +44,8 @@ function run() {
         
     time = t;
     
+    log(dt);
+    
     if (!game.isPaused) {
         
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)

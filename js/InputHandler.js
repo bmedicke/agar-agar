@@ -41,7 +41,9 @@ var InputHandler = function(vectorfield) {
 
 InputHandler.prototype = {
     
-    forceRadius : 3,
+    force : 0.01,
+    
+    forceRadius : 4,
     
     update : function(dt) {
         
@@ -49,7 +51,13 @@ InputHandler.prototype = {
             
             if (this.touchStarted) {
                 
-                this.vectorfield.applyForceField(dt, this.forceRadius, this.touchPosition, false);
+                this.vectorfield.applyForceField(
+                    dt, 
+                    InputHandler.prototype.force,
+                    InputHandler.prototype.forceRadius, 
+                    this.touchPosition, 
+                    true
+                );
                 
             } else {
                 
@@ -58,11 +66,13 @@ InputHandler.prototype = {
                 do {
                     
                     this.vectorfield.applyForceField(
-                        dt,
-                        this.forceRadius,
-                        this.oldTouchPosition,
-                        false, 
-                        this.oldTouchPosition.add(vector)
+                        dt, 
+                        InputHandler.prototype.force,
+                        InputHandler.prototype.forceRadius,
+                        this.oldTouchPosition, 
+                        true,
+                        0,
+                        this.touchPosition
                     );
                     
                 } while (this.oldTouchPosition.addSelf(vector.mul(.25)).sub(this.touchPosition).normSquared() > vector.mul(.25).normSquared());
