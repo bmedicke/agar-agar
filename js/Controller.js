@@ -36,6 +36,12 @@ Controller.prototype = {
         
         }
         
+        for (var i = 0; i < this.devourers.length; i++) {
+        
+           this.devourers[i].draw(gl);
+        
+        }
+        
         gl.setColor(1, 0, 0, 1);
     
         for (var i = 0; i < this.particles.length; i++) {
@@ -47,12 +53,6 @@ Controller.prototype = {
         for (var i = 0; i < this.leukocytes.length; i++) {
         
            this.leukocytes[i].draw(gl);
-        
-        }
-        
-        for (var i = 0; i < this.devourers.length; i++) {
-        
-           this.devourers[i].draw(gl);
         
         }
 
@@ -150,12 +150,32 @@ Controller.prototype = {
     
     },
     
+    applyDevourerTarget : function(devourer) {
+        
+        devourer.applyForce(this.cytoplasts[0].position.sub(devourer.position).normalizeSelf());
+    
+    },
+    
+    applyDevourerVortices : function(devourer) {
+    
+        for (var i = 0; i < this.devourers.length; i++) {
+
+            this.vectorfield.applyForceField(this.devourers[i].position, 0, - Math.PI / 4);
+        
+        }
+        
+    },
+    
     updateDevourers : function(dt) {
         
         for (var i = 0; i < this.devourers.length; i++) {
-                            
-            this.devourerCollision(this.devourers[i], this.particles);
-            this.devourerCollision(this.devourers[i], this.particles);
+        
+            var devourer = this.devourers[i];
+            
+            this.devourerCollision(devourer, this.particles);
+            this.devourerCollision(devourer, this.leukocytes);
+            
+            this.applyDevourerTarget(devourer);
             
             this.devourers[i].update(dt);
             
@@ -259,16 +279,6 @@ Controller.prototype = {
     
     updateCytoplasts : function(dt) {
     
-    },
-
-    applyDevourerVortices : function() {
-        
-        for (var i = 0; i < this.devourers.length; i++) {
-            
-            this.vectorfield.applyForceField(this.devourers[i].position, 0, - Math.PI / 4);
-            
-        }
-        
     },
     
     addParticles : function(amount) {
