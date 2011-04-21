@@ -73,14 +73,14 @@ Controller.prototype = {
             
             if(entropyfier.timer > entropyfier.chargeTime) {
             
-                // this.vectorfield.applyForceField(
-                    // dt,
-                    // Entropyfier.prototype.forceRadius,
-                    // entropyfier.position, 
-                    // true,
-                    // 0, 
-                    // - Math.PI / 4
-                // );
+                this.vectorfield.applyForceField(
+                    dt,
+                    Entropyfier.prototype.force,
+                    Entropyfier.prototype.entityRadius,
+                    entropyfier.position,
+                    true,
+                    Math.PI / 2
+                );
 
             }
             
@@ -422,10 +422,10 @@ Controller.prototype = {
             
             this.vectorfield.applyForceField(
                 dt,
+                Devourer.prototype.force,
                 Devourer.prototype.forceRadius,
                 this.devourers[i].position, 
-                true,
-                0, 
+                false,
                 - Math.PI / 4
             );
             

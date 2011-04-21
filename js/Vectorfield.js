@@ -4,7 +4,8 @@ var Vectorfield = function(width, height) {
     this.cols = Math.floor(width / this.cellSize);
     this.rows = Math.floor(height / this.cellSize);
     
-    this.vectors = {};
+    this.dynamicVectors = {};
+    this.staticVectors = {};
     
 };
 
@@ -21,15 +22,17 @@ Vectorfield.prototype = {
     
     update : function(dt) {
         
-        for (var cellID in this.vectors) {
+        this.staticVectors = {};
+        
+        for (var cellID in this.dynamicVectors) {
             
-            if (this.vectors.hasOwnProperty(cellID)) {
+            if (this.dynamicVectors.hasOwnProperty(cellID)) {
                 
-                this.vectors[cellID].mulSelf(1 - this.dampCoefficient * dt);
+                this.dynamicVectors[cellID].mulSelf(1 - this.dampCoefficient * dt);
                 
-                if (this.vectors[cellID].normSquared() < this.minLength) {
+                if (this.dynamicVectors[cellID].normSquared() < this.minLength) {
                 
-                    delete this.vectors[cellID];
+                    delete this.dynamicVectors[cellID];
                 
                 }
                 
@@ -54,19 +57,36 @@ Vectorfield.prototype = {
             
         }
         
+        
         gl.setColor(0.8, 0.4, 0.4, 1.0);
+        
+        this.drawVectors(this.dynamicVectors);
+        
+        gl.setColor(0.4, 0.8, 0.4, 1.0);
+        
+        this.drawVectors(this.staticVectors);
+        
+    },
+    
+    reset : function() {
+        
+        this.dynamicVectors = {};
+        
+    },
+    
+    drawVectors : function(vectors) {
         
         var cell = new Vector();
         
-        for (var cellID in this.vectors) {
+        for (var cellID in vectors) {
             
-            if (this.vectors.hasOwnProperty(cellID)) {
+            if (vectors.hasOwnProperty(cellID)) {
                 
                 cell.set(cellID % this.cols + .5, Math.floor(cellID / this.cols) + .5, 0);
             
                 gl.drawLine(
                     cell.x, cell.y,
-                    cell.x + this.vectors[cellID].x, cell.y + this.vectors[cellID].y
+                    cell.x + vectors[cellID].x, cell.y + vectors[cellID].y
                 );
                 
             }
@@ -88,25 +108,27 @@ Vectorfield.prototype = {
     
     getVector : function(position) {
         
-        return this.vectors[this.getCellID(position)] || new Vector();
+        var cellID = this.getCellID(position);
+        
+        return (this.dynamicVectors[cellID] || new Vector()).add(this.staticVectors[cellID] || new Vector());
         
     },
     
-    setVector : function(cellID, vector) {
+    setDynamicVector : function(cellID, vector) {
         
-        this.vectors[cellID] = (this.vectors[cellID] || new Vector()).copy(vector).clamp(this.maxForce);
-        
-    },
-    
-    addVector : function(cellID, vector) {
-        
-        this.vectors[cellID] = (this.vectors[cellID] || new Vector()).addSelf(vector).clamp(this.maxForce);
+        this.dynamicVectors[cellID] = (this.dynamicVectors[cellID] || new Vector()).addSelf(vector);
         
     },
     
-    applyForceField : function(dt, radius, position, setHard, point, angle) {
+    setStaticVector : function(cellID, vector) {
         
-        point = point || 0;
+        this.staticVectors[cellID] = (this.staticVectors[cellID] || new Vector()).addSelf(vector);
+        
+    },
+    
+    applyForceField : function(dt, force, radius, position, isDynamic, angle, point) {
+        
+        point = point || position;
         angle = angle || 0;
                 
         var cell = this.getCell(position),
@@ -114,6 +136,7 @@ Vectorfield.prototype = {
             right = cell.x + radius > this.cols ? this.cols : cell.x + radius,
             top = cell.y - radius < 0 ? 0 : cell.y - radius,
             bottom = cell.y + radius > this.rows ? this.rows : cell.y + radius,
+            setVector = isDynamic ? this.setDynamicVector : this.setStaticVector,
             cellVector = new Vector();
         
         for (var i = left; i < right; i++) {
@@ -124,30 +147,10 @@ Vectorfield.prototype = {
                 
                 if (cellVector.sub(position).normSquared() < radius * radius) {
                     
-                    if (point) {
-                        
-                        var distance = cellVector.sub(position).normSquared();
-                        cellVector.subSelf(point).divSelf(-distance);
-                        
-                    } else if (angle) {
-                        
-                        cellVector.subSelf(position).divSelf(-cellVector.normSquared()).rotate2DSelf(angle);
-                        
-                    } else {
-                        
-                        cellVector.subSelf(position).divSelf(-cellVector.normSquared());
-                        
-                    }
+                    var distance = cellVector.sub(position).norm();
+                    cellVector.subSelf(point).normalizeSelf().rotate2DSelf(angle).mulSelf(-force * (1 - distance / radius) * dt);
                     
-                    if (setHard) {
-                    
-                        this.setVector(i + j * this.cols, cellVector);
-                        
-                    } else {
-                        
-                        this.addVector(i + j * this.cols, cellVector.mulSelf(this.forceCoefficient * dt));
-                        
-                    }
+                    setVector.call(this, i + j * this.cols, cellVector);
                     
                 }
                 

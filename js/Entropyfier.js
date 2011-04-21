@@ -7,6 +7,7 @@ var Entropyfier = function(position) {
 
 Entropyfier.prototype.chargeTime = 7000;
 Entropyfier.prototype.forceTime = 2000;
+Entropyfier.prototype.force = 0.1;
 Entropyfier.prototype.entityRadius = 2.5;
 
 Entropyfier.prototype.update = function(dt) {
