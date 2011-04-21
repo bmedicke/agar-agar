@@ -6,6 +6,9 @@ var Generator = function() {
     
     this.level.leukoRate = 0;
     this.level.leukoAmount = 0;
+    
+    this.level.entropyRate = 0;
+    this.level.entropyAmount = 0;
 
 };
 
@@ -23,8 +26,11 @@ Generator.prototype = {
         this.level.devourers = [];
         
         //TODO: make this dependent from level of difficulty
-        this.level.leukoRate = 50000;
+        this.level.leukoRate = 25000;
         this.level.leukoAmount = 10;
+        
+        this.level.entropyRate = 5000;
+        this.level.entropyAmount = 2;
     
         for(var i = 0; i < this.particleCount; i++) {
         

@@ -9,6 +9,7 @@ var Game = function(width, height) {
     
     this.isPaused = false;
     this.leukoTime = 0;
+    this.entropyTime = 0;
     
 };
 
@@ -35,12 +36,21 @@ Game.prototype = {
             this.controller.update(dt);
             
             this.leukoTime += dt;
+            this.entropyTime += dt;
         
             if(this.leukoTime > this.generator.level.leukoRate) {
 
                 this.controller.addLeukocytes(this.generator.level.leukoAmount);
                 
                 this.leukoTime = 0;
+            
+            }
+            
+            if(this.entropyTime > this.generator.level.entropyRate) {
+
+                this.controller.addEntropyfiers(this.generator.level.entropyAmount);
+                
+                this.entropyTime = 0;
             
             }
         //     

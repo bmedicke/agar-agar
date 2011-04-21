@@ -6,6 +6,7 @@ var Controller = function(vectorfield) {
     this.cytoplasts = [];
     this.leukocytes = [];    
     this.devourers = [];
+    this.entropyfiers = [];
 
 };
 
@@ -16,6 +17,8 @@ Controller.prototype = {
     cohesionFactor : .5,
 
     update : function(dt) {
+    
+        this.updateEntropyfiers(dt);
                 
         this.updateLeukocytes(dt);
         
@@ -27,8 +30,12 @@ Controller.prototype = {
     },
     
     draw : function(gl) {
+    
+        for(var i = 0; i < this.entropyfiers.length; i++) {
+            
+            this.entropyfiers[i].draw(gl);
         
-        gl.setColor(1, 1, 0.6, 1);
+        }
         
         for (var i = 0; i < this.cytoplasts.length; i++) {
         
@@ -56,6 +63,37 @@ Controller.prototype = {
         
         }
 
+    },
+    
+    updateEntropyfiers : function(dt) {
+    
+        for(var i = 0; i < this.entropyfiers.length; i++) {
+        
+            var entropyfier = this.entropyfiers[i];
+            
+            if(entropyfier.timer > entropyfier.chargeTime) {
+            
+                // this.vectorfield.applyForceField(
+                    // dt,
+                    // Entropyfier.prototype.forceRadius,
+                    // entropyfier.position, 
+                    // true,
+                    // 0, 
+                    // - Math.PI / 4
+                // );
+
+            }
+            
+            entropyfier.update(dt);
+            
+            if(entropyfier.timer > entropyfier.chargeTime + entropyfier.forceTime) {
+            
+                this.entropyfiers.splice(i, 1);
+            
+            }
+        
+        }
+    
     },
     
     collision : function(entity1, entity2) {
@@ -352,9 +390,23 @@ Controller.prototype = {
             
             }
             
-            cytoplast.applyForce(
-                this.vectorfield.getVector(cytoplast.position)
+            var forceVector = this.vectorfield.getVector(cytoplast.position);
+            var offset = Cytoplast.prototype.entityRadius;
+            
+            forceVector.addSelf(this.vectorfield.getVector(
+                new Vector(cytoplast.position.x - offset, cytoplast.position.y))
             );
+            forceVector.addSelf(this.vectorfield.getVector(
+                new Vector(cytoplast.position.x, cytoplast.position.y + offset))
+            );
+            forceVector.addSelf(this.vectorfield.getVector(
+                new Vector(cytoplast.position.x + offset, cytoplast.position.y))
+            );
+            forceVector.addSelf(this.vectorfield.getVector(
+                new Vector(cytoplast.position.x, cytoplast.position.y - offset))
+            );
+            
+            cytoplast.applyForce(forceVector.divSelf(5));
             
             cytoplast.boundaryCheck(this.vectorfield);
             
@@ -408,6 +460,10 @@ Controller.prototype = {
                 
             case "Leukocyte":
                 addLeukocytes(1);
+                break;
+                
+            case "Entropyfier":
+                addEntropyfiers(1);
                 break;
                 
         }
@@ -467,6 +523,19 @@ Controller.prototype = {
             
         }
         
+    },
+    
+    addEntropyfiers : function(amount) {
+    
+        for (var i = 0; i < amount; i++) {
+        
+            this.entropyfiers.push(new Entropyfier(
+                new Vector(Math.random() * this.vectorfield.cols,
+                           Math.random() * this.vectorfield.rows))
+                );
+            
+        }
+    
     }
     
 };
