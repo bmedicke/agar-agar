@@ -6,6 +6,7 @@ var Game = function(width, height) {
     
     this.controller.addParticles(20);
     this.controller.addLeukocytes(20);
+    this.controller.addCytoplasts(1);
     
     // this.generator = new Generator();
     // this.fader = new Fader();

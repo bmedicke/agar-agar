@@ -3,8 +3,8 @@ var Controller = function(vectorfield) {
     this.vectorfield = vectorfield;
     
     this.particles = [];
-    this.leukocytes = [];    
-    // this.blackholes = [];
+    this.leukocytes = [];
+    this.cytoplasts = [];
 
 };
 
@@ -64,28 +64,21 @@ Controller.prototype = {
             
         }
         
-        var particleDistances = this.getParticleDistances();
+        this.updateCytoplast(dt);
         
-        for (var i = 0; i < this.particles.length; i++) {
-            
-            var particle = this.particles[i];
-            
-            particle.applyForce(
-                this.vectorfield.getVector(particle.position)
-            );
-            
-            
-            this.applySwarmBehaviour(particleDistances[i], particle);
-            
-            particle.boundaryCheck(this.vectorfield);
-            
-            particle.update(dt);
-        
-        }
+        this.updateParticles(dt);
     
     },
     
     draw : function(gl) {
+        
+        gl.setColor(1, 1, 0.6, 1);
+        
+        for (var i = 0; i < this.cytoplasts.length; i++) {
+        
+           this.cytoplasts[i].draw(gl);
+        
+        }
         
         gl.setColor(1, 0, 0, 1);
     
@@ -115,6 +108,29 @@ Controller.prototype = {
         
         }
     
+    },
+    
+    updateParticles: function(dt) {
+        
+        var particleDistances = this.getParticleDistances();
+        
+        for (var i = 0; i < this.particles.length; i++) {
+            
+            var particle = this.particles[i];
+            
+            particle.applyForce(
+                this.vectorfield.getVector(particle.position)
+            );
+            
+            
+            this.applySwarmBehaviour(particleDistances[i], particle);
+            
+            particle.boundaryCheck(this.vectorfield);
+            
+            particle.update(dt);
+        
+        }
+        
     },
     
     applySwarmBehaviour : function(distances, particle) {
@@ -188,9 +204,18 @@ Controller.prototype = {
     
     },
     
+    updateCytoplast : function(dt) {
+        
+        for (var i = 0; i < this.particles.length; i++) {
+            
+            
+        }
+        
+    },
+    
     addParticles : function(amount) {
     
-        for(var i = 0; i < amount; i++) {
+        for (var i = 0; i < amount; i++) {
         
             this.particles.push(new Particle(
                 new Vector(Math.random() * this.vectorfield.cols,
@@ -206,12 +231,25 @@ Controller.prototype = {
     
     addLeukocytes : function(amount) {
     
-        for(var i = 0; i < amount; i++) {
+        for (var i = 0; i < amount; i++) {
         
             var radiusVector = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0);
             radiusVector.addSelf(radiusVector.rotate2D(Math.random() * Math.PI * 2));
         
             this.leukocytes.push(new Leukocyte(radiusVector));
+            
+        }
+    
+    },
+    
+    addCytoplasts : function(amount) {
+    
+        for (var i = 0; i < amount; i++) {
+        
+            this.cytoplasts.push(new Cytoplast(
+                new Vector(Math.random() * this.vectorfield.cols,
+                           Math.random() * this.vectorfield.rows)
+            ));
             
         }
     
