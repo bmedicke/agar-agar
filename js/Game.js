@@ -27,7 +27,7 @@ Game.prototype = {
         // } else {
         //     
             this.vectorfield.update(dt);
-            this.controller.applyDevourerVortices();
+            this.controller.applyDevourerVortices(dt);
             this.inputHandler.update(dt);
             this.controller.update(dt);
         //     

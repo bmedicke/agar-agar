@@ -11,6 +11,7 @@ Devourer.prototype.constructor = Entity;
 Devourer.prototype.mass = 2000000;
 Devourer.prototype.entityRadius = 2.0;
 Devourer.prototype.moveSpeed = 1;
+Devourer.prototype.forceRadius = 8.0;
 Devourer.prototype.rotateSpeed = 0.0005;
 
 Devourer.prototype.draw = function(gl) {

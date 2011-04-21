@@ -160,16 +160,6 @@ Controller.prototype = {
     
     },
     
-    applyDevourerVortices : function(devourer) {
-    
-        for (var i = 0; i < this.devourers.length; i++) {
-
-            this.vectorfield.applyForceField(this.devourers[i].position, 0, - Math.PI / 4);
-        
-        }
-        
-    },
-    
     updateDevourers : function(dt) {
         
         for (var i = 0; i < this.devourers.length; i++) {
@@ -333,6 +323,23 @@ Controller.prototype = {
         
         }
     
+    },
+
+    applyDevourerVortices : function(dt) {
+        
+        for (var i = 0; i < this.devourers.length; i++) {
+            
+            this.vectorfield.applyForceField(
+                dt,
+                Devourer.prototype.forceRadius,
+                this.devourers[i].position, 
+                true,
+                0, 
+                - Math.PI / 4
+            );
+            
+        }
+        
     },
     
     addParticles : function(amount) {

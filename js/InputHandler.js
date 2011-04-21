@@ -41,22 +41,27 @@ var InputHandler = function(vectorfield) {
 
 InputHandler.prototype = {
     
+    forceRadius : 3,
+    
     update : function(dt) {
         
         if (this.touching) {
             
             if (this.touchStarted) {
                 
-                this.vectorfield.applyForceField(this.touchPosition);
+                this.vectorfield.applyForceField(dt, this.forceRadius, this.touchPosition, false);
                 
             } else {
                 
-                var vector = this.touchPosition.sub(this.oldTouchPosition).normalizeSelf().mulSelf(this.vectorfield.forceRadius / 2);
+                var vector = this.touchPosition.sub(this.oldTouchPosition).normalizeSelf().mulSelf(this.forceRadius / 2);
                 
                 do {
                     
                     this.vectorfield.applyForceField(
-                        this.oldTouchPosition, 
+                        dt,
+                        this.forceRadius,
+                        this.oldTouchPosition,
+                        false, 
                         this.oldTouchPosition.add(vector)
                     );
                     
