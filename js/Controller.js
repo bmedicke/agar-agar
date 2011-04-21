@@ -17,29 +17,94 @@ Controller.prototype = {
 
     update : function(dt) {
                 
+        this.updateLeukocytes(dt);
+        
+        this.updateDevourers(dt);
+    
+        this.updateCytoplasts(dt);
+        
+        this.updateParticles(dt);
+    },
+    
+    draw : function(gl) {
+        
+        gl.setColor(1, 1, 0.6, 1);
+        
+        for (var i = 0; i < this.cytoplasts.length; i++) {
+        
+           this.cytoplasts[i].draw(gl);
+        
+        }
+        
+        for (var i = 0; i < this.devourers.length; i++) {
+        
+           this.devourers[i].draw(gl);
+        
+        }
+        
+        gl.setColor(1, 0, 0, 1);
+    
+        for (var i = 0; i < this.particles.length; i++) {
+        
+           this.particles[i].draw(gl);
+        
+        }
+        
+        for (var i = 0; i < this.leukocytes.length; i++) {
+        
+           this.leukocytes[i].draw(gl);
+        
+        }
+
+    },
+    
+    collision : function(entity1, entity2) {
+    
+        var vector = entity1.position.sub(entity2.position);
+        
+        if (vector.normSquared() < (entity1.entityRadius + entity2.entityRadius) *
+           (entity1.entityRadius + entity2.entityRadius)) {
+            
+            entity1.applyForce(vector.normalize().mulSelf(entity1.moveSpeed));
+            entity2.applyForce(vector.normalize().mulSelf(entity2.moveSpeed * -1));
+        
+        }
+    
+    },
+    
+    killAndSearch : function(leukocyte) {
+        
+        nearest = new Vector(Infinity, Infinity, 0);            
+    
+        for (var j = 0; j < this.particles.length; j++) {
+    
+            var particle = this.particles[j],
+                current = (particle.position.sub(leukocyte.position));
+        
+            if (current.normSquared() < nearest.normSquared()) {
+        
+                nearest = current;
+        
+            }
+        
+            if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
+        
+                this.particles.splice(j, 1);
+        
+            }
+        
+        }
+        
+        return nearest;
+        
+    },
+    
+    updateLeukocytes : function(dt) {
+        
         for (var i = 0; i < this.leukocytes.length; i++) {
             
             var leukocyte = this.leukocytes[i],
-                nearest = new Vector(Infinity, Infinity, 0);            
-            
-            for (var j = 0; j < this.particles.length; j++) {
-            
-                var particle = this.particles[j],
-                    current = (particle.position.sub(leukocyte.position));
-                
-                if (current.normSquared() < nearest.normSquared()) {
-                
-                    nearest = current;
-                
-                }
-                
-                if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
-                
-                    this.particles.splice(j, 1);
-                
-                }
-                
-            }
+                nearest = this.killAndSearch(leukocyte);                
             
             for (var j = 0; j < i; j++) {
             
@@ -65,94 +130,50 @@ Controller.prototype = {
             
         }
         
-        for (var i = 0; i < this.devourers.length; i++) {
+    },
+    
+    devourerCollision : function(devourer, entities) {
+        
+        for (var j = 0; j < entities.length; j++) {
             
+            var entity = entities[j];
+            
+            var distance = entity.position.sub(devourer.position).normSquared();
+            
+            if (distance < devourer.entityRadius * devourer.entityRadius) {
+                
+                entities.splice(j, 1);
+                
+            }
+            
+        }
+    
+    },
+    
+    applyDevourerTarget : function(devourer) {
+        
+        devourer.applyForce(this.cytoplasts[0].position.sub(devourer.position).normalizeSelf());
+    
+    },
+    
+    updateDevourers : function(dt) {
+        
+        for (var i = 0; i < this.devourers.length; i++) {
+        
             var devourer = this.devourers[i];
             
-            for (var j = 0; j < this.particles.length; j++) {
-                
-                var particle = this.particles[j];
-                
-                var distance = particle.position.sub(devourer.position).normSquared();
-                
-                if (distance < devourer.entityRadius * devourer.entityRadius) {
-                    
-                    this.particles.splice(j, 1);
-                    
-                }
-                
-            }
+            this.devourerCollision(devourer, this.particles);
+            this.devourerCollision(devourer, this.leukocytes);
             
-            for (var j = 0; j < this.leukocytes.length; j++) {
-                
-                var leukocyte = this.leukocytes[j];
-                
-                var distance = leukocyte.position.sub(devourer.position).normSquared();
-                
-                if (distance < devourer.entityRadius * devourer.entityRadius) {
-                    
-                    this.leukocytes.splice(j, 1);
-                    
-                }
-                
-            }
+            this.applyDevourerTarget(devourer);
             
-            devourer.update(dt);
+            this.devourers[i].update(dt);
             
         }
-    
-        this.updateCytoplasts(dt);
         
-        this.updateParticles(dt);
     },
     
-    draw : function(gl) {
-        
-        gl.setColor(1, 1, 0.6, 1);
-        
-        for (var i = 0; i < this.cytoplasts.length; i++) {
-        
-           this.cytoplasts[i].draw(gl);
-        
-        }
-        
-        gl.setColor(1, 0, 0, 1);
-    
-        for (var i = 0; i < this.particles.length; i++) {
-        
-           this.particles[i].draw(gl);
-        
-        }
-        
-        for (var i = 0; i < this.leukocytes.length; i++) {
-        
-           this.leukocytes[i].draw(gl);
-        
-        }
-        
-        for (var i = 0; i < this.devourers.length; i++) {
-        
-           this.devourers[i].draw(gl);
-        
-        }
-
-    },
-    
-    collision : function(entity1, entity2) {
-    
-        var vector = entity1.position.sub(entity2.position);
-        
-        if (vector.normSquared() < (entity1.entityRadius + entity2.entityRadius) *
-           (entity1.entityRadius + entity2.entityRadius)) {
-            
-            entity1.applyForce(vector.normalize().mulSelf(entity1.moveSpeed));
-            entity2.applyForce(vector.normalize().mulSelf(entity2.moveSpeed * -1));
-        
-        }
-    
-    },
-    
-    updateParticles: function(dt) {
+    updateParticles : function(dt) {
         
         var particleDistances = this.getParticleDistances();
         
