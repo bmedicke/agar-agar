@@ -13,7 +13,7 @@ function initialize() {
     var height = window.innerHeight;
     
     game = new Game(width, height);
-    
+    game.initialize();
     
     var cellSize = game.vectorfield.cellSize;
     
