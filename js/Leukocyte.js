@@ -8,7 +8,7 @@ Leukocyte.prototype = new Entity();
 Leukocyte.prototype.constructor = Entity;
 
 Leukocyte.prototype.mass = 900000;
-Leukocyte.prototype.entityRadius = 1.0;
+Leukocyte.prototype.entityRadius = 0.3;
 Leukocyte.prototype.moveSpeed = 1;
 
 Leukocyte.prototype.draw = function(gl) {

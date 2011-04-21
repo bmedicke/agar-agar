@@ -4,8 +4,9 @@ var Game = function(width, height) {
     this.inputHandler = new InputHandler(this.vectorfield);
 	this.controller = new Controller(this.vectorfield);
     
-    this.controller.addParticles(20);
-    this.controller.addLeukocytes(20);
+    this.controller.addParticles(100);
+    this.controller.addLeukocytes(5);
+    this.controller.addDevourers(1);
     
     // this.generator = new Generator();
     // this.fader = new Fader();
@@ -25,6 +26,7 @@ Game.prototype = {
         // } else {
         //     
             this.vectorfield.update(dt);
+            this.controller.applyDevourerVortices();
             this.inputHandler.update(dt);
             this.controller.update(dt);
         //     

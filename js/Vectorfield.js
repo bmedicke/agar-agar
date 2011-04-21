@@ -97,9 +97,10 @@ Vectorfield.prototype = {
         
     },
     
-    applyForceField : function(position, point) {
+    applyForceField : function(position, point, angle) {
         
         point = point || 0;
+        angle = angle || 0;
                 
         var cell = this.getCell(position),
             left = cell.x - this.forceRadius,
@@ -127,6 +128,10 @@ Vectorfield.prototype = {
                         
                         var distance = cellVector.sub(position).normSquared();
                         cellVector.subSelf(point).divSelf(-distance);
+                        
+                    } else if (angle) {
+                        
+                        cellVector.subSelf(position).divSelf(-cellVector.normSquared()).rotate2DSelf(angle);
                         
                     } else {
                         

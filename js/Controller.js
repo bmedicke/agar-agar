@@ -4,7 +4,7 @@ var Controller = function(vectorfield) {
     
     this.particles = [];
     this.leukocytes = [];    
-    // this.blackholes = [];
+    this.devourers = [];
 
 };
 
@@ -82,6 +82,42 @@ Controller.prototype = {
             particle.update(dt);
         
         }
+        
+        for (var i = 0; i < this.devourers.length; i++) {
+            
+            var devourer = this.devourers[i];
+            
+            for (var j = 0; j < this.particles.length; j++) {
+                
+                var particle = this.particles[j];
+                
+                var distance = particle.position.sub(devourer.position).normSquared();
+                
+                if (distance < devourer.entityRadius * devourer.entityRadius) {
+                    
+                    this.particles.splice(j, 1);
+                    
+                }
+                
+            }
+            
+            for (var j = 0; j < this.leukocytes.length; j++) {
+                
+                var leukocyte = this.leukocytes[j];
+                
+                var distance = leukocyte.position.sub(devourer.position).normSquared();
+                
+                if (distance < devourer.entityRadius * devourer.entityRadius) {
+                    
+                    this.leukocytes.splice(j, 1);
+                    
+                }
+                
+            }
+            
+            devourer.update(dt);
+            
+        }
     
     },
     
@@ -98,6 +134,12 @@ Controller.prototype = {
         for (var i = 0; i < this.leukocytes.length; i++) {
         
            this.leukocytes[i].draw(gl);
+        
+        }
+        
+        for (var i = 0; i < this.devourers.length; i++) {
+        
+           this.devourers[i].draw(gl);
         
         }
 
@@ -188,6 +230,16 @@ Controller.prototype = {
     
     },
     
+    applyDevourerVortices : function() {
+        
+        for (var i = 0; i < this.devourers.length; i++) {
+            
+            this.vectorfield.applyForceField(this.devourers[i].position, 0, - Math.PI / 4);
+            
+        }
+        
+    },
+    
     addParticles : function(amount) {
     
         for(var i = 0; i < amount; i++) {
@@ -215,6 +267,19 @@ Controller.prototype = {
             
         }
     
+    },
+    
+    addDevourers : function(amount) {
+        
+        for(var i = 0; i < amount; i++) {
+            
+            this.devourers.push(new Devourer(
+                new Vector(Math.random() * this.vectorfield.cols,
+                           Math.random() * this.vectorfield.rows))
+                );
+            
+        }
+        
     }
     
 };
