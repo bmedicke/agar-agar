@@ -51,6 +51,42 @@
     
 </script>
 
+<script id="stardust-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+
+    attribute vec3 position;
+    
+    varying float alpha;
+    
+    void main(void) {
+    
+       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+       
+       gl_PointSize = 3.0;
+       
+       alpha = position.z;
+    
+    }
+    
+</script>
+
+<script id="stardust-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    #ifdef GL_ES
+       precision highp float;
+    #endif
+    
+    varying float alpha;
+    
+    void main(void) {
+    
+       gl_FragColor = vec4(.5, .5, .5, alpha);
+       
+    }
+    
+</script>
+
 <script id="leuco-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
