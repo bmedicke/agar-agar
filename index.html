@@ -63,7 +63,7 @@
     
        gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
        
-       gl_PointSize = 3.0;
+       gl_PointSize = 2.0;
        
        alpha = position.z;
     
@@ -77,11 +77,13 @@
        precision highp float;
     #endif
     
+    uniform vec4 color;
+    
     varying float alpha;
     
     void main(void) {
     
-       gl_FragColor = vec4(.5, .5, .5, alpha);
+       gl_FragColor = vec4(.85, .85, .85, alpha);
        
     }
     
@@ -138,6 +140,8 @@
 <script type="text/javascript" src="./js/Cytoplast.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/Devourer.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/Entropyfier.js" charset="utf-8"></script>
+
+<script type="text/javascript" src="./js/DustParticle.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/Stardust.js" charset="utf-8"></script>
 
 <script type="text/javascript" src="./js/Vectorfield.js" charset="utf-8"></script>

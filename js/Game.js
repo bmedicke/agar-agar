@@ -3,7 +3,8 @@ var Game = function(width, height) {
     this.vectorfield = new Vectorfield(width, height);    
     this.inputHandler = new InputHandler(this.vectorfield);
 	this.controller = new Controller(this.vectorfield);
-    
+	
+	this.stardust = new Stardust(this.vectorfield);
     this.generator = new Generator();
     // this.fader = new Fader();
     
@@ -15,9 +16,10 @@ var Game = function(width, height) {
 
 Game.prototype = {
 
-    initialize : function() {
+    initialize : function(gl) {
     
         this.resetLevel(true);
+        this.stardust.init(gl);
     
     },
     
@@ -33,6 +35,8 @@ Game.prototype = {
             this.controller.applyDevourerVortices(dt);
             this.inputHandler.update(dt);
             this.controller.update(dt);
+            
+            this.stardust.update(dt);
             
             this.leukoTime += dt;
             this.entropyTime += dt;
@@ -66,8 +70,9 @@ Game.prototype = {
         //     
         // } else {
         //     
+            this.stardust.draw(gl);
             this.controller.draw(gl);
-            this.vectorfield.draw(gl);
+            //this.vectorfield.draw(gl);
             this.inputHandler.draw(gl);
         //     
         // }

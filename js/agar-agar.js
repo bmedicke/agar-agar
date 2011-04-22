@@ -13,7 +13,6 @@ function initialize() {
     var height = window.innerHeight;
     
     game = new Game(width, height);
-    game.initialize();
     
     var cellSize = game.vectorfield.cellSize;
     
@@ -35,6 +34,8 @@ function initialize() {
 
     gl.setupDefaultShader();    
     gl.initBuffers();
+    
+    game.initialize(gl);
     
 };
 
