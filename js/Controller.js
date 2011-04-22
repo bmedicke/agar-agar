@@ -31,38 +31,28 @@ Controller.prototype = {
     
     draw : function(gl) {
     
-        for(var i = 0; i < this.entropyfiers.length; i++) {
-            
-            this.entropyfiers[i].draw(gl);
+        this.drawEntities(gl, this.entropyfiers);
         
-        }
+        this.drawEntities(gl, this.cytoplasts);
         
-        for (var i = 0; i < this.cytoplasts.length; i++) {
-        
-           this.cytoplasts[i].draw(gl);
-        
-        }
-        
-        for (var i = 0; i < this.devourers.length; i++) {
-        
-           this.devourers[i].draw(gl);
-        
-        }
+        this.drawEntities(gl, this.devourers);
         
         gl.setColor(.5, .5, .5, 1);
-    
-        for (var i = 0; i < this.particles.length; i++) {
         
-           this.particles[i].draw(gl);
+        this.drawEntities(gl, this.particles);
         
-        }
-        
-        for (var i = 0; i < this.leukocytes.length; i++) {
-        
-           this.leukocytes[i].draw(gl);
-        
-        }
+        this.drawEntities(gl, this.leukocytes);
 
+    },
+    
+    drawEntities: function(gl, entities) {
+        
+        for (var i = 0; i < entities.length; i++) {
+        
+           entities[i].draw(gl);
+        
+        }
+        
     },
     
     updateEntropyfiers : function(dt) {
@@ -127,13 +117,19 @@ Controller.prototype = {
         
             if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
         
-                this.particles.splice(j, 1);
+                leukocyte.eatParticle(particle.position);
+                delete this.particles.splice(j, 1)[0];
+                delete nearest;
+                return;
         
             }
         
         }
         
-        return nearest;
+        delete leukocyte.orientation;
+        leukocyte.orientation = nearest;
+        
+        leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
         
     },
     
@@ -141,8 +137,14 @@ Controller.prototype = {
         
         for (var i = 0; i < this.leukocytes.length; i++) {
             
-            var leukocyte = this.leukocytes[i],
-                nearest = this.killAndSearch(leukocyte);                
+            var leukocyte = this.leukocytes[i];
+            
+            if (this.particles.length && leukocyte.isActive) {
+                
+                this.killAndSearch(leukocyte);
+                
+            }
+            
             
             for (var j = 0; j < i; j++) {
             
@@ -153,14 +155,6 @@ Controller.prototype = {
             leukocyte.applyForce(
                 this.vectorfield.getVector(leukocyte.position)
             );
-            
-                        
-            if (this.particles.length > 0) {
-            
-                leukocyte.orientation = nearest;
-                leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
-
-            }
             
             leukocyte.boundaryCheck(this.vectorfield);
             

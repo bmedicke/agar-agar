@@ -9,8 +9,6 @@ var Vectorfield = function(width, height) {
         y : this.rows - height / this.cellSize
     };
     
-    log(this.boundaryOffset);
-    
     this.dynamicVectors = {};
     this.staticVectors = {};
     
