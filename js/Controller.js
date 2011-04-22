@@ -31,7 +31,11 @@ Controller.prototype = {
     
     draw : function(gl) {
     
-        this.drawEntities(gl, this.entropyfiers);
+        for (var i = this.entropyfiers.length - 1; i >= 0; i--) {
+            
+            this.entropyfiers[i].draw(gl);
+        
+        }
         
         this.drawEntities(gl, this.cytoplasts);
         
@@ -66,7 +70,7 @@ Controller.prototype = {
                 this.vectorfield.applyForceField(
                     dt,
                     Entropyfier.prototype.force,
-                    Entropyfier.prototype.forceRadius,
+                    entropyfier.forceRadius,
                     entropyfier.position,
                     false,
                     Math.PI
@@ -76,7 +80,7 @@ Controller.prototype = {
             
             entropyfier.update(dt);
             
-            if (entropyfier.timer > entropyfier.chargeTime + entropyfier.forceTime) {
+            if (entropyfier.timer > entropyfier.chargeTime + Entropyfier.prototype.forceTime) {
             
                 this.entropyfiers.splice(i, 1);
             
@@ -525,10 +529,29 @@ Controller.prototype = {
     
         for (var i = 0; i < amount; i++) {
         
-            this.entropyfiers.push(new Entropyfier(
-                new Vector(Math.random() * this.vectorfield.cols,
-                           Math.random() * this.vectorfield.rows))
-                );
+            var extraBubble = Math.random() > .5 ? true : false;
+            
+            var center = new Vector(Math.random() * this.vectorfield.cols,
+                                    Math.random() * this.vectorfield.rows);
+
+            var radius = Entropyfier.prototype.entropyRadius * (Math.random() * .3 + .7);
+            var time = Entropyfier.prototype.entropyTime * (Math.random() * .3 + .7);
+            
+            this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time, radius));
+            
+            center.addSelf(center.sub(new Vector(center.x + radius, center.y)).rotate2DSelf(Math.random() * Math.PI * 2));
+            
+            this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.05, radius / 2));
+            
+            
+            if(extraBubble) {
+                
+                center.addSelf(center.sub(new Vector(center.x + radius / 2, center.y)).rotate2DSelf(Math.random() * Math.PI * 2));
+                
+                this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.07, radius / 3));
+            
+            }
+            
             
         }
     

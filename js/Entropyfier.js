@@ -1,15 +1,17 @@
-var Entropyfier = function(position) {
+var Entropyfier = function(position, chargeTime, entityRadius) {
 
     this.position = position;
     this.timer = 0;
+    this.chargeTime = chargeTime || 0;
+    this.entityRadius = entityRadius || 0;
+    this.forceRadius = this.entityRadius * 2.5;
 
 };
 
-Entropyfier.prototype.chargeTime = 7000;
+Entropyfier.prototype.entropyTime = 3000;
+Entropyfier.prototype.entropyRadius = 3;
 Entropyfier.prototype.forceTime = 2000;
 Entropyfier.prototype.force = 1;
-Entropyfier.prototype.forceRadius = 7;
-Entropyfier.prototype.entityRadius = 2.5;
 
 Entropyfier.prototype.update = function(dt) {
     
