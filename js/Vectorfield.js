@@ -14,6 +14,8 @@ var Vectorfield = function(width, height) {
     this.dynamicVectors = {};
     this.staticVectors = {};
     
+    this.stardusts = [];
+    
 };
 
 Vectorfield.prototype = {
@@ -26,6 +28,8 @@ Vectorfield.prototype = {
     forceCoefficient : 0.005,
     
     minLength : 0.001,
+    
+    numStardusts : 5,
     
     update : function(dt) {
         
@@ -44,6 +48,25 @@ Vectorfield.prototype = {
                 }
                 
             }
+        }
+        
+        for(var i = 0; i < this.stardusts.length; i++) {
+        
+            this.stardusts[i].update(dt);
+            
+            if(this.stardusts[i].timer > Stardust.prototype.lifeTime) {
+            
+                this.stardusts.splice(i, 1);
+            
+            }
+        
+        }
+        
+        for(var i = this.stardusts.length - 1; i < this.numStardusts; i++) {
+        
+            var position = new Vector(Math.random() * this.cols, Math.random() * this.rows);
+            this.stardusts.push(new Stardust(position, this.getVector(position)));
+        
         }
         
     },
@@ -72,6 +95,12 @@ Vectorfield.prototype = {
         gl.setColor(0.4, 0.8, 0.4, 1.0);
         
         this.drawVectors(this.staticVectors);
+        
+        for(var i = 0; i < this.stardusts.length; i++) {
+        
+            this.stardusts[i].draw(gl);
+        
+        }
         
     },
     
