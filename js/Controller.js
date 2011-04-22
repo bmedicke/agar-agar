@@ -73,12 +73,12 @@ Controller.prototype = {
             
             if (entropyfier.timer > entropyfier.chargeTime) {
             
-                this.vectorfield.leukocyte(
+                this.vectorfield.applyForceField(
                     dt,
                     Entropyfier.prototype.force,
-                    Entropyfier.prototype.entityRadius,
+                    Entropyfier.prototype.forceRadius,
                     entropyfier.position,
-                    true,
+                    false,
                     Math.PI
                 );
 

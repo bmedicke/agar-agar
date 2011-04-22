@@ -30,6 +30,7 @@ Generator.prototype = {
 
             leukoRate : 0,
             leukoAmount : 0,
+            leukoCap : 0,
             
             entropyRate : 0,
             entropyAmount : 0
@@ -45,9 +46,10 @@ Generator.prototype = {
         //TODO: make this dependent from level of difficulty
         this.level.leukoRate = 10000;
         this.level.leukoAmount = 2;
+        this.level.leukoCap = 10;
         
-        this.level.entropyRate = 5000;
-        this.level.entropyAmount = 0;
+        this.level.entropyRate = 3000;
+        this.level.entropyAmount = 1;
     
         for(var i = 0; i < this.particleCount; i++) {
         

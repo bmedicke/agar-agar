@@ -76,17 +76,19 @@ Vectorfield.prototype = {
     
     drawVectors : function(vectors) {
         
-        var cell = new Vector();
+        var cell = new Vector(),
+            vector = new Vector();
         
         for (var cellID in vectors) {
             
             if (vectors.hasOwnProperty(cellID)) {
                 
                 cell.set(cellID % this.cols + .5, Math.floor(cellID / this.cols) + .5, 0);
+                vector = vectors[cellID].clamp(1.3);
             
                 gl.drawLine(
                     cell.x, cell.y,
-                    cell.x + vectors[cellID].x, cell.y + vectors[cellID].y
+                    cell.x + vector.x, cell.y + vector.y
                 );
                 
             }

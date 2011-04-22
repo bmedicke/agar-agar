@@ -37,7 +37,8 @@ Game.prototype = {
             this.leukoTime += dt;
             this.entropyTime += dt;
         
-            if(this.leukoTime > this.generator.level.leukoRate) {
+            if( this.leukoTime > this.generator.level.leukoRate &&
+                this.controller.leukocytes.length < this.generator.level.leukoCap) {
 
                 this.controller.addLeukocytes(this.generator.level.leukoAmount);
                 
@@ -65,8 +66,8 @@ Game.prototype = {
         //     
         // } else {
         //     
-            this.vectorfield.draw(gl);
             this.controller.draw(gl);
+            this.vectorfield.draw(gl);
             this.inputHandler.draw(gl);
         //     
         // }
