@@ -295,7 +295,9 @@ Controller.prototype = {
                             j != k &&
                             typeof distances[k] !== 'undefined' &&
                             this.particles[j].position.sub(this.particles[k].position).normSquared() < 
-                                particle.reproductionRadius * particle.reproductionRadius) {
+                                particle.reproductionRadius * particle.reproductionRadius &&
+                            particle.velocity.add(this.particles[j].velocity).add(this.particles[k].velocity).norm() < 
+                                particle.reproductionVelocity) {
                            
                             var averagePosition = particle.position.add(this.particles[j].position.add(this.particles[k].position)).divSelf(3);
                             

@@ -19,6 +19,7 @@ Particle.prototype.cohesionRadius = 2;
 
 Particle.prototype.reproductionRadius = .5;
 Particle.prototype.reproductionWaitTime = 10000;
+Particle.prototype.reproductionVelocity = 0.001
 
 Particle.prototype.count = 0;
 Particle.prototype.maxCount = 100;
