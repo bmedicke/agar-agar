@@ -17,8 +17,8 @@ var Generator = function() {
 Generator.prototype = {
 
     particleCount : 30,
-    devourerCount : 0,
-    cytoplastCount : 0,
+    devourerCount : 1,
+    cytoplastCount : 1,
     
     reset : function() {
         

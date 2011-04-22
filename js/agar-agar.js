@@ -29,6 +29,9 @@ function initialize() {
     
     gl.translate(-1, 1);
     gl.scale(1 / (width / 2) * cellSize, -1 / (height / 2) * cellSize);
+    
+    gl.lineWidth(2.0);
+    gl.noFill();
 
     gl.setupDefaultShader();    
     gl.initBuffers();
@@ -42,7 +45,7 @@ function run() {
     var t = (new Date()).getTime(),
         dt = t - time;
         
-    dt = dt > 100 ? 100 : dt;
+    dt = dt > 30 ? 30 : dt;
         
     time = t;
     

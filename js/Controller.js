@@ -50,15 +50,12 @@ Controller.prototype = {
         }
         
         gl.setColor(.5, .5, .5, 1);
-        gl.noFill();
     
         for (var i = 0; i < this.particles.length; i++) {
         
            this.particles[i].draw(gl);
         
         }
-        
-        gl.fill();leukocyte
         
         for (var i = 0; i < this.leukocytes.length; i++) {
         
@@ -195,7 +192,7 @@ Controller.prototype = {
         
         if(this.cytoplasts.length > 0) {
         
-            devourer.applyForce(this.cytoplasts[0].position.sub(devourer.position).normalizeSelf());
+            devourer.applyForce(this.cytoplasts[0].position.sub(devourer.position).normalizeSelf().mulSelf(devourer.moveSpeed));
         
         }
     
@@ -429,7 +426,7 @@ Controller.prototype = {
                 Devourer.prototype.forceRadius,
                 this.devourers[i].position, 
                 false,
-                - Math.PI / 4
+                Devourer.prototype.forceAngle
             );
             
         }
