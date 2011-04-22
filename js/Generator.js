@@ -43,8 +43,8 @@ Generator.prototype = {
         this.reset();
         
         //TODO: make this dependent from level of difficulty
-        this.level.leukoRate = 25000;
-        this.level.leukoAmount = 0;
+        this.level.leukoRate = 10000;
+        this.level.leukoAmount = 2;
         
         this.level.entropyRate = 5000;
         this.level.entropyAmount = 0;
