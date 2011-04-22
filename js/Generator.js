@@ -16,9 +16,9 @@ var Generator = function() {
 
 Generator.prototype = {
 
-    particleCount : 200,
-    devourerCount : 1,
-    cytoplastCount : 1,
+    particleCount : 30,
+    devourerCount : 0,
+    cytoplastCount : 0,
     
     reset : function() {
         
@@ -44,10 +44,10 @@ Generator.prototype = {
         
         //TODO: make this dependent from level of difficulty
         this.level.leukoRate = 25000;
-        this.level.leukoAmount = 10;
+        this.level.leukoAmount = 0;
         
         this.level.entropyRate = 5000;
-        this.level.entropyAmount = 2;
+        this.level.entropyAmount = 0;
     
         for(var i = 0; i < this.particleCount; i++) {
         

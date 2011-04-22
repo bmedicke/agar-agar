@@ -72,7 +72,7 @@ InputHandler.prototype = {
                         this.oldTouchPosition, 
                         true,
                         0,
-                        this.touchPosition
+                        this.oldTouchPosition.add(vector)
                     );
                     
                 } while (this.oldTouchPosition.addSelf(vector.mul(.25)).sub(this.touchPosition).normSquared() > vector.mul(.25).normSquared());

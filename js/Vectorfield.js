@@ -11,11 +11,11 @@ var Vectorfield = function(width, height) {
 
 Vectorfield.prototype = {
     
-    numberOfCells : 1000,
+    numberOfCells : 2000,
     
     maxForce : 1,
     
-    dampCoefficient : 0.001,
+    dampCoefficient : 0.0005,
     forceCoefficient : 0.005,
     
     minLength : 0.001,
@@ -43,19 +43,19 @@ Vectorfield.prototype = {
     
     draw : function(gl) {
         
-        gl.setColor(0.8, 0.8, 0.8, 1.0);
-        
-        for (var i = 1; i < this.cols; i++) {
-            
-            gl.drawLine(i, 0, i, this.rows);
-            
-        }
-        
-        for (var i = 1; i < this.rows; i++) {
-            
-            gl.drawLine(0, i, this.cols, i);
-            
-        }
+        // gl.setColor(0.8, 0.8, 0.8, 1.0);
+        // 
+        // for (var i = 1; i < this.cols; i++) {
+        //     
+        //     gl.drawLine(i, 0, i, this.rows);
+        //     
+        // }
+        // 
+        // for (var i = 1; i < this.rows; i++) {
+        //     
+        //     gl.drawLine(0, i, this.cols, i);
+        //     
+        // }
         
         
         gl.setColor(0.8, 0.4, 0.4, 1.0);
@@ -116,7 +116,7 @@ Vectorfield.prototype = {
     
     setDynamicVector : function(cellID, vector) {
         
-        this.dynamicVectors[cellID] = (this.dynamicVectors[cellID] || new Vector()).addSelf(vector);
+        this.dynamicVectors[cellID] = (this.dynamicVectors[cellID] || new Vector()).addSelf(vector).clamp(this.maxForce);
         
     },
     

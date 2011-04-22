@@ -42,6 +42,8 @@ function run() {
     var t = (new Date()).getTime(),
         dt = t - time;
         
+    dt = dt > 100 ? 100 : dt;
+        
     time = t;
     
     if (!game.isPaused) {

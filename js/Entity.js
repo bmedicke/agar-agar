@@ -30,7 +30,6 @@ Entity.prototype = {
     
     draw : function(gl) {
 
-        gl.fill();
         gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
 
     },

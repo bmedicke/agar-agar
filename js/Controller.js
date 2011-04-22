@@ -12,7 +12,7 @@ var Controller = function(vectorfield) {
 
 Controller.prototype = {
 
-    separationFactor : 7,
+    separationFactor : 10,
     
     cohesionFactor : .5,
 
@@ -49,13 +49,16 @@ Controller.prototype = {
         
         }
         
-        gl.setColor(1, 0, 0, 1);
+        gl.setColor(.5, .5, .5, 1);
+        gl.noFill();
     
         for (var i = 0; i < this.particles.length; i++) {
         
            this.particles[i].draw(gl);
         
         }
+        
+        gl.fill();leukocyte
         
         for (var i = 0; i < this.leukocytes.length; i++) {
         
@@ -73,7 +76,7 @@ Controller.prototype = {
             
             if (entropyfier.timer > entropyfier.chargeTime) {
             
-                this.vectorfield.applyForceField(
+                this.vectorfield.leukocyte(
                     dt,
                     Entropyfier.prototype.force,
                     Entropyfier.prototype.entityRadius,
