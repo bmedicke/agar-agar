@@ -46,7 +46,7 @@ Game.prototype = {
             }
             
             if(this.entropyTime > this.generator.level.entropyRate) {
-
+            
                 this.controller.addEntropyfiers(this.generator.level.entropyAmount);
                 
                 this.entropyTime = 0;

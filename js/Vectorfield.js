@@ -132,10 +132,10 @@ Vectorfield.prototype = {
         angle = angle || 0;
                 
         var cell = this.getCell(position),
-            left = cell.x - radius < 0 ? 0 : cell.x - radius,
-            right = cell.x + radius > this.cols ? this.cols : cell.x + radius,
-            top = cell.y - radius < 0 ? 0 : cell.y - radius,
-            bottom = cell.y + radius > this.rows ? this.rows : cell.y + radius,
+            left = Math.floor(cell.x - radius < 0 ? 0 : cell.x - radius),
+            right = Math.ceil(cell.x + radius > this.cols ? this.cols : cell.x + radius),
+            top = Math.floor(cell.y - radius < 0 ? 0 : cell.y - radius),
+            bottom = Math.ceil(cell.y + radius > this.rows ? this.rows : cell.y + radius),
             setVector = isDynamic ? this.setDynamicVector : this.setStaticVector,
             cellVector = new Vector();
         
@@ -148,8 +148,8 @@ Vectorfield.prototype = {
                 if (cellVector.sub(position).normSquared() < radius * radius) {
                     
                     var distance = cellVector.sub(position).norm();
-                    cellVector.subSelf(point).normalizeSelf().rotate2DSelf(angle).mulSelf(-force * (1 - distance / radius) * dt);
-                    
+                    cellVector.subSelf(point).normalizeSelf().mulSelf(-force * (1 - distance / radius) * dt).rotate2DSelf(angle);
+                                        
                     setVector.call(this, i + j * this.cols, cellVector);
                     
                 }

@@ -1,6 +1,6 @@
 var Entropyfier = function(position) {
 
-    Entity.call(this, position);
+    this.position = position;
     this.timer = 0;
 
 };
@@ -18,7 +18,7 @@ Entropyfier.prototype.update = function(dt) {
 
 Entropyfier.prototype.draw = function(gl) {
 
-    if(this.timer <= this.chargeTime) {
+    if (this.timer <= this.chargeTime) {
     
         gl.enableAlpha();
         gl.setColor(.7, .7, .7, this.timer / this.chargeTime);

@@ -71,7 +71,7 @@ Controller.prototype = {
         
             var entropyfier = this.entropyfiers[i];
             
-            if(entropyfier.timer > entropyfier.chargeTime) {
+            if (entropyfier.timer > entropyfier.chargeTime) {
             
                 this.vectorfield.applyForceField(
                     dt,
@@ -79,14 +79,14 @@ Controller.prototype = {
                     Entropyfier.prototype.entityRadius,
                     entropyfier.position,
                     true,
-                    Math.PI / 2
+                    Math.PI
                 );
 
             }
             
             entropyfier.update(dt);
             
-            if(entropyfier.timer > entropyfier.chargeTime + entropyfier.forceTime) {
+            if (entropyfier.timer > entropyfier.chargeTime + entropyfier.forceTime) {
             
                 this.entropyfiers.splice(i, 1);
             
