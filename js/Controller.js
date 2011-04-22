@@ -543,14 +543,14 @@ Controller.prototype = {
             
             center.addSelf(center.sub(new Vector(center.x + radius, center.y)).rotate2DSelf(Math.random() * Math.PI * 2));
             
-            this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.05, radius / 2));
+            this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.07, radius / 2));
             
             
             if(extraBubble) {
                 
                 center.addSelf(center.sub(new Vector(center.x + radius / 2, center.y)).rotate2DSelf(Math.random() * Math.PI * 2));
                 
-                this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.07, radius / 3));
+                this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.11, radius / 3));
             
             }
             
