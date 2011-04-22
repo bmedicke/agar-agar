@@ -14,7 +14,6 @@ Cytoplast.prototype.moveSpeed = 0;
 Cytoplast.prototype.maxFill = 50;
 
 Cytoplast.prototype.draw = function(gl) {
-
     
     gl.fill();
     gl.enableAlpha();
