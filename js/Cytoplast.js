@@ -20,7 +20,7 @@ Cytoplast.prototype.draw = function(gl) {
     gl.enableAlpha();
     
     
-    gl.setColor(0.9, 1.0, .9, this.currentFill / (this.maxFill * 1.1));
+    gl.setColor(0.9, 1.0, .9, Math.sqrt(this.currentFill / this.maxFill));
     Entity.prototype.draw.call(this, gl);
     
     

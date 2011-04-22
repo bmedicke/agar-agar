@@ -1,8 +1,15 @@
 var Vectorfield = function(width, height) {
     
     this.cellSize = Math.sqrt(width * height / this.numberOfCells);
-    this.cols = Math.floor(width / this.cellSize);
-    this.rows = Math.floor(height / this.cellSize);
+    this.cols = Math.ceil(width / this.cellSize);
+    this.rows = Math.ceil(height / this.cellSize);
+    
+    this.boundaryOffset = {
+        x : this.cols - width / this.cellSize,
+        y : this.rows - height / this.cellSize
+    };
+    
+    log(this.boundaryOffset);
     
     this.dynamicVectors = {};
     this.staticVectors = {};
