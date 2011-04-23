@@ -19,7 +19,7 @@ Game.prototype = {
     initialize : function(gl) {
     
         this.resetLevel(true);
-        this.stardust.init(gl);
+        this.stardust.initialize(gl);
     
     },
     

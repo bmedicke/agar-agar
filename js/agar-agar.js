@@ -33,7 +33,7 @@ function initialize() {
     gl.noFill();
 
     gl.setupDefaultShader();    
-    gl.initBuffers();
+    gl.initUtilityBuffers();
     
     game.initialize(gl);
     
@@ -47,7 +47,6 @@ function run() {
         dt = t - time;
         
     dt = dt > 30 ? 30 : dt;
-        
     time = t;
     
     if (!game.isPaused) {
