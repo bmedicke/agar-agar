@@ -108,7 +108,7 @@ Shader.prototype = {
             gl.uniformMatrix4fv(
                 this.matrixUniformLocation, 
                 false, 
-                new Float32Array(gl.matrix.transpose().flatten4D())
+                new Float32Array(gl.matrix.flatten4D())
             );
 
         }
