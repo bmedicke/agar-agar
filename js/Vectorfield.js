@@ -71,12 +71,6 @@ Vectorfield.prototype = {
         
         this.drawVectors(this.staticVectors);
         
-        for(var i = 0; i < this.stardusts.length; i++) {
-        
-            this.stardusts[i].draw(gl);
-        
-        }
-        
     },
     
     reset : function() {

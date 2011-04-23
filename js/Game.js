@@ -72,7 +72,7 @@ Game.prototype = {
         //     
             this.stardust.draw(gl);
             this.controller.draw(gl);
-            //this.vectorfield.draw(gl);
+            // this.vectorfield.draw(gl);
             this.inputHandler.draw(gl);
         //     
         // }

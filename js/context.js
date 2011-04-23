@@ -98,16 +98,22 @@ WebGLRenderingContext.prototype.drawRect = function(x, y, width, height) {
 };
 
 WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
-
-    var vertices = [
-        x1, y1, 1,
-        x2, y2, 1
-    ];
     
-    this.bindBuffer(this.ARRAY_BUFFER, this.vertexBuffer);
-    this.bufferData(this.ARRAY_BUFFER, new Float32Array(vertices), this.STATIC_DRAW);
+    this.lineArray.set([
+        x1, y1, 1.0,
+        x2, y2, 1.0
+    ]);
     
-    this.defaultShader.passVertices(this, this.vertexBuffer);
+    // this.lineArray[0] = x1;
+    // this.lineArray[1] = y1;
+    // this.lineArray[3] = x2;
+    // this.lineArray[4] = y2;
+    
+    this.bindBuffer(this.ARRAY_BUFFER, this.lineBuffer);
+    // this.bufferSubData(this.ARRAY_BUFFER, 0, this.lineArray);
+    this.bufferData(this.ARRAY_BUFFER, this.lineArray, this.STATIC_DRAW);
+    
+    this.defaultShader.passVertices(this, this.lineBuffer);
 
     this.drawArrays(this.LINE_STRIP, 0, 2);
     
@@ -131,8 +137,13 @@ WebGLRenderingContext.prototype.drawCircle = function(x, y, radius) {
 
 WebGLRenderingContext.prototype.initBuffers = function() {
 
-    this.vertexBuffer = this.createBuffer();
-    this.vertexBuffer.itemSize = 3;
+    this.lineBuffer = this.createBuffer();
+    this.lineBuffer.itemSize = 3;
+    
+    this.lineArray = new Float32Array(6);
+    
+    // this.bindBuffer(this.ARRAY_BUFFER, this.lineBuffer);
+    // this.bufferData(this.ARRAY_BUFFER, this.lineArray.byteLength, this.STATIC_DRAW);
     
     
     var rectVertices = [
@@ -144,7 +155,7 @@ WebGLRenderingContext.prototype.initBuffers = function() {
     
     this.rectBuffer = this.createBuffer();
     this.rectBuffer.itemSize = 3;
-        
+    
     this.bindBuffer(this.ARRAY_BUFFER, this.rectBuffer);
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(rectVertices), this.STATIC_DRAW);
     
