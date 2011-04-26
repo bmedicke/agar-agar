@@ -82,7 +82,7 @@ Controller.prototype = {
             
             if (entropyfier.timer > entropyfier.chargeTime + Entropyfier.prototype.forceTime) {
             
-                this.entropyfiers.splice(i, 1);
+                delete this.entropyfiers.splice(i, 1)[0].destroy();
             
             }
         
@@ -101,6 +101,8 @@ Controller.prototype = {
             entity2.applyForce(vector.normalize().mulSelf(entity2.moveSpeed * -1));
         
         }
+        
+        delete vector;
     
     },
     
@@ -122,8 +124,7 @@ Controller.prototype = {
             if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
         
                 leukocyte.eatParticle(particle.position);
-                delete this.particles.splice(j, 1)[0];
-                delete nearest;
+                delete this.particles.splice(j, 1)[0].destroy();
                 return;
         
             }
@@ -178,7 +179,7 @@ Controller.prototype = {
             
             if (distance < devourer.entityRadius * devourer.entityRadius) {
                 
-                entities.splice(j, 1);
+                delete entities.splice(j, 1)[0].destroy();
                 
             }
             
@@ -218,7 +219,7 @@ Controller.prototype = {
                 if(cytoplast.position.sub(devourer.position).normSquared() <
                    (cytoplast.entityRadius + devourer.entityRadius) * (cytoplast.entityRadius + devourer.entityRadius)) {
                    
-                    this.cytoplasts.splice(j, 1);
+                    delete this.cytoplasts.splice(j, 1)[0].destroy();
                 
                 }
             
@@ -252,8 +253,12 @@ Controller.prototype = {
             particle.boundaryCheck(this.vectorfield);
             
             particle.update(dt);
+            
+            delete particleDistances[i];
         
         }
+        
+        delete particleDistances;
         
     },
     
@@ -335,6 +340,9 @@ Controller.prototype = {
         }
         
         particle.applyForce(separationCenter.addSelf(cohesionCenter));
+        
+        delete cohesionCenter;
+        delete separationCenter;
     
     },
     
@@ -370,7 +378,7 @@ Controller.prototype = {
                 if(this.particles[j].position.sub(cytoplast.position).normSquared() <
                    cytoplast.entityRadius * cytoplast.entityRadius) {
                 
-                    this.particles.splice(j, 1);
+                    delete this.particles.splice(j, 1)[0].destroy();
                     cytoplast.currentFill++;
                 
                 }
@@ -434,6 +442,11 @@ Controller.prototype = {
     },
     
     reset : function() {
+        
+        delete this.particles;
+        delete this.cytoplats;
+        delete this.leukocytes;
+        delete this.devourers;
         
         this.particles = [];
         this.cytoplasts = [];

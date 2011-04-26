@@ -26,12 +26,25 @@ Entity.prototype = {
         
         this.velocity.mulSelf(1 - this.dampCoefficient * dt);
         
+        delete acceleration;
+        
     },
     
     draw : function(gl) {
 
         gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
 
+    },
+    
+    destroy : function() {
+        
+        delete this.position;
+        delete this.force;
+        delete this.velocity;
+        delete this.orientation;
+        
+        return this;
+        
     },
     
     applyForce : function(force) {

@@ -8,34 +8,46 @@ var Entropyfier = function(position, chargeTime, entityRadius) {
 
 };
 
-Entropyfier.prototype.entropyTime = 3000;
-Entropyfier.prototype.entropyRadius = 3;
-Entropyfier.prototype.forceTime = 2000;
-Entropyfier.prototype.force = 1;
-
-Entropyfier.prototype.update = function(dt) {
+Entropyfier.prototype = {
     
-    this.timer += dt;
+    entropyTime : 3000,
+    entropyRadius : 3,
+    forceTime : 2000,
+    force : 1,
 
-};
+    update : function(dt) {
 
-Entropyfier.prototype.draw = function(gl) {
+        this.timer += dt;
 
-    if (this.timer <= this.chargeTime) {
+    },
+
+    draw : function(gl) {
+
+        if (this.timer <= this.chargeTime) {
     
-        gl.enableAlpha();
-        gl.fill();
+            gl.enableAlpha();
+            gl.fill();
         
-        gl.setColor(.9, .9, .9, Math.sqrt(this.timer / this.chargeTime));
-        gl.drawCircle(this.position.x, this.position.y, Math.sqrt(this.timer / this.chargeTime) * this.entityRadius);
+            gl.setColor(.9, .9, .9, Math.sqrt(this.timer / this.chargeTime));
+            gl.drawCircle(this.position.x, this.position.y, Math.sqrt(this.timer / this.chargeTime) * this.entityRadius);
         
-        gl.noFill();
+            gl.noFill();
         
-        gl.setColor(.7, .7, .7, Math.sqrt(this.timer / this.chargeTime));
-        gl.drawCircle(this.position.x, this.position.y, Math.sqrt(this.timer / this.chargeTime) * this.entityRadius);
+            gl.setColor(.7, .7, .7, Math.sqrt(this.timer / this.chargeTime));
+            gl.drawCircle(this.position.x, this.position.y, Math.sqrt(this.timer / this.chargeTime) * this.entityRadius);
         
-        gl.disableAlpha();
+            gl.disableAlpha();
+            
+        }
     
+    },
+    
+    destroy : function() {
+        
+        delete this.position;
+        
+        return this;
+        
     }
 
 };
