@@ -162,31 +162,21 @@ Vectorfield.prototype = {
     
     setDynamicVector : function(cellID, vector) {
         
-        if(cellID >= 0 && cellID < this.numberOfCells) {
-            
-            this.dynamicVectors[cellID].addSelf(vector).clampSelf(this.maxForce);
+        this.dynamicVectors[cellID].addSelf(vector).clampSelf(this.maxForce);
         
-            if(this.dynamicLookupTable.indexOf(cellID) == -1) {
+        if(this.dynamicLookupTable.indexOf(cellID) == -1) {
         
-                this.dynamicLookupTable.push(cellID);
+            this.dynamicLookupTable.push(cellID);
         
-            }
         }
         
     },
     
     setStaticVector : function(cellID, vector) {
         
-        if(cellID >= 0 && cellID < this.numberOfCells) {
+        this.staticVectors[cellID] = (this.staticVectors[cellID] || new Vector()).addSelf(vector);
         
-            this.staticVectors[cellID] = (this.staticVectors[cellID] || new Vector()).addSelf(vector);
-        
-            if(this.staticLookupTable.indexOf(cellID) == -1) {
-        
-                this.staticLookupTable.push(cellID);
-        
-            }
-        }
+        this.staticLookupTable.push(cellID);
         
     },
     
@@ -213,7 +203,7 @@ Vectorfield.prototype = {
                     
                     var distance = cellVector.sub(position).norm();
                     cellVector.subSelf(point).normalizeSelf().mulSelf(-force * (1 - distance / radius) * dt).rotate2DSelf(angle);
-                                        
+                    
                     setVector.call(this, i + j * this.cols, cellVector);
                     
                 }

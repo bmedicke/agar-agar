@@ -153,11 +153,23 @@ Vector.prototype = {
         
     },
     
-    clampSelf: function(value) {
+    clamp: function(value) {
         
         if (this.normSquared() > value * value) {
             
             return this.normalize().mul(value);
+            
+        }
+        
+        return this;
+        
+    },
+    
+    clampSelf: function(value) {
+        
+        if (this.normSquared() > value * value) {
+            
+            return this.normalizeSelf().mulSelf(value);
             
         }
         

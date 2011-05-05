@@ -94,8 +94,13 @@ Game.prototype = {
         
         this.controller.addParticles(this.particleCount);
         
-        this.controller.addDevourers(1);
-        this.controller.addCytoplasts(1);
+        var midPoint = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0),
+            randomPosition = this.controller.getRandomOutsidePosition().subSelf(midPoint).mulSelf(.5);
+        
+        this.controller.devourers.push(new Devourer(midPoint.add(randomPosition)));
+        this.controller.cytoplasts.push(new Cytoplast(midPoint.add(randomPosition.mulSelf(-1))));
+        
+        delete midPoint, randomPosition;
         
     },
     
