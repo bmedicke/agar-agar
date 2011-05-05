@@ -11,7 +11,7 @@ Cytoplast.prototype.constructor = Entity;
 Cytoplast.prototype.mass = 800000;
 Cytoplast.prototype.entityRadius = 1.3;
 Cytoplast.prototype.moveSpeed = 0;
-Cytoplast.prototype.maxFill = 50;
+Cytoplast.prototype.maxFill = 5;
 
 Cytoplast.prototype.draw = function(gl) {
     
@@ -29,5 +29,19 @@ Cytoplast.prototype.draw = function(gl) {
     
     gl.setColor(.7, .7, .5, 1);
     Entity.prototype.draw.call(this, gl);
+
+};
+
+Cytoplast.prototype.isFull = function() {
+
+    if(this.currentFill >= this.maxFill) {
+    
+        return true;
+    
+    } else {
+    
+        return false;
+    
+    }
 
 };
