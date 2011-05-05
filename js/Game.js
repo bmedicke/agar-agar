@@ -22,7 +22,7 @@ Game.prototype = {
     particleCount : 20,
     
     leukoRate : 5000,
-    leukoAmount : 2,
+    leukoAmount : 1,
     leukoCap : 15,
     
     entropyRate : 10000,
@@ -108,6 +108,7 @@ Game.prototype = {
         
         this.leukoTime += dt;
         this.entropyTime += dt;
+        this.devourerTime += dt;
     
         if( this.leukoTime > this.leukoRate &&
             this.controller.leukocytes.length < this.leukoCap) {

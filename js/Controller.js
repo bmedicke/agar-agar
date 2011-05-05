@@ -258,7 +258,17 @@ Controller.prototype = {
                 if(cytoplast.position.sub(devourer.position).normSquared() <
                    (cytoplast.entityRadius + devourer.entityRadius) * (cytoplast.entityRadius + devourer.entityRadius)) {
 
-                    this.addParticlesAt(cytoplast.currentFill, cytoplast.position, cytoplast.entityRadius);
+                    this.addParticlesAt(cytoplast.currentFill, cytoplast.position, cytoplast.entityRadius / 2);
+                    
+                    this.vectorfield.addForcefield(new Forcefield(
+                        (new Vector()).copy(cytoplast.position), 
+                        cytoplast.entityRadius,
+                        Entropyfier.prototype.force,
+                        false,
+                        Math.PI,
+                        devourer.position,
+                        Entropyfier.prototype.forceTime
+                    ));
                     
                     delete this.cytoplasts.splice(j, 1)[0].destroy();
                     this.addCytoplasts(1);
