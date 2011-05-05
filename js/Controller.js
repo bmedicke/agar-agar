@@ -506,8 +506,6 @@ Controller.prototype = {
         var midPoint = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0),
             radiusVector = midPoint.rotate2D(Math.random() * Math.PI * 2);
             
-        log(radiusVector);
-            
         if (Math.abs(radiusVector.y) > midPoint.y) {
             
             radiusVector.mulSelf(midPoint.y / Math.abs(radiusVector.y) + 0.1);
