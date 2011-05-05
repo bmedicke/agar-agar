@@ -149,10 +149,17 @@ Controller.prototype = {
         
         }
         
-        delete leukocyte.orientation;
-        leukocyte.orientation = nearest;
-        
-        leukocyte.applyForce(nearest.normalizeSelf().mulSelf(leukocyte.moveSpeed));
+        if(this.particles.length > 0) {
+            
+            delete leukocyte.orientation;
+            
+            nearest.normalizeSelf();
+            
+            leukocyte.orientation = nearest;
+            
+            leukocyte.applyForce(nearest.mulSelf(leukocyte.moveSpeed));
+            
+        }
         
     },
     
@@ -250,9 +257,12 @@ Controller.prototype = {
             
                 if(cytoplast.position.sub(devourer.position).normSquared() <
                    (cytoplast.entityRadius + devourer.entityRadius) * (cytoplast.entityRadius + devourer.entityRadius)) {
-                   
+
+                    this.addParticlesAt(cytoplast.currentFill, cytoplast.position, cytoplast.entityRadius);
+                    
                     delete this.cytoplasts.splice(j, 1)[0].destroy();
                     this.addCytoplasts(1);
+
                     
                     if(cytoplast.isFull()) {
                         
@@ -527,6 +537,20 @@ Controller.prototype = {
                 new Vector(Math.random() * this.vectorfield.cols,
                            Math.random() * this.vectorfield.rows))
             );
+            
+        }
+    
+    },
+    
+    addParticlesAt : function(amount, position, radius) {
+    
+        var offset = new Vector(position.x + radius, position.y, 0);
+        offset.subSelf(position);
+        
+        for (var i = 0; i < amount; i++) {
+        
+            offset.rotate2DSelf(Math.random() * Math.PI * 2);
+            this.particles.push(new Particle(position.add(offset)));
             
         }
     

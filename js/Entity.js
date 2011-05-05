@@ -3,7 +3,7 @@ var Entity = function(position) {
     this.position = position;
     this.force = new Vector();
     this.velocity = new Vector();
-    this.orientation = new Vector();
+    this.orientation = new Vector(1, 0, 0);
     
 };
 

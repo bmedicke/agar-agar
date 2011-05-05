@@ -20,8 +20,6 @@ Leukocyte.prototype.draw = function(gl) {
     
     gl.pushMatrix();
     
-
-    
         gl.translate(this.position.x, this.position.y);
         var angle = this.orientation.angle();
         
