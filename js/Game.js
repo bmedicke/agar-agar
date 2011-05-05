@@ -22,6 +22,7 @@ Game.prototype = {
     initialize : function(gl) {
     
         this.resetLevel(true);
+        this.vectorfield.initialize();
         this.stardust.initialize(gl);
     
     },
