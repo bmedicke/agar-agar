@@ -7,6 +7,9 @@ var Controller = function(vectorfield) {
     this.leukocytes = [];    
     this.devourers = [];
     this.entropyfiers = [];
+    
+    this.points = 0;
+    this.multiplier = 1;
 
 };
 
@@ -15,6 +18,16 @@ Controller.prototype = {
     separationFactor : 10,
     
     cohesionFactor : .5,
+    
+    points : {
+        
+        particleSpawn : 1,
+        particleGoal : 10,
+        leukoDeath : 50,
+        cytoFull : 250,
+        devourerDeath : 1000
+        
+    },
 
     update : function(dt) {
     
@@ -220,6 +233,7 @@ Controller.prototype = {
                    (cytoplast.entityRadius + devourer.entityRadius) * (cytoplast.entityRadius + devourer.entityRadius)) {
                    
                     delete this.cytoplasts.splice(j, 1)[0].destroy();
+                    this.addCytoplasts(1);
                 
                 }
             
@@ -452,6 +466,9 @@ Controller.prototype = {
         this.cytoplasts = [];
         this.leukocytes = [];    
         this.devourers = [];
+        
+        this.points = 0;
+        this.multiplier = 1;
     
     },
     
