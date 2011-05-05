@@ -251,10 +251,19 @@ Controller.prototype = {
                     
                     if(cytoplast.isFull()) {
                         
+                        this.addPoints("devourerDeath");
+                        
+                        this.multiplier++;
+                        
                         delete this.devourers.splice(i, 1)[0].destroy();
                         i--;
+                        
                         break;
                         
+                    } else {
+                    
+                        this.multiplier = 1;
+                    
                     }
                 
                 }
@@ -408,19 +417,19 @@ Controller.prototype = {
             for(var j = 0; j < this.particles.length; j++) {
             
                 if(this.particles[j].position.sub(cytoplast.position).normSquared() <
-                   cytoplast.entityRadius * cytoplast.entityRadius) {
+                   cytoplast.entityRadius * cytoplast.entityRadius &&
+                   !cytoplast.isFull()) {
                 
                     delete this.particles.splice(j, 1)[0].destroy();
                     cytoplast.currentFill++;
                     
                     this.addPoints("cytoInfect");
+                    
+                    if(cytoplast.isFull()) {
                 
-                }
+                        this.addPoints("cytoFull");
                 
-                if(cytoplast.isFull()) {
-                
-                    //do stuff
-                    log("cytoplast full");
+                    }
                 
                 }
             
