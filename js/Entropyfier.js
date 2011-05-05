@@ -12,7 +12,7 @@ Entropyfier.prototype = {
     
     entropyTime : 3000,
     entropyRadius : 3,
-    forceTime : 2000,
+    forceTime : 1000,
     force : 1,
 
     update : function(dt) {
@@ -40,14 +40,6 @@ Entropyfier.prototype = {
             
         }
     
-    },
-    
-    destroy : function() {
-        
-        delete this.position;
-        
-        return this;
-        
     }
 
 };

@@ -10,6 +10,14 @@ var Controller = function(vectorfield) {
     
     this.points = 0;
     this.multiplier = 1;
+    
+    this.devourerForcefield = new Forcefield(
+        new Vector(), 
+        Devourer.prototype.forceRadius,
+        Devourer.prototype.force,
+        false,
+        Devourer.prototype.forceAngle
+    );
 
 };
 
@@ -79,25 +87,22 @@ Controller.prototype = {
             var entropyfier = this.entropyfiers[i];
             
             if (entropyfier.timer > entropyfier.chargeTime) {
-            
-                this.vectorfield.applyForceField(
-                    dt,
-                    Entropyfier.prototype.force,
+                
+                this.vectorfield.addForcefield(new Forcefield(
+                    entropyfier.position, 
                     entropyfier.forceRadius,
-                    entropyfier.position,
+                    Entropyfier.prototype.force,
                     false,
-                    Math.PI
-                );
+                    Math.PI,
+                    null,
+                    Entropyfier.prototype.forceTime
+                ));
+                
+                delete this.entropyfiers.splice(i, 1)[0];
 
             }
             
             entropyfier.update(dt);
-            
-            if (entropyfier.timer > entropyfier.chargeTime + Entropyfier.prototype.forceTime) {
-            
-                delete this.entropyfiers.splice(i, 1)[0].destroy();
-            
-            }
         
         }
     
@@ -471,14 +476,8 @@ Controller.prototype = {
         
         for (var i = 0; i < this.devourers.length; i++) {
             
-            this.vectorfield.applyForceField(
-                dt,
-                Devourer.prototype.force,
-                Devourer.prototype.forceRadius,
-                this.devourers[i].position, 
-                false,
-                Devourer.prototype.forceAngle
-            );
+            this.devourerForcefield.position = this.devourerForcefield.point = this.devourers[i].position;
+            this.vectorfield.applyForcefield(dt, this.devourerForcefield);
             
         }
         

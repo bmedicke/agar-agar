@@ -1,3 +1,17 @@
+var Forcefield = function(position, radius, force, isDynamic, angle, point, duration) {
+    
+    this.position = position || new Vector();
+    this.radius = radius || 0;
+    this.force = force || 0;
+    
+    this.isDynamic = isDynamic || false;
+    
+    this.angle = angle || 0;
+    this.point = point || position;
+    this.duration = duration || 0;
+    
+};
+
 var Vectorfield = function(width, height) {
     
     this.cellSize = Math.sqrt(width * height / this.numberOfCells);
@@ -15,6 +29,8 @@ var Vectorfield = function(width, height) {
     this.dynamicLookupTable = [];
     this.staticLookupTable = [];
     
+    this.forcefields = [];
+    
 };
 
 Vectorfield.prototype = {
@@ -30,7 +46,7 @@ Vectorfield.prototype = {
     
     initialize : function() {
     
-        for(var i = 0; i < this.numberOfCells; i++) {
+        for(var i = 0; i < this.rows * this.cols; i++) {
         
             this.staticVectors[i] = new Vector();
             this.dynamicVectors[i] = new Vector();
@@ -68,6 +84,8 @@ Vectorfield.prototype = {
             }
 
         }
+        
+        this.updateForcefields(dt);
         
     },
     
@@ -109,6 +127,25 @@ Vectorfield.prototype = {
         }
         
         this.dynamicLookupTable = [];
+    },
+    
+    updateForcefields : function(dt) {
+        
+        for (var i = 0; i < this.forcefields.length; i++) {
+            
+            this.applyForcefield(dt, this.forcefields[i]);
+            
+            this.forcefields[i].duration -= dt;
+            
+            if (this.forcefields[i].duration <= 0) {
+                
+                delete this.forcefields.splice(i, 1)[0];
+                i--;
+                
+            }
+            
+        }
+        
     },
     
     drawVectors : function(vectors, lookupTable) {
@@ -180,17 +217,20 @@ Vectorfield.prototype = {
         
     },
     
-    applyForceField : function(dt, force, radius, position, isDynamic, angle, point) {
+    addForcefield : function(forcefield) {
         
-        point = point || position;
-        angle = angle || 0;
+        this.forcefields.push(forcefield);
+        
+    },
+    
+    applyForcefield : function(dt, forcefield) {
                 
-        var cell = this.getCell(position),
-            left = Math.floor(cell.x - radius < 0 ? 0 : cell.x - radius),
-            right = Math.ceil(cell.x + radius > this.cols ? this.cols : cell.x + radius),
-            top = Math.floor(cell.y - radius < 0 ? 0 : cell.y - radius),
-            bottom = Math.ceil(cell.y + radius > this.rows ? this.rows : cell.y + radius),
-            setVector = isDynamic ? this.setDynamicVector : this.setStaticVector,
+        var cell = this.getCell(forcefield.position),
+            left = Math.floor(cell.x - forcefield.radius < 0 ? 0 : cell.x - forcefield.radius),
+            right = Math.ceil(cell.x + forcefield.radius > this.cols ? this.cols : cell.x + forcefield.radius),
+            top = Math.floor(cell.y - forcefield.radius < 0 ? 0 : cell.y - forcefield.radius),
+            bottom = Math.ceil(cell.y + forcefield.radius > this.rows ? this.rows : cell.y + forcefield.radius),
+            setVector = forcefield.isDynamic ? this.setDynamicVector : this.setStaticVector,
             cellVector = new Vector();
         
         for (var i = left; i < right; i++) {
@@ -199,10 +239,10 @@ Vectorfield.prototype = {
                 
                 cellVector.set(i + .5, j + .5, 0);
                 
-                if (cellVector.sub(position).normSquared() < radius * radius) {
+                if (cellVector.sub(forcefield.position).normSquared() < forcefield.radius * forcefield.radius) {
                     
-                    var distance = cellVector.sub(position).norm();
-                    cellVector.subSelf(point).normalizeSelf().mulSelf(-force * (1 - distance / radius) * dt).rotate2DSelf(angle);
+                    var distance = cellVector.sub(forcefield.position).norm();
+                    cellVector.subSelf(forcefield.point).normalizeSelf().mulSelf(-forcefield.force * (1 - distance / forcefield.radius) * dt).rotate2DSelf(forcefield.angle);
                     
                     setVector.call(this, i + j * this.cols, cellVector);
                     

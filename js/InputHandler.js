@@ -14,6 +14,13 @@ var InputHandler = function(vectorfield) {
     this.touchPosition = new Vector();
     
     this.mouse = new Vector();
+    
+    this.forcefield = new Forcefield(
+        new Vector(), 
+        InputHandler.prototype.forceRadius,
+        InputHandler.prototype.force,
+        true
+    );
 
     var self = this;
 
@@ -51,13 +58,8 @@ InputHandler.prototype = {
             
             if (this.touchStarted) {
                 
-                this.vectorfield.applyForceField(
-                    dt, 
-                    InputHandler.prototype.force,
-                    InputHandler.prototype.forceRadius, 
-                    this.touchPosition, 
-                    true
-                );
+                this.forcefield.position = this.forcefield.point = this.touchPosition;
+                this.vectorfield.applyForcefield(dt, this.forcefield);
                 
             } else {
                 
@@ -65,15 +67,10 @@ InputHandler.prototype = {
                 
                 do {
                     
-                    this.vectorfield.applyForceField(
-                        dt, 
-                        InputHandler.prototype.force,
-                        InputHandler.prototype.forceRadius,
-                        this.oldTouchPosition, 
-                        true,
-                        0,
-                        this.oldTouchPosition.add(vector)
-                    );
+                    this.forcefield.position = this.oldTouchPosition
+                    this.forcefield.point = this.oldTouchPosition.add(vector);
+                    
+                    this.vectorfield.applyForcefield(dt, this.forcefield);
                     
                 } while (this.oldTouchPosition.addSelf(vector.mul(.25)).sub(this.touchPosition).normSquared() > vector.mul(.25).normSquared());
                 
