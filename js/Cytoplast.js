@@ -11,7 +11,7 @@ Cytoplast.prototype.constructor = Entity;
 Cytoplast.prototype.mass = 800000;
 Cytoplast.prototype.entityRadius = 1.3;
 Cytoplast.prototype.moveSpeed = 0;
-Cytoplast.prototype.maxFill = 5;
+Cytoplast.prototype.maxFill = 100;
 
 Cytoplast.prototype.draw = function(gl) {
     
