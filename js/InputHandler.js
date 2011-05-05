@@ -176,14 +176,10 @@ InputHandler.prototype = {
             
             this.touchStop();
             
-        } else if (event.keyCode == 82) {
+        } else if (event.keyCode == 82 || event.keyCode == 78) {
             
-            game.resetLevel();
+            game.initLevel();
             
-        } else if (event.keyCode == 78) {
-
-            game.resetLevel(true);
-
         } else if (event.keyCode == 86) {
             
             game.drawVectorfield = !game.drawVectorfield;

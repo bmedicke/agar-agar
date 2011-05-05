@@ -10,7 +10,7 @@ Devourer.prototype.constructor = Entity;
 
 Devourer.prototype.mass = 2000000;
 Devourer.prototype.entityRadius = 2.0;
-Devourer.prototype.moveSpeed = 0.2;
+Devourer.prototype.moveSpeed = 0.5;
 
 Devourer.prototype.force = 0.1;
 Devourer.prototype.forceRadius = 8.0;

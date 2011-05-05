@@ -2,26 +2,38 @@ var Game = function(width, height) {
     
     this.vectorfield = new Vectorfield(width, height);    
     this.inputHandler = new InputHandler(this.vectorfield);
-	this.controller = new Controller(this.vectorfield);
-	
-	this.stardust = new Stardust(this.vectorfield);
-    this.generator = new Generator();
-    // this.fader = new Fader();
+    this.controller = new Controller(this.vectorfield);
+    
+    this.stardust = new Stardust(this.vectorfield);
     
     this.isPaused = false;
-    this.leukoTime = 0;
-    this.entropyTime = 0;
     
     this.drawVectorfield = true;
     this.drawStardust = true;
     
+    this.leukoTime = 0;
+    this.devourerTime = 0;
+    this.entropyTime = 0;
+    
 };
 
 Game.prototype = {
+    
+    particleCount : 20,
+    
+    leukoRate : 5000,
+    leukoAmount : 2,
+    leukoCap : 15,
+    
+    entropyRate : 10000,
+    entropyAmount : 1,
+    
+    devourerRate : 30000,
+    
 
     initialize : function(gl) {
     
-        this.resetLevel(true);
+        this.initLevel();
         this.vectorfield.initialize();
         this.stardust.initialize(gl);
     
@@ -29,73 +41,39 @@ Game.prototype = {
     
     update : function(dt) {
 
-        // if (this.fader.isActive()) {
-        //     
-        //     this.fader.update(dt);
-        //     
-        // } else {
-        //     
-            this.vectorfield.update(dt);
-            this.controller.applyDevourerVortices(dt);
-            this.inputHandler.update(dt);
-            this.controller.update(dt);
-            
-            if (this.drawStardust) {
-                
-                this.stardust.update(dt);
-                
-            }
-            
-            this.leukoTime += dt;
-            this.entropyTime += dt;
+        this.vectorfield.update(dt);
+        this.controller.applyDevourerVortices(dt);
+        this.inputHandler.update(dt);
+        this.controller.update(dt);
         
-            if( this.leukoTime > this.generator.level.leukoRate &&
-                this.controller.leukocytes.length < this.generator.level.leukoCap) {
-
-                this.controller.addLeukocytes(this.generator.level.leukoAmount);
-                
-                this.leukoTime = 0;
+        if (this.drawStardust) {
             
-            }
+            this.stardust.update(dt);
             
-            if(this.entropyTime > this.generator.level.entropyRate) {
-            
-                this.controller.addEntropyfiers(this.generator.level.entropyAmount);
-                
-                this.entropyTime = 0;
-            
-            }
-        //     
-        // }
+        }
+        
+        this.updateLevel(dt);
         
     },
     
     draw : function(gl) {
         
-        // if (this.fader.isActive()) {
-        //     
-        //     this.fader.draw(gl);
-        //     
-        // } else {
-        //     
         
-            if (this.drawStardust) {
-                
-                this.stardust.draw(gl);
-                
-            }
+        if (this.drawStardust) {
             
-            this.controller.draw(gl);
+            this.stardust.draw(gl);
             
-            if (this.drawVectorfield) {
-                
-                this.vectorfield.draw(gl);
-                
-            }
+        }
+        
+        this.controller.draw(gl);
+        
+        if (this.drawVectorfield) {
             
-            this.inputHandler.draw(gl);
-        //     
-        // }
+            this.vectorfield.draw(gl);
+            
+        }
+        
+        this.inputHandler.draw(gl);
         
     },
     
@@ -105,19 +83,51 @@ Game.prototype = {
         
     },
     
-    resetLevel : function(generateNewLevel) {
+    initLevel : function() {
+        
+        this.leukoTime = 0;
+        this.devourerTime = 0;
+        this.entropyTime = 0;
     
         this.controller.reset();
         this.vectorfield.reset();
         
-        if (generateNewLevel) {
+        this.controller.addParticles(this.particleCount);
+        
+        this.controller.addDevourers(1);
+        this.controller.addCytoplasts(1);
+        
+    },
+    
+    updateLevel : function(dt) {
+        
+        this.leukoTime += dt;
+        this.entropyTime += dt;
+    
+        if( this.leukoTime > this.leukoRate &&
+            this.controller.leukocytes.length < this.leukoCap) {
+
+            this.controller.addLeukocytes(this.leukoAmount);
             
-             this.generator.generate(this.vectorfield.cols, this.vectorfield.rows);
-            
+            this.leukoTime -= this.leukoRate;
+        
         }
         
-        this.generator.buildLevel(this.controller);
-    
+        if( this.entropyTime > this.entropyRate) {
+        
+            this.controller.addEntropyfiers(this.entropyAmount);
+            
+            this.entropyTime -= this.entropyRate;
+        
+        }
+        
+        if( this.devourerTime > this.devourerRate) {
+        
+            this.controller.addDevourers(1);
+            
+            this.devourerTime -= this.devourerRate;
+        
+        }
+        
     }
-    
 };

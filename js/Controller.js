@@ -455,32 +455,13 @@ Controller.prototype = {
     
     },
     
-    addElement : function(type, position) {
-            
-        switch(type) {
+    getRandomOutsidePosition : function() {
         
-            case "Particle":
-                this.particles.push(new Particle(position));
-                break;
-                
-            case "Devourer":
-                this.devourers.push(new Devourer(position));
-                break;
-                
-            case "Cytoplast":
-                this.cytoplasts.push(new Cytoplast(position));
-                break;
-                
-            case "Leukocyte":
-                addLeukocytes(1);
-                break;
-                
-            case "Entropyfier":
-                addEntropyfiers(1);
-                break;
-                
-        }
-    
+        var radiusVector = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0);
+        radiusVector.addSelf(radiusVector.rotate2D(Math.random() * Math.PI * 2));
+        
+        return radiusVector;
+        
     },
     
     addParticles : function(amount) {
@@ -491,9 +472,6 @@ Controller.prototype = {
                 new Vector(Math.random() * this.vectorfield.cols,
                            Math.random() * this.vectorfield.rows))
             );
-            // this.particles.push(new Particle(
-                // new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 1))
-            // );
             
         }
     
@@ -503,10 +481,7 @@ Controller.prototype = {
     
         for (var i = 0; i < amount; i++) {
         
-            var radiusVector = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0);
-            radiusVector.addSelf(radiusVector.rotate2D(Math.random() * Math.PI * 2));
-        
-            this.leukocytes.push(new Leukocyte(radiusVector));
+            this.leukocytes.push(new Leukocyte(this.getRandomOutsidePosition()));
             
         }
     
@@ -516,10 +491,7 @@ Controller.prototype = {
     
         for (var i = 0; i < amount; i++) {
         
-            this.cytoplasts.push(new Cytoplast(
-                new Vector(Math.random() * this.vectorfield.cols,
-                           Math.random() * this.vectorfield.rows)
-            ));
+            this.cytoplasts.push(new Cytoplast(this.getRandomOutsidePosition()));
             
         }
         
@@ -529,10 +501,7 @@ Controller.prototype = {
         
         for(var i = 0; i < amount; i++) {
             
-            this.devourers.push(new Devourer(
-                new Vector(Math.random() * this.vectorfield.cols,
-                           Math.random() * this.vectorfield.rows))
-                );
+            this.devourers.push(new Devourer(this.getRandomOutsidePosition()));
             
         }
         
