@@ -153,7 +153,7 @@ Vector.prototype = {
         
     },
     
-    clamp: function(value) {
+    clampSelf: function(value) {
         
         if (this.normSquared() > value * value) {
             

@@ -104,10 +104,11 @@ Vectorfield.prototype = {
             
             var cellID = this.dynamicLookupTable[i];
             
-            dynamicVectors[cellID].set(0, 0, 0);
+            this.dynamicVectors[cellID].set(0, 0, 0);
             
         }
         
+        this.dynamicLookupTable = [];
     },
     
     drawVectors : function(vectors, lookupTable) {
@@ -115,27 +116,12 @@ Vectorfield.prototype = {
         var cell = new Vector(),
             vector = new Vector();
         
-        // for (var cellID in vectors) {
-            
-            // if (vectors.hasOwnProperty(cellID)) {
-                
-                // cell.set(cellID % this.cols + .5, Math.floor(cellID / this.cols) + .5, 0);
-                // vector = vectors[cellID].clamp(1.3);
-            
-                // gl.drawLine(
-                    // cell.x, cell.y,
-                    // cell.x + vector.x, cell.y + vector.y
-                // );
-                
-            // }
-        // }
-        
         for (var i = 0; i < lookupTable.length; i++) {
         
             var cellID = lookupTable[i];
         
             cell.set(cellID % this.cols + .5, Math.floor(cellID / this.cols) + .5, 0);
-            vector = vectors[cellID].clamp(1.3);
+            vector = vectors[cellID].clampSelf(1.3);
         
             gl.drawLine(
                 cell.x, cell.y,
@@ -162,21 +148,45 @@ Vectorfield.prototype = {
         
         var cellID = this.getCellID(position);
         
-        return (this.dynamicVectors[cellID] || new Vector()).add(this.staticVectors[cellID] || new Vector());
+        if(cellID >= 0 && cellID < this.numberOfCells) {
+        
+            return this.dynamicVectors[cellID].add(this.staticVectors[cellID]);
+
+        } else {
+        
+            return new Vector();
+        
+        }
         
     },
     
     setDynamicVector : function(cellID, vector) {
         
-        this.dynamicVectors[cellID] = (this.dynamicVectors[cellID] || new Vector()).addSelf(vector).clamp(this.maxForce);
-        this.dynamicLookupTable.push(cellID);
+        if(cellID >= 0 && cellID < this.numberOfCells) {
+            
+            this.dynamicVectors[cellID].addSelf(vector).clampSelf(this.maxForce);
+        
+            if(this.dynamicLookupTable.indexOf(cellID) == -1) {
+        
+                this.dynamicLookupTable.push(cellID);
+        
+            }
+        }
         
     },
     
     setStaticVector : function(cellID, vector) {
         
-        this.staticVectors[cellID] = (this.staticVectors[cellID] || new Vector()).addSelf(vector);
-        this.staticLookupTable.push(cellID);
+        if(cellID >= 0 && cellID < this.numberOfCells) {
+        
+            this.staticVectors[cellID] = (this.staticVectors[cellID] || new Vector()).addSelf(vector);
+        
+            if(this.staticLookupTable.indexOf(cellID) == -1) {
+        
+                this.staticLookupTable.push(cellID);
+        
+            }
+        }
         
     },
     
