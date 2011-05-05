@@ -12,6 +12,9 @@ var Game = function(width, height) {
     this.leukoTime = 0;
     this.entropyTime = 0;
     
+    this.drawVectorfield = true;
+    this.drawStardust = true;
+    
 };
 
 Game.prototype = {
@@ -36,7 +39,11 @@ Game.prototype = {
             this.inputHandler.update(dt);
             this.controller.update(dt);
             
-            this.stardust.update(dt);
+            if (this.drawStardust) {
+                
+                this.stardust.update(dt);
+                
+            }
             
             this.leukoTime += dt;
             this.entropyTime += dt;
@@ -70,9 +77,21 @@ Game.prototype = {
         //     
         // } else {
         //     
-            this.stardust.draw(gl);
+        
+            if (this.drawStardust) {
+                
+                this.stardust.draw(gl);
+                
+            }
+            
             this.controller.draw(gl);
-            // this.vectorfield.draw(gl);
+            
+            if (this.drawVectorfield) {
+                
+                this.vectorfield.draw(gl);
+                
+            }
+            
             this.inputHandler.draw(gl);
         //     
         // }

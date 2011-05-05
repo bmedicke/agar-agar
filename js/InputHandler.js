@@ -184,8 +184,15 @@ InputHandler.prototype = {
 
             game.resetLevel(true);
 
+        } else if (event.keyCode == 86) {
+            
+            game.drawVectorfield = !game.drawVectorfield;
+            
+        } else if (event.keyCode == 79) {
+
+            game.drawStardust = !game.drawStardust;
+
         }
-        
     },
     
     setMousePosition : function(event) {
