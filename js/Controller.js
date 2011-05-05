@@ -19,10 +19,10 @@ Controller.prototype = {
     
     cohesionFactor : .5,
     
-    points : {
+    pointValues : {
         
         particleSpawn : 1,
-        particleGoal : 10,
+        cytoInfect : 10,
         leukoDeath : 50,
         cytoFull : 250,
         devourerDeath : 1000
@@ -214,10 +214,18 @@ Controller.prototype = {
         
         for (var i = 0; i < this.devourers.length; i++) {
         
-            var devourer = this.devourers[i];
+            var devourer = this.devourers[i],
+                leukoAmount = this.leukocytes.length;
             
             this.devourerCollision(devourer, this.particles);
             this.devourerCollision(devourer, this.leukocytes);
+            
+            while (leukoAmount > this.leukocytes.length) {
+                
+                this.addPoints("leukoDeath");
+                leukoAmount--;
+                
+            }
             
             for(var j = 0; j < i; j++) {
             
@@ -324,6 +332,8 @@ Controller.prototype = {
                             this.particles[j].resetReproduction();
                             this.particles[k].resetReproduction();
                             
+                            this.addPoints("particleSpawn");
+                            
                             break;
                             
                         }
@@ -394,6 +404,8 @@ Controller.prototype = {
                 
                     delete this.particles.splice(j, 1)[0].destroy();
                     cytoplast.currentFill++;
+                    
+                    this.addPoints("cytoInfect");
                 
                 }
                 
@@ -554,6 +566,12 @@ Controller.prototype = {
             
         }
     
+    },
+    
+    addPoints : function(pointKey) {
+        
+        this.points += this.multiplier * this.pointValues[pointKey];
+        
     }
     
 };
