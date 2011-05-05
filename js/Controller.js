@@ -225,6 +225,12 @@ Controller.prototype = {
                 
             }
             
+            this.applyDevourerTarget(devourer);
+            
+            devourer.boundaryCheck(this.vectorfield);
+            
+            devourer.update(dt);
+            
             for(var j = 0; j < this.cytoplasts.length; j++) {
             
                 var cytoplast = this.cytoplasts[j];
@@ -234,16 +240,18 @@ Controller.prototype = {
                    
                     delete this.cytoplasts.splice(j, 1)[0].destroy();
                     this.addCytoplasts(1);
+                    
+                    if(cytoplast.isFull()) {
+                        
+                        delete this.devourers.splice(i, 1)[0].destroy();
+                        i--;
+                        break;
+                        
+                    }
                 
                 }
             
             }
-            
-            this.applyDevourerTarget(devourer);
-            
-            devourer.boundaryCheck(this.vectorfield);
-            
-            devourer.update(dt);
             
         }
         
@@ -397,7 +405,7 @@ Controller.prototype = {
                 
                 }
                 
-                if(cytoplast.currentFill >= cytoplast.maxFill) {
+                if(cytoplast.isFull()) {
                 
                     //do stuff
                     log("cytoplast full");
