@@ -175,24 +175,32 @@ WebGLRenderingContext.prototype.initUtilityBuffers = function() {
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(rectVertices), this.STATIC_DRAW);
     
     
-    var vertex = new Vector(1, 0, 1),
-        circleVertices = [],
-        circleResolution = 24;
+    this.circleBuffer = this.createCircleBuffer(1, 24);
+    
+};
+
+WebGLRenderingContext.prototype.createCircleBuffer = function(radius, resolution) {
+    
+    var vertex = new Vector(radius, 0, 1),
+        circleVertices = [];
         
-    for (var i = 0; i < circleResolution; i++) {
+    for (var i = 0; i < resolution; i++) {
     
         circleVertices.push(vertex.x, vertex.y, vertex.z);
         
-        vertex.rotate2DSelf((Math.PI * 2) / circleResolution);
+        vertex.rotate2DSelf((Math.PI * 2) / resolution);
     
     }
     
-    this.circleBuffer = this.createBuffer();
-    this.circleBuffer.itemSize = 3;
-    this.circleBuffer.vertexCount = circleResolution;
+    var circleBuffer = this.createBuffer();
     
-    this.bindBuffer(this.ARRAY_BUFFER, this.circleBuffer);
+    circleBuffer.itemSize = 3;
+    circleBuffer.vertexCount = resolution;
+    
+    this.bindBuffer(this.ARRAY_BUFFER, circleBuffer);
     this.bufferData(this.ARRAY_BUFFER, new Float32Array(circleVertices), this.STATIC_DRAW);
+    
+    return circleBuffer;
     
 };
 

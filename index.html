@@ -4,7 +4,7 @@
 
 <head>
     <meta charset=utf-8>
-    <title>agar-agar</title>
+    <title>Agar Agar</title>
     <meta name="description" content="control the flow">
     
     <meta name="author" content="Eberhard Gräther">
@@ -89,7 +89,7 @@
     
 </script>
 
-<script id="leuco-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+<script id="particle-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
 
@@ -107,7 +107,7 @@
     
 </script>
 
-<script id="leuco-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+<script id="particle-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
     #ifdef GL_ES
        precision highp float;
@@ -120,6 +120,39 @@
     void main(void) {
     
        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+       
+    }
+    
+</script>
+
+<script id="leukocyte-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+    uniform vec2 particlePosition;
+
+    attribute vec3 position;
+    
+    void main(void) {
+      
+      vec2 vector = particlePosition - position.xy;
+      
+      float factor = 1.0 / dot(vector, vector);
+      
+      gl_Position = matrix * vec4(position + vec3(vector * factor, 0.0), 1.0);
+    
+    }
+    
+</script>
+
+<script id="leukocyte-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    #ifdef GL_ES
+       precision highp float;
+    #endif
+    
+    void main(void) {
+    
+       gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);
        
     }
     

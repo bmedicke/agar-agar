@@ -62,11 +62,16 @@ Controller.prototype = {
         
         this.drawEntities(gl, this.devourers);
         
+        
         gl.setColor(.5, .5, .5, 1);
         
         this.drawEntities(gl, this.particles);
         
+        
+        
         this.drawEntities(gl, this.leukocytes);
+        
+        gl.bindShader(gl.defaultShader);
 
     },
     
