@@ -126,6 +126,6 @@ WebGLRenderingContext.prototype.passTexture = function(texture) {
     
     this.activeTexture( this.TEXTURE0 );
     this.bindTexture( this.TEXTURE_2D, texture );
-    this.uniform1i( this.activeShader.textureUniformLocation, 0 );
+    this.uniform1i( this.getUniformLocation( this.activeShader, "texture" ), 0 );
     
 };

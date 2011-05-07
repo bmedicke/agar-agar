@@ -1,4 +1,4 @@
-WebGLRenderingContext.prototype.loadTexture = function(imagePath) {
+WebGLRenderingContext.prototype.loadTexture = function(imagePath, callback) {
     
     var texture = this.createTexture();
     texture.image = new Image();
@@ -7,7 +7,7 @@ WebGLRenderingContext.prototype.loadTexture = function(imagePath) {
     
     texture.image.onload = function () {
         
-        self.textureImageLoaded(texture);
+        self.textureImageLoaded(texture, callback);
         
     }
     
@@ -18,7 +18,7 @@ WebGLRenderingContext.prototype.loadTexture = function(imagePath) {
     
 };
 
-WebGLRenderingContext.prototype.textureImageLoaded = function(texture) {
+WebGLRenderingContext.prototype.textureImageLoaded = function(texture, callback) {
         
     this.bindTexture( this.TEXTURE_2D, texture );
 
@@ -27,8 +27,14 @@ WebGLRenderingContext.prototype.textureImageLoaded = function(texture) {
 
     this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MAG_FILTER, this.NEAREST );
     this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MIN_FILTER, this.NEAREST );
-
+    
     this.bindTexture( this.TEXTURE_2D, null );
+    
+    if (callback) {
+        
+        callback(this);
+    
+    }
     
     missingResourceCount--;
     start();

@@ -42,7 +42,7 @@ function initialize() {
 
 function start() {
     
-    if (missingResourceCount == 0) {
+    if (missingResourceCount === 0) {
         
         run();
         

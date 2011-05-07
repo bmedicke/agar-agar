@@ -28,8 +28,6 @@ Particle.prototype.cohesionRadius = 2;
 
 Particle.initialize = function(gl) {
     
-    this.texture = gl.loadTexture("textures/ball.png");
-    
     this.vertexBuffer = gl.createBuffer();
     this.vertexBuffer.itemSize = 3;
     this.vertexBuffer.vertexCount = 0;
@@ -43,15 +41,19 @@ Particle.initialize = function(gl) {
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
     gl.passMatrix();
     
-    this.shader.textureUniformLocation = gl.getUniformLocation(this.shader, "texture");
-    gl.passTexture(this.texture);
+    var self = this;
+    
+    this.texture = gl.loadTexture("textures/ball.png", function(gl) {
+        
+        gl.bindShader(self.shader);
+        gl.passTexture(self.texture);
+        
+    });
     
     gl.uniform1f(
         gl.getUniformLocation(this.shader, "size"), 
-        game.vectorfield.cellSize * 2 * Particle.prototype.entityRadius
+        game.vectorfield.cellSize * 4 * Particle.prototype.entityRadius
     );
-    
-    gl.bindShader(gl.defaultShader);
     
 };
 
@@ -85,9 +87,11 @@ Particle.draw = function(gl, particles) {
     gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
     
     gl.bindShader(this.shader);
+    gl.enableAlpha();
     
     gl.passVertices(gl.POINTS, this.vertexBuffer);
     
+    gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
 
 };
