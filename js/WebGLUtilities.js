@@ -118,11 +118,6 @@ WebGLRenderingContext.prototype.drawLine = function(x1, y1, x2, y2) {
         x2, y2, 1.0
     ]);
     
-    // this.lineArray[0] = x1;
-    // this.lineArray[1] = y1;
-    // this.lineArray[3] = x2;
-    // this.lineArray[4] = y2;
-    
     this.bindBuffer(this.ARRAY_BUFFER, this.lineBuffer);
     // this.bufferSubData(this.ARRAY_BUFFER, 0, this.lineArray);
     this.bufferData(this.ARRAY_BUFFER, this.lineArray, this.STATIC_DRAW);

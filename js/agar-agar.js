@@ -1,7 +1,8 @@
 var canvas,
     gl,
     game,
-    time;
+    time,
+    missingResourceCount = 0;
 
 function initialize() {
     
@@ -39,6 +40,16 @@ function initialize() {
     
 };
 
+function start() {
+    
+    if (missingResourceCount === 0) {
+        
+        run();
+        
+    }
+    
+};
+
 function run() {
 
     requestAnimationFrame(run, canvas);
@@ -65,7 +76,12 @@ function run() {
 
 window.onload = function() {   
     
+    missingResourceCount++;
+    
     initialize();
-    run();
+    
+    missingResourceCount--;
+    
+    start();
 
 };

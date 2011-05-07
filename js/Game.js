@@ -32,12 +32,15 @@ Game.prototype = {
     
 
     initialize : function(gl) {
+        
+        Particle.initialize(gl);
+        Leukocyte.initialize(gl);
     
         this.initLevel();
         this.vectorfield.initialize();
         this.stardust.initialize(gl);
         
-        Leukocyte.initialize(gl);
+        gl.bindShader(gl.defaultShader);
     
     },
     
