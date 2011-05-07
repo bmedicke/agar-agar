@@ -9,37 +9,16 @@ WebGLRenderingContext.prototype.loadShader = function(vertexShaderID, fragmentSh
 
 WebGLRenderingContext.prototype.loadShaderScript = function(shaderScriptID) {
     
-    var shaderScript = document.getElementById(shaderScriptID);
+    var shaderScript = document.getElementById(shaderScriptID),
+        shader;
 
-    if (!shaderScript) {
-        return null;
-    }
+    if (shaderScript.type === "x-shader/x-fragment") {
 
-    var shaderSource = "",
-        textNodeType = 3,
-        currentChild = shaderScript.firstChild;
+        shader = gl.createShader(gl.FRAGMENT_SHADER);
 
-    while (currentChild) {
+    } else if (shaderScript.type === "x-shader/x-vertex") {
 
-        if (currentChild.nodeType == textNodeType) {
-
-            shaderSource += currentChild.textContent;
-
-        }
-
-        currentChild = currentChild.nextSibling;
-    }
-
-
-    var shader;
-
-    if (shaderScript.type == "x-shader/x-fragment") {
-
-        shader = this.createShader(this.FRAGMENT_SHADER);
-
-    } else if (shaderScript.type == "x-shader/x-vertex") {
-
-        shader = this.createShader(this.VERTEX_SHADER);
+        shader = gl.createShader(gl.VERTEX_SHADER);
 
     } else {
 
@@ -48,13 +27,12 @@ WebGLRenderingContext.prototype.loadShaderScript = function(shaderScriptID) {
     }
 
 
-    this.shaderSource(shader, shaderSource);
+    gl.shaderSource(shader, shaderScript.text);
+    gl.compileShader(shader);
 
-    this.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 
-    if (!this.getShaderParameter(shader, this.COMPILE_STATUS)) {
-
-        log("shader compile ERROR: " + this.getShaderInfoLog(shader));
+        console.log("shader " + gl.getShaderInfoLog(shader));
         return null;
 
     }

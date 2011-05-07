@@ -25,8 +25,10 @@ WebGLRenderingContext.prototype.textureImageLoaded = function(texture, callback)
     this.pixelStorei( this.UNPACK_FLIP_Y_WEBGL, true );
     this.texImage2D( this.TEXTURE_2D, 0, this.RGBA, this.RGBA, this.UNSIGNED_BYTE, texture.image );
 
-    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MAG_FILTER, this.NEAREST );
-    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MIN_FILTER, this.NEAREST );
+    this.generateMipmap( this.TEXTURE_2D );
+    
+    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MAG_FILTER, this.LINEAR_MIPMAP_LINEAR );
+    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MIN_FILTER, this.LINEAR_MIPMAP_LINEAR );
     
     this.bindTexture( this.TEXTURE_2D, null );
     
