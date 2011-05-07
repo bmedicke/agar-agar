@@ -127,18 +127,30 @@
 
 <script id="leukocyte-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
+    const float pi = 3.1415926535897932384626433832;
+    
     uniform mat4 matrix;
-    uniform vec2 particlePosition;
+    uniform vec2 particleVector;
+    
+    uniform float innerRadius;
+    uniform float outerRadius;
 
     attribute vec3 position;
     
     void main(void) {
+    
+        vec2 vector = particleVector;
       
-      vec2 vector = particlePosition - position.xy;
-      
-      float factor = 1.0 / dot(vector, vector);
-      
-      gl_Position = matrix * vec4(position + vec3(vector * factor, 0.0), 1.0);
+        float distance = clamp(length(vector), innerRadius, outerRadius + innerRadius);
+
+        // map distance between 0 and PI:
+        distance = ((distance - innerRadius) / outerRadius) * pi;
+
+        float stretchFactor = sin(distance);
+
+        vector = normalize(vector);
+
+        gl_Position = matrix * vec4(position + vec3(vector * stretchFactor, 0.0), 1.0);
     
     }
     

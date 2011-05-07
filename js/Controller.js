@@ -160,11 +160,9 @@ Controller.prototype = {
             
             delete leukocyte.orientation;
             
-            nearest.normalizeSelf();
-            
             leukocyte.orientation = nearest;
             
-            leukocyte.applyForce(nearest.mulSelf(leukocyte.moveSpeed));
+            leukocyte.applyForce(nearest.normalize().mulSelf(leukocyte.moveSpeed));
             
         }
         
