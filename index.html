@@ -92,16 +92,20 @@
 <script id="particle-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
+    uniform float size;
 
     attribute vec3 position;
-    attribute vec2 texCoord;
+    //attribute vec2 texCoord;
     
-    varying vec2 vTexCoord;
+    //varying vec2 vTexCoord;
     
     void main(void) {
     
        gl_Position = matrix * vec4(position, 1.0);
-       vTexCoord = texCoord;
+       
+       gl_PointSize = size;
+       
+       //vTexCoord = texCoord;
     
     }
     
@@ -113,13 +117,14 @@
        precision highp float;
     #endif
     
-    uniform sampler2D uSampler;
+    uniform sampler2D texture;
     
-    varying vec2 vTexCoord;
+    //varying vec2 vTexCoord;
     
     void main(void) {
     
-       gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+       //gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+       gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
        
     }
     
@@ -164,6 +169,7 @@
 <script type="text/javascript" src="./js/Vector.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/Matrix.js" charset="utf-8"></script>
 
+<script type="text/javascript" src="./js/WebGLTexture.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/WebGLShader.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/WebGLUtilities.js" charset="utf-8"></script>
 

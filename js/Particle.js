@@ -26,20 +26,69 @@ Particle.prototype.maxCount = 100;
 
 Particle.prototype.cohesionRadius = 2;
 
-Particle.prototype.draw = function(gl) {
+Particle.initialize = function(gl) {
+    
+    this.texture = gl.loadTexture("textures/ball.png");
+    
+    this.vertexBuffer = gl.createBuffer();
+    this.vertexBuffer.itemSize = 3;
+    this.vertexBuffer.vertexCount = 0;
+    
+    this.vertexArray = null;
 
-    Entity.prototype.draw.call(this, gl);
+    this.shader = gl.loadShader("particle-vertex-shader", "particle-fragment-shader");
     
-    // if (this.reproductionPotency) {
-    //     
-    //     gl.noFill();
-    //     gl.drawCircle(this.position.x, this.position.y, this.reproductionRadius);
-    //     gl.fill();
-    //     
-    // }
+    gl.bindShader(this.shader);
     
-    // gl.setColor(0, 0, 1, 1);
-    // gl.drawCircle(this.position.x, this.position.y, this.cohesionRadius);
+    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    gl.passMatrix();
+    
+    this.shader.textureUniformLocation = gl.getUniformLocation(this.shader, "texture");
+    gl.passTexture(this.texture);
+    
+    gl.uniform1f(
+        gl.getUniformLocation(this.shader, "size"), 
+        game.vectorfield.cellSize * 2 * Particle.prototype.entityRadius
+    );
+    
+    gl.bindShader(gl.defaultShader);
+    
+};
+
+Particle.draw = function(gl, particles) {
+    
+    if (particles.length === this.vertexBuffer.vertexCount) {
+
+        for (i = 0; i < particles.length; i++) {
+            
+            this.vertexArray[i * 3] = particles[i].position.x;
+            this.vertexArray[i * 3 + 1] = particles[i].position.y;
+
+        }
+        
+    } else {
+        
+        var particlePositions = [];
+
+        for (i = 0; i < particles.length; i++) {
+
+            particlePositions.push(particles[i].position.x, particles[i].position.y, 1.0);
+
+        }
+        
+        this.vertexArray = new Float32Array(particlePositions);
+        this.vertexBuffer.vertexCount = particles.length;
+        
+    }
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
+    
+    gl.bindShader(this.shader);
+    
+    gl.passVertices(gl.POINTS, this.vertexBuffer);
+    
+    gl.bindShader(gl.defaultShader);
 
 };
 

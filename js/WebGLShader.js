@@ -121,3 +121,11 @@ WebGLRenderingContext.prototype.passVertices = function(drawMode, buffer) {
     this.drawArrays(drawMode, 0, buffer.vertexCount);
     
 };
+
+WebGLRenderingContext.prototype.passTexture = function(texture) {
+    
+    this.activeTexture( this.TEXTURE0 );
+    this.bindTexture( this.TEXTURE_2D, texture );
+    this.uniform1i( this.activeShader.textureUniformLocation, 0 );
+    
+};

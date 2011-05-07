@@ -65,7 +65,9 @@ Controller.prototype = {
         
         gl.setColor(.5, .5, .5, 1);
         
-        this.drawEntities(gl, this.particles);
+        //this.drawEntities(gl, this.particles);
+        
+        Particle.draw(gl, this.particles);
         
         
         

@@ -37,6 +37,7 @@ Game.prototype = {
         this.vectorfield.initialize();
         this.stardust.initialize(gl);
         
+        Particle.initialize(gl);
         Leukocyte.initialize(gl);
     
     },
