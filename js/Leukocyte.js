@@ -4,6 +4,7 @@ var Leukocyte = function(position) {
 	
 	this.isActive = true;
 	this.activeTimer = 0;
+    this.currentTarget = new Vector(Infinity, Infinity, 0);
 	
 };
 
@@ -14,7 +15,7 @@ Leukocyte.prototype.mass = 300000;
 Leukocyte.prototype.moveSpeed = .3;
 
 Leukocyte.prototype.entityRadius = .5;
-Leukocyte.prototype.reactiveRadius = 3;
+Leukocyte.prototype.reactiveRadius = 12;
 Leukocyte.prototype.circleResolution = 16;
 
 Leukocyte.prototype.eatTime = 1000;
@@ -31,8 +32,10 @@ Leukocyte.initialize = function(gl) {
     gl.bindShader(this.shader);
     
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    this.shader.particleUniformLocation = gl.getUniformLocation(this.shader, "particleVector");
-    this.shader.entityCenterUniformLocation = gl.getUniformLocation(this.shader, "entityCenter");
+    
+    this.shader.particleVectorUniformLocation = gl.getUniformLocation(this.shader, "particleVector");
+    this.shader.particlePositionUniformLocation = gl.getUniformLocation(this.shader, "particlePosition");
+    
     this.shader.innerRadiusUniformLocation = gl.getUniformLocation(this.shader, "innerRadius");
     this.shader.outerRadiusUniformLocation = gl.getUniformLocation(this.shader, "outerRadius");
     
@@ -80,15 +83,19 @@ Leukocyte.prototype.draw = function(gl) {
         
             gl.translate(this.position.x, this.position.y);
             gl.updateMatrix();
-            
-            //var point = this.orientation.normalize().mul(this.entityRadius);
-            //var point = this.particlePosition.sub(this.position);
-            
+
             gl.uniform2f(
-                Leukocyte.shader.particleUniformLocation, 
+                Leukocyte.shader.particleVectorUniformLocation, 
                 this.orientation.x,
                 this.orientation.y
             );
+            
+            gl.uniform2f(
+                Leukocyte.shader.particlePositionUniformLocation, 
+                this.currentTarget.x,
+                this.currentTarget.y
+            );
+            
             
             gl.uniform1f(
                 Leukocyte.shader.innerRadiusUniformLocation,
@@ -126,7 +133,7 @@ Leukocyte.prototype.update = function(dt) {
     
 };
 
-Leukocyte.prototype.eatParticle = function(particlePosition) {
+Leukocyte.prototype.eatParticle = function() {
     
     this.isActive = false;
     this.activeTimer = Leukocyte.prototype.eatTime;

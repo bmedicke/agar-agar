@@ -127,10 +127,12 @@
 
 <script id="leukocyte-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
-    const float pi = 3.1415926535897932384626433832;
+    const float PI = 3.1415926535897932384626433832;
     
     uniform mat4 matrix;
+    
     uniform vec2 particleVector;
+    uniform vec2 particlePosition;
     
     uniform float innerRadius;
     uniform float outerRadius;
@@ -138,19 +140,31 @@
     attribute vec3 position;
     
     void main(void) {
-    
-        vec2 vector = particleVector;
+
+        vec2 centerToParticle = particleVector;
       
-        float distance = clamp(length(vector), innerRadius, outerRadius + innerRadius);
+        float distanceFromCenter = clamp(length(centerToParticle), innerRadius, outerRadius + innerRadius);
 
-        // map distance between 0 and PI:
-        distance = ((distance - innerRadius) / outerRadius) * pi;
+        // map distanceFromCenter between 0 and PI:
+        distanceFromCenter = ((distanceFromCenter - innerRadius) / outerRadius) * PI;
 
-        float stretchFactor = sin(distance);
+        // expand the stretching a bit, so it doesn't look
+        // like the leukocyte isn't really touching the particle
+        float stretchFactor = sin(distanceFromCenter) * 1.1;
+        
 
-        vector = normalize(vector);
+        vec2 positionToParticle = particlePosition - position.xy;
+        
+        float distanceFromPosition = clamp(length(positionToParticle), 0.0, outerRadius / 2.0 + innerRadius);
+        
+        // map distanceFromPosition between 0 and PI / 2:
+        distanceFromPosition = (distanceFromPosition / (outerRadius / 2.0 + innerRadius)) * (PI / 2.0);
+        
+        float positionFactor = cos(distanceFromPosition);
+        
+        positionToParticle = normalize(positionToParticle);
 
-        gl_Position = matrix * vec4(position + vec3(vector * stretchFactor, 0.0), 1.0);
+        gl_Position = matrix * vec4(position + vec3(positionToParticle * stretchFactor * positionFactor * (outerRadius / 2.0 - innerRadius), 0.0), 1.0);
     
     }
     

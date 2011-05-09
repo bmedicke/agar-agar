@@ -1,7 +1,6 @@
 var Devourer = function(position) {
 
 	Entity.call(this, position);
-	this.orientation.set(1, 0, 0);
 	
 };
 
