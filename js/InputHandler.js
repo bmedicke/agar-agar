@@ -24,7 +24,7 @@ var InputHandler = function(vectorfield) {
 
     var self = this;
 
-    document.body.onmousedown = function(event) {
+    document.getElementById("canvas").onmousedown = function(event) {
         self.onMouseDown(event);
     };
     
@@ -36,11 +36,11 @@ var InputHandler = function(vectorfield) {
         self.onMouseUp(event);
     };
     
-    document.body.onkeydown = function(event) {
+    document.onkeydown = function(event) {
         self.onKeyDown(event);
     };
     
-    document.body.onkeyup = function(event) {
+    document.onkeyup = function(event) {
         self.onKeyUp(event);
     };
 
@@ -159,10 +159,6 @@ InputHandler.prototype = {
             
             }
             
-        } else if (event.keyCode === 27) {
-            
-            game.pause();
-            
         }
         
     },
@@ -184,6 +180,10 @@ InputHandler.prototype = {
         } else if (event.keyCode == 79) {
 
             game.drawStardust = !game.drawStardust;
+
+        } else if (event.keyCode === 27) {
+
+            Menu.toggle();
 
         }
     },

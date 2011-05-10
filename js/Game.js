@@ -91,12 +91,7 @@ Game.prototype = {
     
     initLevel : function() {
         
-        this.leukoTime = 0;
-        this.devourerTime = 0;
-        this.entropyTime = 0;
-    
-        this.controller.reset();
-        this.vectorfield.reset();
+        this.resetLevel();
         
         this.controller.addParticles(this.particleCount);
         
@@ -107,6 +102,17 @@ Game.prototype = {
         this.controller.cytoplasts.push(new Cytoplast(midPoint.add(randomPosition.mulSelf(-1))));
         
         delete midPoint, randomPosition;
+        
+    },
+    
+    resetLevel : function() {
+        
+        this.leukoTime = 0;
+        this.devourerTime = 0;
+        this.entropyTime = 0;
+    
+        this.controller.reset();
+        this.vectorfield.reset();
         
     },
     

@@ -74,7 +74,9 @@ function run() {
     
 };
 
-window.onload = function() {   
+window.onload = function() {
+    
+    Menu.initialize();
     
     missingResourceCount++;
     

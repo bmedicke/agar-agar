@@ -4,7 +4,7 @@
 
 <head>
     <meta charset=utf-8>
-    <title>Agar Agar</title>
+    <title>AGAR AGAR</title>
     <meta name="description" content="control the flow">
     
     <meta name="author" content="Eberhard Gräther">
@@ -18,7 +18,74 @@
 </head>
 <body>
     
-<canvas id="canvas">Your browser does not support &lt;canvas&gt;.</canvas>
+    <canvas id="canvas">Your browser does not support &lt;canvas&gt;.</canvas>
+    <div id="overlay"></div>
+
+    <div class="rounded" id="playpause" style="padding-top: 2px; background-image:url(images/pause.png);background-position: 96px 50%;background-repeat:no-repeat;" >
+        AGAR AGAR
+    </div>
+    
+    <div class="rounded" id="stopmusic" style="padding-top: 2px; background-image:url(images/sound_on.png);background-position: 50% 50%;background-repeat:no-repeat;" >
+        &nbsp;
+    </div>
+
+    <div class="rounded" id="menu">
+        <p id="newg">New Game</p>
+        <p id="inst">Instructions</p>
+        <p id="vers">Versions</p>
+        <p id="abou">About</p>
+        <p id="dona">Donate</p>
+    </div>
+
+    <div id="points">
+        <span id="pointvalue">1023343049</span><span id="pointlabel">Points</span>
+    </div>
+
+    <div class="info rounded" id="newgame">
+        <h2>Start a new game?</h2>
+        <a href="#" class="rounded" id="startnewgame">YES</a>
+    </div>
+
+    <div class="info rounded" id="instructions">
+        <h2>Instructions</h2>
+        
+        <p>Drag your cursor over the culture medium to create a drift. Move your microorganisms towards each other so they can reproduce. Once you have produced enough microorganisms, move them to the destination cells in order to infiltrate them.</p>
+        
+        <p>However, watch out for leukocytes and ciliated cells which feed upon your organisms.</p>
+    </div>
+
+    <div class="info rounded" id="versions">
+        <h2>Versions</h2>
+        
+        <p>Drag your cursor over the culture medium to create a drift. Move your microorganisms toward each other so they can reproduce. Once you have produced enough microorganisms, move them to the destination cells in order to infiltrate them.</p>
+        
+        <p>However, watch out for leukocytes and ciliated cells which feed upon your organisms.</p>
+    </div>
+
+    <div class="info rounded" id="about">
+        <h2>About</h2>
+        <p>Agar Agar was developed as a semester-project at the University of Applied Sciences Salzburg by:</p>
+        <p class="aufzaehlung">Eberhard Gräther (Gamedesign, Game Development)</p>
+        <p class="aufzaehlung">Thomas Kempf (Gamedesign)</p>
+        <p class="aufzaehlung">Sebastian Kienzl (Gamedesign, Art Direction)</p>
+        <p class="aufzaehlung">Sebastian Köck (Gamedesign, Art Direction)</p>
+        <p class="aufzaehlung">Josef Lanzendorfer (Gamedesign, Game Development)</p>
+        <p class="aufzaehlung">Benjamin Medicke (Gamedesign, Game Development)</p>
+    </div>
+
+    <div class="info rounded" id="donate">
+        <h2>Donate</h2>
+        <p>If you like our game, please reward the work we put in it with a little donation here:</p>
+    </div>
+
+    <div class="info rounded" id="loser">
+        <h2>There are none of your organisms left! Your Score:</h2>
+        <h2 id="score">1023343049</h2>
+        <p>Share on: 
+            <a href="#" class="rounded button">Facebook</a> or 
+            <a href="#" class="rounded button">Twitter</a>.
+        </p>
+    </div>
 
 <script id="vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
@@ -222,6 +289,9 @@
     }
     
 </script>
+
+<script type='text/javascript' src="http://code.jquery.com/jquery-1.5.js" charset="utf-8"></script>
+<script type='text/javascript' src="./js/Menu.js" charset="utf-8"></script>
 
 <script type="text/javascript" src="./js/requestAnimationFrame.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/utilities.js" charset="utf-8"></script>

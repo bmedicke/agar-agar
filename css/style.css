@@ -1,8 +1,253 @@
-* {
-    padding: 0;
-    margin: 0;
+@charset "utf-8";
+/* CSS Document */
+
+@font-face {
+    font-family: 'TitilliumThin';
+    src: url('../fonts/TitilliumText22L001-webfont.eot');
+    src: url('../fonts/TitilliumText22L001-webfont.eot?#iefix') format('eot'),
+         url('../fonts/TitilliumText22L001-webfont.woff') format('woff'),
+         url('../fonts/TitilliumText22L001-webfont.ttf') format('truetype'),
+         url('../fonts/TitilliumText22L001-webfont.svg#webfontY46BzlYn') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
 }
 
-body {
-    overflow: hidden;
+@font-face {
+    font-family: 'TitilliumLight';
+    src: url('../fonts/TitilliumText22L002-webfont.eot');
+    src: url('../fonts/TitilliumText22L002-webfont.eot?#iefix') format('eot'),
+         url('../fonts/TitilliumText22L002-webfont.woff') format('woff'),
+         url('../fonts/TitilliumText22L002-webfont.ttf') format('truetype'),
+         url('../fonts/TitilliumText22L002-webfont.svg#webfontWLF9Q09S') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
 }
+
+@font-face {
+    font-family: 'TitilliumRegular';
+    src: url('../fonts/TitilliumText22L003-webfont.eot');
+    src: url('../fonts/TitilliumText22L003-webfont.eot?#iefix') format('eot'),
+         url('../fonts/TitilliumText22L003-webfont.woff') format('woff'),
+         url('../fonts/TitilliumText22L003-webfont.ttf') format('truetype'),
+         url('../fonts/TitilliumText22L003-webfont.svg#webfontiXtJn0Qu') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'TitilliumMedium';
+    src: url('../fonts/TitilliumText22L004-webfont.eot');
+    src: url('../fonts/TitilliumText22L004-webfont.eot?#iefix') format('eot'),
+         url('../fonts/TitilliumText22L004-webfont.woff') format('woff'),
+         url('../fonts/TitilliumText22L004-webfont.ttf') format('truetype'),
+         url('../fonts/TitilliumText22L004-webfont.svg#webfontd3ljp2K0') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'TitilliumBold';
+    src: url('../fonts/TitilliumText22L005-webfont.eot');
+    src: url('../fonts/TitilliumText22L005-webfont.eot?#iefix') format('eot'),
+         url('../fonts/TitilliumText22L005-webfont.woff') format('woff'),
+         url('../fonts/TitilliumText22L005-webfont.ttf') format('truetype'),
+         url('../fonts/TitilliumText22L005-webfont.svg#webfontZL0yA7s8') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'TitilliumXBold';
+    src: url('../fonts/TitilliumText22L006-webfont.eot');
+    src: url('../fonts/TitilliumText22L006-webfont.eot?#iefix') format('eot'),
+         url('../fonts/TitilliumText22L006-webfont.woff') format('woff'),
+         url('../fonts/TitilliumText22L006-webfont.ttf') format('truetype'),
+         url('../fonts/TitilliumText22L006-webfont.svg#webfontDGZcY3kb') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+/* INFOSCREEN EDITING
+#loser{
+	z-index: 10000000 !important;
+	}
+*/
+
+*{
+	margin: 0;
+	padding: 0;
+	}
+	
+body{
+	color: #FFF;
+	font-family: TitilliumRegular, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	overflow: hidden;
+	}
+	
+#canvas {
+  position: absolute;
+}
+
+#playpause{
+	position: absolute;
+	top: 30px;
+	right: 65px;
+	z-index: 10000;
+	color: #FFF;	
+	background-color: #000;
+	opacity: 0.1;
+	font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	font-size: 16px;
+	width: 102px;
+	padding: 2px 3px 2px 7px;
+	cursor: pointer;
+	}
+	
+#playpause:hover{
+	opacity: 0.2;
+	}
+	
+#stopmusic{
+	position: absolute;
+	top: 30px;
+	right: 35px;
+	z-index: 10000;
+	color: #FFF;	
+	background-color: #000;
+	opacity: 0.10;
+	font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	font-size: 16px;
+	width: 15px;
+	padding: 2px 3px 2px 7px;
+	cursor: pointer;
+	}
+	
+#stopmusic:hover{
+	opacity: 0.2;
+	}
+	
+#menu{
+	position: absolute;
+	z-index: 10000;
+	background-color: #000;
+	opacity: 0.2;
+	text-align: right;
+	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	font-size: 13px;
+	top: 60px;
+	right: 65px;
+	width: 102px;
+	padding: 7px 10px 7px 0;
+	display: none;
+	}
+
+#menu p{
+	color: #FFF;
+	line-height: 1.5;
+	cursor: pointer;
+	}
+
+#overlay{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: #EFE;
+	z-index: 1;
+	opacity: 0.0;
+	display: none;
+	}
+
+#points {
+	position: absolute;
+	right: 41px;
+	bottom: 30px;
+	z-index: 9999;
+	opacity: 0.2;
+	color: #000;
+	}
+
+#points span{
+	margin-left: 6px;
+	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	}
+	
+
+.rounded{
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	}
+	
+div.info{
+	position: absolute;
+	background-color: #000;
+	opacity: 0.2;
+	width: 500px;
+	margin: 200px auto 0 auto;
+  left: 0;
+  right: 0;
+	padding: 25px 25px 40px 30px;
+	z-index: 2;
+	display: none;
+	}
+	
+.info h2{
+	font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	font-size: 28px;
+	text-transform: uppercase;
+	margin-bottom: 30px;
+	}
+	
+.info h2#score{
+	font-size: 70px;
+	}
+	
+.info p{
+	font-size: 16px;
+	margin-bottom: 16px;
+	}
+
+.info p.aufzaehlung{
+	margin-bottom: 2px;	
+	}
+
+#about{
+	padding-bottom: 53px;
+	}	
+
+
+a#startnewgame{
+	display: block;
+	text-decoration: none;
+	text-align: center;
+	width: 150px;
+	padding: 20px 0;
+	margin: 15px auto 16px auto;
+	color: #000;
+	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	font-size: 28px;
+	background-color: #FFF;
+	}
+
+a#startnewgame:hover{
+	background-color: #AAA;
+	}
+	
+a.button{
+	color: #000;
+	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	background-color: #FFF;
+	text-decoration: none;
+	padding: 0 5px;
+	}
+	
+a.button:hover{
+	background-color: #AAA;
+	}
