@@ -41,7 +41,7 @@ var Menu = {
         }
         else{
             document.getElementById("playpause").style.backgroundImage = "url(images/play.png)";
-            document.getElementById("playpause").style.opacity = "0.2";
+            document.getElementById("playpause").style.opacity = "0.4";
 
             $("#overlay").show();
             $("#overlay").fadeTo("slow", 0.7);

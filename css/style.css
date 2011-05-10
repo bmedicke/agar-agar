@@ -75,179 +75,166 @@
 
 /* INFOSCREEN EDITING
 #loser{
-	z-index: 10000000 !important;
-	}
+    z-index: 10000000 !important;
+    }
 */
 
 *{
-	margin: 0;
-	padding: 0;
-	}
-	
+    margin: 0;
+    padding: 0;
+    }
+    
 body{
-	color: #FFF;
-	font-family: TitilliumRegular, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	font-smoothing: antialiased;
-	overflow: hidden;
-	}
-	
+    color: #FFF;
+    font-family: TitilliumRegular, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    overflow: hidden;
+    }
+    
 #canvas {
   position: absolute;
 }
 
-#playpause{
-	position: absolute;
-	top: 30px;
-	right: 65px;
-	z-index: 10000;
-	color: #FFF;	
-	background-color: #000;
-	opacity: 0.1;
-	font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	font-size: 16px;
-	width: 102px;
-	padding: 2px 3px 2px 7px;
-	cursor: pointer;
-	}
-	
-#playpause:hover{
-	opacity: 0.2;
-	}
-	
-#stopmusic{
-	position: absolute;
-	top: 30px;
-	right: 35px;
-	z-index: 10000;
-	color: #FFF;	
-	background-color: #000;
-	opacity: 0.10;
-	font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	font-size: 16px;
-	width: 15px;
-	padding: 2px 3px 2px 7px;
-	cursor: pointer;
-	}
-	
-#stopmusic:hover{
-	opacity: 0.2;
-	}
-	
-#menu{
-	position: absolute;
-	z-index: 10000;
-	background-color: #000;
-	opacity: 0.2;
-	text-align: right;
-	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	font-size: 13px;
-	top: 60px;
-	right: 65px;
-	width: 102px;
-	padding: 7px 10px 7px 0;
-	display: none;
-	}
+.item{
+    position: absolute;
+    z-index: 2;
+    color: #FFF;    
+    background-color: #000;
+    opacity: 0.2;
+    font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    }
 
-#menu p{
-	color: #FFF;
-	line-height: 1.5;
-	cursor: pointer;
-	}
+#playpause{
+    top: 30px;
+    right: 65px;
+    width: 102px;
+    padding: 2px 3px 2px 7px;
+    }
+    
+#playpause:hover{
+    opacity: 0.4;
+    }
+    
+#stopmusic{
+    top: 30px;
+    right: 35px;
+    width: 15px;
+    padding: 2px 3px 2px 7px;
+    }
+    
+#stopmusic:hover{
+    opacity: 0.4;
+    }
+    
+#menu{
+    text-align: right;
+    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    font-size: 13px;
+    top: 60px;
+    right: 65px;
+    width: 102px;
+    padding: 7px 10px 7px 0;
+    line-height: 1.5;
+    opacity: 0.4;
+    display: none;
+    }
 
 #overlay{
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-color: #EFE;
-	z-index: 1;
-	opacity: 0.0;
-	display: none;
-	}
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #EFE;
+    z-index: 1;
+    opacity: 0.0;
+    display: none;
+    }
 
 #points {
-	position: absolute;
-	right: 41px;
-	bottom: 30px;
-	z-index: 9999;
-	opacity: 0.2;
-	color: #000;
-	}
+    position: absolute;
+    right: 41px;
+    bottom: 30px;
+    z-index: 9999;
+    opacity: 0.4;
+    color: #000;
+    }
 
 #points span{
-	margin-left: 6px;
-	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	}
-	
+    margin-left: 6px;
+    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    }
+    
 
 .rounded{
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	}
-	
-div.info{
-	position: absolute;
-	background-color: #000;
-	opacity: 0.2;
-	width: 500px;
-	margin: 200px auto 0 auto;
-  left: 0;
-  right: 0;
-	padding: 25px 25px 40px 30px;
-	z-index: 2;
-	display: none;
-	}
-	
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    }
+    
+.info{
+    position: absolute;
+    background-color: #000;
+    opacity: 0.4;
+    width: 500px;
+    margin: 200px auto 0 auto;
+    left: 0;
+    right: 0;
+    padding: 25px 25px 40px 30px;
+    z-index: 2;
+    display: none;
+    }
+    
 .info h2{
-	font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	font-size: 28px;
-	text-transform: uppercase;
-	margin-bottom: 30px;
-	}
-	
+    font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    font-size: 28px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    }
+    
 .info h2#score{
-	font-size: 70px;
-	}
-	
+    font-size: 70px;
+    }
+    
 .info p{
-	font-size: 16px;
-	margin-bottom: 16px;
-	}
+    font-size: 16px;
+    margin-bottom: 16px;
+    }
 
 .info p.aufzaehlung{
-	margin-bottom: 2px;	
-	}
+    margin-bottom: 2px; 
+    }
 
 #about{
-	padding-bottom: 53px;
-	}	
+    padding-bottom: 53px;
+    }   
 
 
 a#startnewgame{
-	display: block;
-	text-decoration: none;
-	text-align: center;
-	width: 150px;
-	padding: 20px 0;
-	margin: 15px auto 16px auto;
-	color: #000;
-	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	font-size: 28px;
-	background-color: #FFF;
-	}
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    width: 150px;
+    padding: 20px 0;
+    margin: 15px auto 16px auto;
+    color: #000;
+    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    font-size: 28px;
+    background-color: #FFF;
+    }
 
 a#startnewgame:hover{
-	background-color: #AAA;
-	}
-	
+    background-color: #AAA;
+    }
+    
 a.button{
-	color: #000;
-	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-	background-color: #FFF;
-	text-decoration: none;
-	padding: 0 5px;
-	}
-	
+    color: #000;
+    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    background-color: #FFF;
+    text-decoration: none;
+    padding: 0 5px;
+    }
+    
 a.button:hover{
-	background-color: #AAA;
-	}
+    background-color: #AAA;
+    }
