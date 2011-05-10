@@ -6,7 +6,7 @@ var Game = function(width, height) {
     
     this.stardust = new Stardust(this.vectorfield);
     
-    this.isPaused = false;
+    this.state = "init";
     
     this.drawVectorfield = true;
     this.drawStardust = true;
@@ -23,12 +23,12 @@ Game.prototype = {
     
     leukoRate : 5000,
     leukoAmount : 1,
-    leukoCap : 1,
+    leukoCap : 20,
     
     entropyRate : 10000,
     entropyAmount : 1,
     
-    devourerRate : 30000,
+    devourerRate : 60000,
     
 
     initialize : function(gl) {
@@ -50,7 +50,6 @@ Game.prototype = {
         this.vectorfield.update(dt);
         this.controller.applyDevourerVortices(dt);
         this.inputHandler.update(dt);
-        this.controller.update(dt);
         
         if (this.drawStardust) {
             
@@ -58,7 +57,12 @@ Game.prototype = {
             
         }
         
-        this.updateLevel(dt);
+        if (this.state === "run") {
+            
+            this.controller.update(dt);
+            this.updateLevel(dt);
+            
+        }
         
     },
     
@@ -83,12 +87,6 @@ Game.prototype = {
         
     },
     
-    pause : function() {
-        
-        this.isPaused = !this.isPaused;
-        
-    },
-    
     initLevel : function() {
         
         this.resetLevel();
@@ -103,6 +101,8 @@ Game.prototype = {
         
         delete midPoint, randomPosition;
         
+        this.state = "run";
+        
     },
     
     resetLevel : function() {
@@ -113,6 +113,8 @@ Game.prototype = {
     
         this.controller.reset();
         this.vectorfield.reset();
+        
+        this.state = "init";
         
     },
     

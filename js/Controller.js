@@ -48,6 +48,9 @@ Controller.prototype = {
         this.updateCytoplasts(dt);
 
         this.updateParticles(dt);
+        
+        this.checkGameOver();
+        
     },
 
     draw : function(gl) {
@@ -532,6 +535,8 @@ Controller.prototype = {
         this.devourers = [];
 
         this.points = 0;
+        Menu.updatePoints(0);
+        
         this.multiplier = 1;
 
     },
@@ -648,6 +653,27 @@ Controller.prototype = {
 
         this.points += this.multiplier * this.pointValues[pointKey];
 
+        Menu.updatePoints(this.points);
+
+    },
+    
+    checkGameOver : function() {
+        
+        var particleCount = this.particles.length;
+        
+        for (var i = 0; i < this.cytoplasts.length; i++) {
+            
+            particleCount += this.cytoplasts[i].dockedParticles.length;
+            
+        }
+        
+        if (particleCount === 0) {
+            
+            Menu.showLoserScreen(this.points);
+            game.state = "over";
+            
+        }
+        
     }
 
 };

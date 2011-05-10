@@ -60,7 +60,7 @@ function run() {
     dt = dt > 30 ? 30 : dt;
     time = t;
     
-    if (!game.isPaused) {
+    if (game.state === "init" || game.state === "run") {
         
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
         

@@ -13,6 +13,18 @@ var Menu = {
     },
 
     toggle : function(){
+        
+        if(game.state === "init") {
+            
+            return;
+            
+        } else if (game.state === "over") {
+            
+            game.state = "pause";
+            this.startNewGame();
+            return;
+            
+        }
 
         $("#menu").slideToggle("fast");
 
@@ -24,7 +36,7 @@ var Menu = {
                 $("#overlay").hide();
             });
 
-            game.isPaused = false;
+            game.state = "run";
             this.hideInfo();
         }
         else{
@@ -34,7 +46,7 @@ var Menu = {
             $("#overlay").show();
             $("#overlay").fadeTo("slow", 0.7);
 
-            game.isPaused = true;
+            game.state = "pause";
         }
 
         this.menuOpen = !this.menuOpen;
@@ -94,15 +106,34 @@ var Menu = {
         });
 
         $("#startnewgame").click(function() {
-            game.isPaused = false;
-            game.resetLevel();
-
-            Menu.toggle();
-            Menu.hideInfo();
-
-            setTimeout(function() {
-                game.initLevel();
-            }, 1000);
+            Menu.startNewGame();
         });
+    },
+    
+    updatePoints : function(points) {
+        
+        $("#pointvalue").text(points);
+        
+    },
+    
+    startNewGame : function() {
+        
+        this.toggle();
+        this.hideInfo();
+        
+        game.resetLevel();
+
+        setTimeout(function() {
+            game.initLevel();
+        }, 1000);
+        
+    },
+    
+    showLoserScreen : function(points) {
+        
+        this.toggle();
+        $("#loser").show();
+        $("#score").text(points);
+        
     }
 };
