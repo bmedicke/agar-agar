@@ -102,8 +102,8 @@ WebGLRenderingContext.prototype.passVertices = function(drawMode, buffer) {
 
 WebGLRenderingContext.prototype.passTexture = function(texture) {
     
-    this.activeTexture( this.TEXTURE0 );
+    this.activeTexture( this["TEXTURE" + texture.ID] );
     this.bindTexture( this.TEXTURE_2D, texture );
-    this.uniform1i( this.getUniformLocation( this.activeShader, "texture" ), 0 );
+    this.uniform1i( this.getUniformLocation( this.activeShader, "texture" ), texture.ID );
     
 };
