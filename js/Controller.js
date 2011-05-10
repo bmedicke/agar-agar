@@ -60,16 +60,11 @@ Controller.prototype = {
 
         this.drawEntities(gl, this.cytoplasts);
 
-        this.drawEntities(gl, this.devourers);
-
-
         gl.setColor(.5, .5, .5, 1);
-
-        //this.drawEntities(gl, this.particles);
+        
+        Devourer.draw(gl, this.devourers);
 
         Particle.draw(gl, this.particles);
-
-
 
         this.drawEntities(gl, this.leukocytes);
 
@@ -465,6 +460,7 @@ Controller.prototype = {
                    cytoplast.entityRadius * cytoplast.entityRadius &&
                    !cytoplast.isFull()) {
 
+                    cytoplast.dockParticle(this.particles[j].position);
                     delete this.particles.splice(j, 1)[0].destroy();
                     cytoplast.currentFill++;
 

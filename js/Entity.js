@@ -22,11 +22,15 @@ Entity.prototype = {
     	this.force.set(0, 0, 0);
 
     	this.velocity.addSelf(acceleration.mul(dt));
-    	this.position.addSelf(this.velocity.mul(dt)).addSelf(acceleration.mul(0.5 * dt * dt));
+        
+        var positionChange = this.velocity.mul(dt).addSelf(acceleration.mulSelf(0.5 * dt * dt));
+    	this.position.addSelf(positionChange);
         
         this.velocity.mulSelf(1 - this.dampCoefficient * dt);
         
         delete acceleration;
+        
+        return positionChange;
         
     },
     
