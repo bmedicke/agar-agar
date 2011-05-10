@@ -184,6 +184,42 @@
     
 </script>
 
+<script id="devourer-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+    uniform float size;
+
+    attribute vec3 position;
+
+    void main(void) {
+
+       gl_Position = matrix * vec4(position, 1.0);
+   
+       gl_PointSize = size;
+
+    }
+    
+</script>
+
+<script id="devourer-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    #ifdef GL_ES
+       precision highp float;
+    #endif
+
+    uniform sampler2D texture;
+
+    const vec3 color = vec3(0.5, 0.5, 0.7);
+
+    void main(void) {
+
+       gl_FragColor = texture2D( texture, gl_PointCoord );
+       //gl_FragColor.rgb = mix( color, gl_FragColor.rgb, 0.5 );
+   
+    }
+    
+</script>
+
 <script type="text/javascript" src="./js/requestAnimationFrame.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/utilities.js" charset="utf-8"></script>
 

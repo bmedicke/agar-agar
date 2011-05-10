@@ -35,6 +35,7 @@ Game.prototype = {
         
         Particle.initialize(gl);
         Leukocyte.initialize(gl);
+        Devourer.initialize(gl);
     
         this.initLevel();
         this.vectorfield.initialize();
