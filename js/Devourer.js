@@ -19,82 +19,72 @@ Devourer.prototype.forceAngle = - Math.PI / 6;
 
 Devourer.prototype.rotateSpeed = 0.0005;
 
-
 Devourer.initialize = function(gl) {
     
+    this.vertexBuffer = gl.createBuffer();
+    this.vertexBuffer.itemSize = 3;
+    this.vertexBuffer.vertexCount = 0;
     
-    this.circleBuffer = gl.createCircleBuffer(
-        Devourer.prototype.entityRadius, 
-        Devourer.prototype.circleResolution
-    );
-    
+    this.vertexArray = null;
+
     this.shader = gl.loadShader("devourer-vertex-shader", "devourer-fragment-shader");
     
     gl.bindShader(this.shader);
     
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    gl.passMatrix();
     
-    this.shader.innerRadiusUniformLocation = gl.getUniformLocation(this.shader, "innerRadius");
-    this.shader.outerRadiusUniformLocation = gl.getUniformLocation(this.shader, "outerRadius");
+    var self = this;
     
-    gl.bindShader(gl.defaultShader);
+    this.texture = gl.loadTexture("textures/tentacles.png", function(gl) {
+        
+        gl.bindShader(self.shader);
+        gl.passTexture(self.texture);
+        
+    });
+    
+    gl.uniform1f(
+        gl.getUniformLocation(this.shader, "size"), 
+        game.vectorfield.cellSize * 4 * Devourer.prototype.entityRadius
+    );
     
 };
 
-Devourer.prototype.draw = function(gl) {
+Devourer.draw = function(gl, devourers) {
     
-    // gl.pushMatrix();
-    //     
-    //     gl.translate(this.position.x, this.position.y);
-    //     
-    //     gl.setColor(.5, .5, .7, 1);
-    //     
-    //     gl.drawCircle(0, 0, this.entityRadius);
-    //     
-    //     var angle = this.orientation.angle();
-    //     gl.rotate(this.orientation.y < 0 ? -angle : angle);
-    //     
-    //     gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
-    //     
-    //     gl.rotate(Math.PI * 2 / 3);
-    //     gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
-    //     
-    //     gl.rotate(Math.PI * 2 / 3);
-    //     gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
-    //     
-    // gl.popMatrix();
+    if (devourers.length === this.vertexBuffer.vertexCount) {
 
+        for (i = 0; i < devourers.length; i++) {
+            
+            this.vertexArray[i * 3] = devourers[i].position.x;
+            this.vertexArray[i * 3 + 1] = devourers[i].position.y;
 
-    // gl.fill();
-    // gl.setColor(0.0, 1.0, 0.0, 1.0);
-    // gl.drawCircle(this.position.x, this.position.y, this.forceRadius);
-    // gl.setColor(0.0, 0.0, 1.0, 1.0);
-    // gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
-    // gl.noFill();
+        }
+        
+    } else {
+        
+        var devourerPositions = [];
+
+        for (i = 0; i < devourers.length; i++) {
+
+            devourerPositions.push(devourers[i].position.x, devourers[i].position.y, 1.0);
+
+        }
+        
+        this.vertexArray = new Float32Array(devourerPositions);
+        this.vertexBuffer.vertexCount = devourers.length;
+        
+    }
     
-    gl.bindShader(Devourer.shader);
-        
-    gl.pushMatrix();
-        
-            gl.translate(this.position.x, this.position.y);
-            gl.updateMatrix();
-            
-            gl.uniform1f(
-                Devourer.shader.innerRadiusUniformLocation,
-                this.entityRadius
-            );
-            
-            gl.uniform1f(
-                Devourer.shader.outerRadiusUniformLocation,
-                this.forceRadius
-            );
-            
-            gl.enableAlpha();
-            gl.passVertices(gl.TRIANGLE_FAN, Devourer.circleBuffer);
-            gl.disableAlpha();
-        
-        gl.popMatrix();
-        
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
+    
+    gl.bindShader(this.shader);
+    gl.enableAlpha();
+    
+    gl.passVertices(gl.POINTS, this.vertexBuffer);
+    
+    gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
 
 };
