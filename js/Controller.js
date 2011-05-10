@@ -465,6 +465,7 @@ Controller.prototype = {
                    cytoplast.entityRadius * cytoplast.entityRadius &&
                    !cytoplast.isFull()) {
 
+                    cytoplast.dockParticle(this.particles[j].position);
                     delete this.particles.splice(j, 1)[0].destroy();
                     cytoplast.currentFill++;
 

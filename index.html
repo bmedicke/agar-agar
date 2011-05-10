@@ -152,7 +152,7 @@
         // like the leukocyte isn't really touching the particle
         float stretchFactor = sin(distanceFromCenter) * 1.1;
         
-
+        
         vec2 positionToParticle = particlePosition - position.xy;
         
         float distanceFromPosition = clamp(length(positionToParticle), 0.0, outerRadius / 2.0 + innerRadius);
