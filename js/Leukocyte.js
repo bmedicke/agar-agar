@@ -25,21 +25,21 @@ Leukocyte.initialize = function(gl) {
     this.shader = gl.loadShader("leukocyte-vertex-shader", "leukocyte-fragment-shader");
     
     this.circleBuffer = gl.createCircleBuffer(
-        Leukocyte.prototype.entityRadius, 
+        Leukocyte.prototype.entityRadius * 0.8, 
         Leukocyte.prototype.circleResolution
     );
     
     gl.bindShader(this.shader);
     
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    
     this.shader.particleVectorUniformLocation = gl.getUniformLocation(this.shader, "particleVector");
-    this.shader.particlePositionUniformLocation = gl.getUniformLocation(this.shader, "particlePosition");
     
-    this.shader.innerRadiusUniformLocation = gl.getUniformLocation(this.shader, "innerRadius");
-    this.shader.outerRadiusUniformLocation = gl.getUniformLocation(this.shader, "outerRadius");
+    gl.uniform1f(
+        gl.getUniformLocation(this.shader, "radius"),
+        Leukocyte.prototype.entityRadius
+    );
     
-    gl.bindShader(gl.defaultShader);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.circleBuffer);
     
 };
 
@@ -72,45 +72,24 @@ Leukocyte.prototype.draw = function(gl) {
         
     // gl.popMatrix();
     
-    gl.setColor(1.0, 0.0, 0.0, 1.0);
-        gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
-        gl.drawCircle(this.position.x, this.position.y, this.reactiveRadius);
-        gl.drawLine(this.position.x, this.position.y, this.position.x + this.orientation.x, this.position.y + this.orientation.y);
+    
+    gl.bindShader(Leukocyte.shader);
+    
+    gl.pushMatrix();
         
-        gl.bindShader(Leukocyte.shader);
-        
-        gl.pushMatrix();
-        
-            gl.translate(this.position.x, this.position.y);
-            gl.updateMatrix();
+        gl.translate(this.position.x, this.position.y);
+        gl.updateMatrix();
 
-            gl.uniform2f(
-                Leukocyte.shader.particleVectorUniformLocation, 
-                this.orientation.x,
-                this.orientation.y
-            );
-            
-            gl.uniform2f(
-                Leukocyte.shader.particlePositionUniformLocation, 
-                this.currentTarget.x,
-                this.currentTarget.y
-            );
-            
-            
-            gl.uniform1f(
-                Leukocyte.shader.innerRadiusUniformLocation,
-                this.entityRadius
-            );
-            
-            gl.uniform1f(
-                Leukocyte.shader.outerRadiusUniformLocation,
-                this.reactiveRadius
-            );
-  
-            gl.passVertices(gl.LINE_LOOP, Leukocyte.circleBuffer);
+        gl.uniform2f(
+            Leukocyte.shader.particleVectorUniformLocation, 
+            this.orientation.x,
+            this.orientation.y
+        );
         
-        gl.popMatrix();
-        
+        gl.passVertices(gl.LINE_LOOP, Leukocyte.circleBuffer);
+    
+    gl.popMatrix();
+    
     gl.bindShader(gl.defaultShader);
 
 };

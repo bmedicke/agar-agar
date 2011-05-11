@@ -197,41 +197,39 @@
     const float PI = 3.1415926535897932384626433832;
     
     uniform mat4 matrix;
-    
     uniform vec2 particleVector;
-    uniform vec2 particlePosition;
-    
-    uniform float innerRadius;
-    uniform float outerRadius;
+    uniform float radius;
 
     attribute vec3 position;
     
     void main(void) {
-
-        vec2 centerToParticle = particleVector;
-      
-        float distanceFromCenter = clamp(length(centerToParticle), innerRadius, outerRadius + innerRadius);
-
-        // map distanceFromCenter between 0 and PI:
-        distanceFromCenter = ((distanceFromCenter - innerRadius) / outerRadius) * PI;
-
-        // expand the stretching a bit, so it doesn't look
-        // like the leukocyte isn't really touching the particle
-        float stretchFactor = sin(distanceFromCenter) * 1.1;
+        
+        float angle = acos( dot( position.xy, particleVector ) / length( position.xy ) / length( particleVector ) );
+        
+        float distanceFromCenter = clamp( 
+            length( particleVector ), 
+            0.0, 
+            radius * 2.0
+        );
+        
+        float factor = sin( distanceFromCenter / ( radius * 2.0 ) * PI );
+        
+        float stretchFactor = factor * ( cos( angle ) * 0.5 + 0.5 );
+        float crushFactor = factor * ( sin( angle ) * 0.5 + 0.5 );
+        
+        // float factor = sin( distanceFromCenter / ( radius * 2.0 ) * PI ) * ( 1.0 - angle / PI );
+        
+        // cool mouth
+        // factor *= step( PI * 0.25, abs( angle ) );
+        
+        //factor *= step( abs( angle ), PI * 0.25 );
+        
+        vec2 stretch = normalize( particleVector ) * stretchFactor * radius * 0.5;
+        
+        vec2 crush = normalize( position.xy * -1.0 ) * crushFactor * radius * 0.25;
         
         
-        vec2 positionToParticle = particlePosition - position.xy;
-        
-        float distanceFromPosition = clamp(length(positionToParticle), 0.0, outerRadius / 2.0 + innerRadius);
-        
-        // map distanceFromPosition between 0 and PI / 2:
-        distanceFromPosition = (distanceFromPosition / (outerRadius / 2.0 + innerRadius)) * (PI / 2.0);
-        
-        float positionFactor = cos(distanceFromPosition);
-        
-        positionToParticle = normalize(positionToParticle);
-
-        gl_Position = matrix * vec4(position + vec3(positionToParticle * stretchFactor * positionFactor * (outerRadius / 2.0 - innerRadius), 0.0), 1.0);
+        gl_Position = matrix * vec4( position.xy + stretch + crush, 1.0 , 1.0 );
     
     }
     
