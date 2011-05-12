@@ -4,7 +4,6 @@ var Leukocyte = function(position) {
 	
 	this.isActive = true;
 	this.activeTimer = 0;
-    this.currentTarget = new Vector(Infinity, Infinity, 0);
 	
 };
 
@@ -15,7 +14,6 @@ Leukocyte.prototype.mass = 300000;
 Leukocyte.prototype.moveSpeed = .3;
 
 Leukocyte.prototype.entityRadius = .5;
-Leukocyte.prototype.reactiveRadius = 8;
 Leukocyte.prototype.circleResolution = 16;
 
 Leukocyte.prototype.eatTime = 1000;

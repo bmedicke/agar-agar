@@ -130,55 +130,43 @@ Controller.prototype = {
     },
 
     killAndSearch : function(leukocyte) {
-
-        var nearest = new Vector(Infinity, Infinity, 0);
         
-        var nearestDistance = nearest.sub(leukocyte.position).normSquared();
-        
+        nearest = new Vector(Infinity, Infinity, 0);            
+    
         for (var j = 0; j < this.particles.length; j++) {
-
-            var current = this.particles[j].position;
-            
-            var currentDistance = current.sub(leukocyte.position).normSquared();
-
-            
-            if (currentDistance < nearestDistance) {
-
+    
+            var particle = this.particles[j],
+                current = (particle.position.sub(leukocyte.position));
+        
+            if (current.normSquared() < nearest.normSquared()) {
+        
                 nearest = current;
-                nearestDistance = currentDistance;
-
+        
             }
-
-            
-            if (currentDistance < leukocyte.entityRadius * leukocyte.entityRadius) {
-
-                leukocyte.eatParticle();
+        
+            if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
+        
+                leukocyte.eatParticle(particle.position);
                 
                 delete this.particles.splice(j, 1)[0].destroy();
-                // TODO: hier noch ein j--; ?
+                j--;
                 
                 return;
-
-            }
-
-        }
-
-        if(this.particles.length > 0) {
         
-            delete leukocyte.currentTarget;
-
-            leukocyte.currentTarget = nearest;
-
+            }
+        
+        }
+        
+        if(this.particles.length > 0) {
             
             delete leukocyte.orientation;
-
-            leukocyte.orientation = nearest.sub(leukocyte.position);
-
             
-            leukocyte.applyForce(leukocyte.orientation.normalize().mulSelf(leukocyte.moveSpeed));
-
+            leukocyte.orientation = nearest;
+            
+            leukocyte.applyForce(nearest.normalize().mulSelf(leukocyte.moveSpeed));
+            
         }
-
+        
     },
 
     updateLeukocytes : function(dt) {
