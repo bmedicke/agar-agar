@@ -89,10 +89,35 @@ Devourer.draw = function(gl, devourers) {
 
 };
 
+Devourer.prototype.draw = function(gl) {
+    
+    gl.pushMatrix();
+        
+        gl.translate(this.position.x, this.position.y);
+        
+        gl.setColor(.5, .5, .7, 1);
+        
+        gl.drawCircle(0, 0, this.entityRadius);
+        
+        var angle = this.orientation.angle();
+        gl.rotate(this.orientation.y < 0 ? -angle : angle);
+        
+        gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
+        
+        gl.rotate(Math.PI * 2 / 3);
+        gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
+        
+        gl.rotate(Math.PI * 2 / 3);
+        gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
+        
+    gl.popMatrix();
+
+};
+
 Devourer.prototype.update = function(dt) {
     
     Entity.prototype.update.call(this, dt);
     
-    // this.orientation.rotate2DSelf(this.rotateSpeed * dt);
+    this.orientation.rotate2DSelf(this.rotateSpeed * dt);
     
 };

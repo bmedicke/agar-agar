@@ -10,7 +10,7 @@ var Stardust = function(vectorfield) {
 
 Stardust.prototype = {
     
-    maxParticles : 5000,
+    maxParticles : 2000,
     
     initialize : function(gl) {
 

@@ -22,7 +22,7 @@ Particle.prototype.reproductionWaitTime = 10000;
 Particle.prototype.reproductionVelocity = 0.001
 
 Particle.prototype.count = 0;
-Particle.prototype.maxCount = 100;
+Particle.prototype.maxCount = 150;
 
 Particle.prototype.cohesionRadius = 2;
 
@@ -43,7 +43,7 @@ Particle.initialize = function(gl) {
     
     var self = this;
     
-    this.texture = gl.loadTexture("textures/ball.png", function(gl) {
+    this.texture = gl.loadTexture("textures/particle.png", function(gl) {
         
         gl.bindShader(self.shader);
         gl.passTexture(self.texture);
@@ -59,23 +59,29 @@ Particle.initialize = function(gl) {
 
 Particle.draw = function(gl, particles) {
     
+    // for (var i = 0; i < particles.length; i++) {
+    //     
+    //     particles[i].draw(gl);
+    //     
+    // }
+    
     if (particles.length === this.vertexBuffer.vertexCount) {
-
+    
         for (i = 0; i < particles.length; i++) {
             
             this.vertexArray[i * 3] = particles[i].position.x;
             this.vertexArray[i * 3 + 1] = particles[i].position.y;
-
+    
         }
         
     } else {
         
         var particlePositions = [];
-
+    
         for (i = 0; i < particles.length; i++) {
-
+    
             particlePositions.push(particles[i].position.x, particles[i].position.y, 1.0);
-
+    
         }
         
         this.vertexArray = new Float32Array(particlePositions);

@@ -62,11 +62,11 @@ Controller.prototype = {
         }
 
         this.drawEntities(gl, this.cytoplasts);
-
-        gl.setColor(.5, .5, .5, 1);
         
-        Devourer.draw(gl, this.devourers);
+        this.drawEntities(gl, this.devourers);
 
+        // Devourer.draw(gl, this.devourers);
+        
         Particle.draw(gl, this.particles);
 
         this.drawEntities(gl, this.leukocytes);
