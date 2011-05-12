@@ -6,7 +6,7 @@ WebGLRenderingContext.prototype.matrixChanged = false;
 
 WebGLRenderingContext.prototype.pushMatrix = function() {
     
-    var m = (new Matrix()).copy(this.matrix);
+    var m = this.matrix.getCopy();
     
     this.matrixStack.push(m);
     

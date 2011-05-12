@@ -32,6 +32,16 @@ Vector.prototype = {
         return this;
         
     },
+    
+    getCopy: function() {
+        
+        return new Vector(
+            this.x, 
+            this.y, 
+            this.z
+        );
+        
+    },
 
     add: function(vector) {
 

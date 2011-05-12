@@ -55,21 +55,13 @@ Cytoplast.prototype.draw = function(gl) {
 
 Cytoplast.prototype.isFull = function() {
 
-    if(this.currentFill >= this.maxFill) {
-    
-        return true;
-    
-    } else {
-    
-        return false;
-    
-    }
+    return (this.currentFill >= this.maxFill);
 
 };
 
-Cytoplast.prototype.dockParticle = function(position) {
+Cytoplast.prototype.dockParticle = function(particlePosition) {
     
-    var newParticle = new Particle(new Vector(position.x, position.y, 0)),
+    var newParticle = new Particle(particlePosition.getCopy()),
         randomInsideVector = new Vector(1, 0, 0);
     
     randomInsideVector.rotate2DSelf(Math.random() * Math.PI * 2);
@@ -79,5 +71,7 @@ Cytoplast.prototype.dockParticle = function(position) {
     newParticle.target = randomInsideVector;
     
     this.dockedParticles.push(newParticle);
+    
+    this.currentFill++;
     
 };

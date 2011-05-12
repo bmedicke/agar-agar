@@ -178,24 +178,6 @@ Controller.prototype = {
 
     },
 
-    devourerCollision : function(devourer, entities) {
-
-        for (var j = 0; j < entities.length; j++) {
-
-            var entity = entities[j];
-
-            var distance = entity.position.sub(devourer.position).normSquared();
-
-            if (distance < devourer.entityRadius * devourer.entityRadius) {
-
-                delete entities.splice(j, 1)[0].destroy();
-
-            }
-
-        }
-
-    },
-
     applyDevourerTarget : function(devourer) {
 
         if(this.cytoplasts.length > 0) {
@@ -210,20 +192,33 @@ Controller.prototype = {
 
         for (var i = 0; i < this.devourers.length; i++) {
 
-            var devourer = this.devourers[i],
-                leukoAmount = this.leukocytes.length;
-
-            this.devourerCollision(devourer, this.particles);
-            this.devourerCollision(devourer, this.leukocytes);
-
-            while (leukoAmount > this.leukocytes.length) {
-
-                this.addPoints("leukoDeath");
-                leukoAmount--;
-
+            var devourer = this.devourers[i];
+            
+            for (var j = 0; j < this.particles.length; j++) {
+                
+                if (devourer.checkCollision(this.particles[j])) {
+                    
+                    delete this.particles.splice(j, 1)[0].destroy();
+                    j--;
+                    
+                }
+                
+            }
+            
+            for (var j = 0; j < this.leukocytes.length; j++) {
+                
+                if (devourer.checkCollision(this.leukocytes[j])) {
+                    
+                    delete this.leukocytes.splice(j, 1)[0].destroy();
+                    j--;
+                    
+                    this.addPoints("leukoDeath");
+                    
+                }
+                
             }
 
-            for(var j = 0; j < i; j++) {
+            for (var j = 0; j < i; j++) {
 
                 devourer.collision(this.devourers[j]);
 
@@ -239,13 +234,12 @@ Controller.prototype = {
 
                 var cytoplast = this.cytoplasts[j];
 
-                if(cytoplast.position.sub(devourer.position).normSquared() <
-                   (cytoplast.entityRadius + devourer.entityRadius) * (cytoplast.entityRadius + devourer.entityRadius)) {
+                if (devourer.checkCollision(cytoplast)) {
 
                     this.addParticlesAt(cytoplast.currentFill, cytoplast.position, cytoplast.entityRadius / 2);
 
                     this.vectorfield.addForcefield(new Forcefield(
-                        (new Vector()).copy(cytoplast.position),
+                        cytoplast.position.getCopy(),
                         cytoplast.entityRadius,
                         Entropyfier.prototype.force,
                         false,
@@ -425,13 +419,11 @@ Controller.prototype = {
 
             for(var j = 0; j < this.particles.length; j++) {
 
-                if(this.particles[j].position.sub(cytoplast.position).normSquared() <
-                   cytoplast.entityRadius * cytoplast.entityRadius &&
+                if(cytoplast.checkCollision(this.particles[j]) &&
                    !cytoplast.isFull()) {
 
                     cytoplast.dockParticle(this.particles[j].position);
                     delete this.particles.splice(j, 1)[0].destroy();
-                    cytoplast.currentFill++;
 
                     this.addPoints("cytoInfect");
 

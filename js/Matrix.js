@@ -25,11 +25,21 @@ Matrix.prototype = {
     
     copy: function(matrix) {
         
-        this.a.set(matrix.a.x, matrix.a.y, matrix.a.z);
-        this.b.set(matrix.b.x, matrix.b.y, matrix.b.z);
-        this.c.set(matrix.c.x, matrix.c.y, matrix.c.z);
+        this.a.copy(matrix.a);
+        this.b.copy(matrix.b);
+        this.c.copy(matrix.c);
         
         return this;
+        
+    },
+    
+    getCopy: function() {
+        
+        return new Matrix(
+            this.a.getCopy(),
+            this.b.getCopy(),
+            this.c.getCopy()
+        );
         
     },
     

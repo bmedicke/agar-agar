@@ -32,7 +32,7 @@ Stardust.prototype = {
         
         for (var i = 0; i < this.dustParticles.length; i++) {
         
-            this.dustParticles[i].velocity.copy(this.vectorfield.getVector(this.dustParticles[i].position));
+            this.dustParticles[i].velocity = this.vectorfield.getVector(this.dustParticles[i].position);
             this.dustParticles[i].update(dt);
             
             if (this.dustParticles[i].timer > DustParticle.prototype.lifeTime) {
