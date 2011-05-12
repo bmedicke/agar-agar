@@ -97,6 +97,8 @@ Leukocyte.prototype.update = function(dt) {
     Entity.prototype.update.call(this, dt);
     
     if (!this.isActive) {
+    
+        this.orientation.mulSelf(this.activeTimer / Leukocyte.prototype.eatTime);
         
         this.activeTimer -= dt;
 
@@ -113,6 +115,9 @@ Leukocyte.prototype.update = function(dt) {
 Leukocyte.prototype.eatParticle = function() {
     
     this.isActive = false;
+    
     this.activeTimer = Leukocyte.prototype.eatTime;
+    
+    this.orientation.normalizeSelf().mulSelf(Leukocyte.prototype.entityRadius);
     
 };
