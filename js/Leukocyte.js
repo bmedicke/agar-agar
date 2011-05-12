@@ -42,35 +42,7 @@ Leukocyte.initialize = function(gl) {
 };
 
 Leukocyte.prototype.draw = function(gl) {
-    
-    // gl.pushMatrix();
-    
-        // gl.translate(this.position.x, this.position.y);
-        // var angle = this.orientation.angle();
-        
-        // gl.rotate(this.orientation.y < 0 ? -angle : angle);
-        
-        // if (!this.isActive) {
-            
-            // gl.setColor(.5, .5, .5, 1);
-            // gl.drawCircle(0, 0, Particle.prototype.entityRadius);
-            
-        // }
-        
-        // gl.setColor(.5, .8, .8, 1);
-        // gl.drawCircle(0, 0, this.entityRadius);
-        
-        // gl.setColor(.6, .6, .6, 1);
-        
-        // gl.rotate(Math.PI / 4);
-        // gl.drawCircle(this.entityRadius / 2, 0, this.entityRadius / 4);
-        
-        // gl.rotate(-Math.PI / 2);
-        // gl.drawCircle(this.entityRadius / 2, 0, this.entityRadius / 4);
-        
-    // gl.popMatrix();
-    
-    
+
     gl.bindShader(Leukocyte.shader);
     
     gl.pushMatrix();
@@ -99,34 +71,22 @@ Leukocyte.prototype.draw = function(gl) {
 
 };
 
-Leukocyte.prototype.update = function(dt) {
-    
-    Entity.prototype.update.call(this, dt);
-    
-    if (!this.isActive) {
-    
-        this.orientation.mulSelf(this.activeTimer / Leukocyte.prototype.eatTime);
-        
-        this.activeTimer -= dt;
-
-        if (this.activeTimer < 0) {
-            
-            this.isActive = true;
-            
-        }
-        
-    }
-    
-};
-
-Leukocyte.prototype.eatParticle = function() {
+Leukocyte.prototype.eatParticle = function(particlePosition) {
     
     this.isActive = false;
     
-    this.activeTimer = Leukocyte.prototype.eatTime;
-    
-    this.orientation.normalizeSelf().mulSelf(Leukocyte.prototype.entityRadius);
-    
+    this.orientation = particlePosition.sub(this.position);
     this.deadParticle = new Particle(this.orientation);
+    
+    var self = this;
+    
+    Animator.animate(
+        this.orientation, 
+        {"x" : 0, "y" : 0}, 
+        Leukocyte.prototype.eatTime,
+        function() {
+            self.isActive = true;
+        }
+    );
     
 };

@@ -131,7 +131,7 @@ Controller.prototype = {
 
     killAndSearch : function(leukocyte) {
         
-        nearest = new Vector(Infinity, Infinity, 0);            
+        nearest = new Vector(Infinity, Infinity, 0);
     
         for (var j = 0; j < this.particles.length; j++) {
     
@@ -146,7 +146,7 @@ Controller.prototype = {
         
             if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
         
-                leukocyte.eatParticle();
+                leukocyte.eatParticle(particle.position);
                 
                 delete this.particles.splice(j, 1)[0].destroy();
                 j--;
@@ -156,16 +156,10 @@ Controller.prototype = {
             }
         
         }
+            
+        leukocyte.orientation = nearest;
         
-        if(this.particles.length > 0) {
-            
-            delete leukocyte.orientation;
-            
-            leukocyte.orientation = nearest;
-            
-            leukocyte.applyForce(nearest.normalize().mulSelf(leukocyte.moveSpeed));
-            
-        }
+        leukocyte.applyForce(nearest.normalize().mulSelf(leukocyte.moveSpeed));
         
     },
 

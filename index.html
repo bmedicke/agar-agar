@@ -204,13 +204,18 @@
     
     void main(void) {
         
-        float angle = acos( dot( position.xy, particleVector ) / length( position.xy ) / length( particleVector ) );
-        
         float distanceFromCenter = clamp( 
             length( particleVector ), 
             0.0, 
             radius * 2.0
         );
+        
+        float angle = acos( 
+            dot( position.xy, particleVector ) / 
+            length( position.xy ) / 
+            ( length( particleVector ) + 0.001 ) 
+        );
+        
         
         float factor = sin( distanceFromCenter / ( radius * 2.0 ) * PI );
         
@@ -224,7 +229,7 @@
         
         //factor *= step( abs( angle ), PI * 0.25 );
         
-        vec2 stretch = normalize( particleVector ) * stretchFactor * radius * 0.5;
+        vec2 stretch = normalize( particleVector + 0.001 ) * stretchFactor * radius * 0.5;
         
         vec2 crush = normalize( position.xy * -1.0 ) * crushFactor * radius * 0.25;
         
@@ -287,6 +292,7 @@
 
 <script type='text/javascript' src="http://code.jquery.com/jquery-1.5.js" charset="utf-8"></script>
 <script type='text/javascript' src="./js/Menu.js" charset="utf-8"></script>
+<script type='text/javascript' src="./js/Animator.js" charset="utf-8"></script>
 
 <script type="text/javascript" src="./js/requestAnimationFrame.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/utilities.js" charset="utf-8"></script>
