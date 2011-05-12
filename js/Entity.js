@@ -57,7 +57,31 @@ Entity.prototype = {
         
     },
     
-    boundaryCheck : function(vectorfield) {
+    checkCollision : function(entity) {
+
+        return (this.position.sub(entity.position).normSquared() <= 
+            (this.entityRadius + entity.entityRadius) *
+            (this.entityRadius + entity.entityRadius));
+
+    },
+    
+    collision : function(entity) {
+
+        var vector = this.position.sub(entity.position);
+
+        if (vector.normSquared() < (this.entityRadius + entity.entityRadius) *
+           (this.entityRadius + entity.entityRadius)) {
+
+            this.applyForce(vector.normalize().mulSelf(this.moveSpeed));
+            entity.applyForce(vector.normalize().mulSelf(entity.moveSpeed * -1));
+
+        }
+
+        delete vector;
+
+    },
+    
+    checkBoundary : function(vectorfield) {
     
         if (this.position.x - this.entityRadius < 0) {
             
@@ -76,6 +100,6 @@ Entity.prototype = {
             this.applyForce(new Vector(0, -1, 0));
             
         }
-    }
-        
+    },
+    
 };

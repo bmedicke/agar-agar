@@ -23,7 +23,7 @@ Game.prototype = {
     
     leukoRate : 5000,
     leukoAmount : 1,
-    leukoCap : 1,
+    leukoCap : 20,
     
     entropyRate : 10000,
     entropyAmount : 1,
@@ -46,6 +46,8 @@ Game.prototype = {
     },
     
     update : function(dt) {
+        
+        Animator.update(dt);
 
         this.vectorfield.update(dt);
         this.controller.applyDevourerVortices(dt);
@@ -106,6 +108,8 @@ Game.prototype = {
     },
     
     resetLevel : function() {
+        
+        Animator.reset();
         
         this.leukoTime = 0;
         this.devourerTime = 0;

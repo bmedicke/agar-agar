@@ -95,25 +95,11 @@ InputHandler.prototype = {
         
         this.state = "down";
         
-        // var self = this;
-        // 
-        // this.clickTimeoutID = setTimeout(function() {
-        //     
-        //     self.onClickTimeout();
-        //     
-        // }, this.clickTime);
-        
     },
     
     onMouseMove : function(event) {
         
         this.setMousePosition(event);
-        
-        // if (this.state === "down") {
-        //     
-        //     this.state = "drag";
-        //     
-        // }
         
         this.touchPosition.copy(this.mouse);
         this.touchStarted = false;
@@ -126,26 +112,7 @@ InputHandler.prototype = {
         
         this.state = "up";
         
-        // if (this.clickTimeoutID) {
-        //     
-        //     clearTimeout(this.clickTimeoutID);
-        //     this.clickTimeoutID = null;
-        //     
-        // }
-        
         this.touchStop();
-        
-    },
-    
-    onClickTimeout : function() {
-        
-        if (this.state !== "down") {
-            
-            return;
-            
-        }
-        
-        this.state = "drag";
         
     },
     
@@ -171,7 +138,7 @@ InputHandler.prototype = {
             
         } else if (event.keyCode == 82 || event.keyCode == 78) {
             
-            game.initLevel();
+            Menu.startNewGame();
             
         } else if (event.keyCode == 86) {
             

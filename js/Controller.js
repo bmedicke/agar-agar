@@ -70,7 +70,7 @@ Controller.prototype = {
         Particle.draw(gl, this.particles);
 
         this.drawEntities(gl, this.leukocytes);
-
+        
         gl.bindShader(gl.defaultShader);
 
     },
@@ -113,22 +113,6 @@ Controller.prototype = {
 
     },
 
-    collision : function(entity1, entity2) {
-
-        var vector = entity1.position.sub(entity2.position);
-
-        if (vector.normSquared() < (entity1.entityRadius + entity2.entityRadius) *
-           (entity1.entityRadius + entity2.entityRadius)) {
-
-            entity1.applyForce(vector.normalize().mulSelf(entity1.moveSpeed));
-            entity2.applyForce(vector.normalize().mulSelf(entity2.moveSpeed * -1));
-
-        }
-
-        delete vector;
-
-    },
-
     killAndSearch : function(leukocyte) {
         
         nearest = new Vector(Infinity, Infinity, 0);
@@ -144,7 +128,7 @@ Controller.prototype = {
         
             }
         
-            if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
+            if (leukocyte.checkCollision(particle)) {
         
                 leukocyte.eatParticle(particle.position);
                 
@@ -178,7 +162,7 @@ Controller.prototype = {
 
             for (var j = 0; j < i; j++) {
 
-                this.collision(leukocyte, this.leukocytes[j]);
+                leukocyte.collision(this.leukocytes[j]);
 
             }
 
@@ -186,7 +170,7 @@ Controller.prototype = {
                 this.vectorfield.getVector(leukocyte.position)
             );
 
-            leukocyte.boundaryCheck(this.vectorfield);
+            leukocyte.checkBoundary(this.vectorfield);
 
             leukocyte.update(dt);
 
@@ -241,13 +225,13 @@ Controller.prototype = {
 
             for(var j = 0; j < i; j++) {
 
-                this.collision(devourer, this.devourers[j]);
+                devourer.collision(this.devourers[j]);
 
             }
 
             this.applyDevourerTarget(devourer);
 
-            devourer.boundaryCheck(this.vectorfield);
+            devourer.checkBoundary(this.vectorfield);
 
             devourer.update(dt);
 
@@ -314,7 +298,7 @@ Controller.prototype = {
 
             this.applySwarmBehaviourAndReproduction(particleDistances[i], particle, particleCount);
 
-            particle.boundaryCheck(this.vectorfield);
+            particle.checkBoundary(this.vectorfield);
 
             particle.update(dt);
 
@@ -463,7 +447,7 @@ Controller.prototype = {
 
             for(var j = 0; j < this.leukocytes.length; j++) {
 
-                this.collision(cytoplast, this.leukocytes[j]);
+                cytoplast.collision(this.leukocytes[j]);
 
             }
 
@@ -485,7 +469,7 @@ Controller.prototype = {
 
             cytoplast.applyForce(forceVector.divSelf(5));
 
-            cytoplast.boundaryCheck(this.vectorfield);
+            cytoplast.checkBoundary(this.vectorfield);
 
             cytoplast.update(dt);
 
@@ -506,21 +490,33 @@ Controller.prototype = {
 
     reset : function() {
 
-        delete this.particles;
-        delete this.cytoplats;
-        delete this.leukocytes;
-        delete this.devourers;
+        this.deleteEntities(this.particles);
+        this.deleteEntities(this.leukocytes);
+        this.deleteEntities(this.cytoplasts);
+        this.deleteEntities(this.devourers);
+        //this.deleteEntities(this.entropyfiers);
 
         this.particles = [];
         this.cytoplasts = [];
         this.leukocytes = [];
         this.devourers = [];
+        this.entropyfiers = [];
 
         this.points = 0;
         Menu.updatePoints(0);
         
         this.multiplier = 1;
 
+    },
+    
+    deleteEntities : function(entities) {
+        
+        for (var i = 0; i < entities.length; i++) {
+            
+            delete entities[i].destroy();
+            
+        }
+        
     },
 
     getRandomOutsidePosition : function() {

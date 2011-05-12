@@ -42,6 +42,15 @@ Leukocyte.initialize = function(gl) {
 };
 
 Leukocyte.prototype.draw = function(gl) {
+        
+    // gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
+    // 
+    // if (!this.isActive) {
+    // 
+    //     this.deadParticle.position = this.position.add(this.orientation);
+    //     this.deadParticle.draw(gl);
+    // 
+    // }
 
     gl.bindShader(Leukocyte.shader);
     
@@ -66,8 +75,6 @@ Leukocyte.prototype.draw = function(gl) {
         }
     
     gl.popMatrix();
-    
-    gl.bindShader(gl.defaultShader);
 
 };
 

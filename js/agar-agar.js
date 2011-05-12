@@ -68,8 +68,6 @@ function run() {
         gl.drawRect(0, 0, 1, 1);
         
         game.update(dt);
-        Animator.update(dt);
-        
         game.draw(gl);
 
     }

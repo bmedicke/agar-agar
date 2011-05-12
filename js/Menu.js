@@ -3,13 +3,15 @@ var Menu = {
     menuOpen : false,
     musicOn : true,
     
-    hideInfo : function(){        
+    hideInfo : function(){
+        
         $("#newgame").hide();
         $("#instructions").hide();
         $("#versions").hide();
         $("#about").hide();
         $("#donate").hide();
         $("#loser").hide();
+        
     },
 
     toggle : function(){
@@ -51,7 +53,27 @@ var Menu = {
 
         this.menuOpen = !this.menuOpen;
 
-    }, 
+    },
+    
+    open : function() {
+        
+        if (!this.menuOpen) {
+            
+            this.toggle();
+            
+        }
+        
+    },
+    
+    close : function() {
+        
+        if (this.menuOpen) {
+            
+            this.toggle();
+            
+        }
+        
+    },
     
     initialize : function() {
 
@@ -121,7 +143,7 @@ var Menu = {
     
     startNewGame : function() {
         
-        this.toggle();
+        this.close();
         this.hideInfo();
         
         game.resetLevel();
@@ -134,7 +156,7 @@ var Menu = {
     
     showLoserScreen : function(points) {
         
-        this.toggle();
+        this.open();
         $("#loser").show();
         $("#score").text(points);
         

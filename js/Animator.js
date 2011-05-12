@@ -84,6 +84,12 @@ var Animator = {
         
         this.animations.push(new Animation(object, values, duration, callback));
         
+    },
+    
+    reset : function() {
+        
+        this.animations = [];
+        
     }
     
 };
