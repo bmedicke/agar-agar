@@ -146,7 +146,7 @@ Controller.prototype = {
         
             if (current.normSquared() < leukocyte.entityRadius * leukocyte.entityRadius) {
         
-                leukocyte.eatParticle(particle.position);
+                leukocyte.eatParticle();
                 
                 delete this.particles.splice(j, 1)[0].destroy();
                 j--;
