@@ -16,7 +16,7 @@ Leukocyte.prototype.moveSpeed = .3;
 Leukocyte.prototype.entityRadius = .5;
 Leukocyte.prototype.circleResolution = 16;
 
-Leukocyte.prototype.eatTime = 1000;
+Leukocyte.prototype.eatTime = 300;
 
 Leukocyte.initialize = function(gl) {
 
@@ -85,6 +85,13 @@ Leukocyte.prototype.draw = function(gl) {
         );
         
         gl.passVertices(gl.LINE_LOOP, Leukocyte.circleBuffer);
+        
+        if (!this.isActive) {
+    
+            this.deadParticle.position = this.position.add(this.orientation);
+            Particle.draw(gl, [this.deadParticle]);
+        
+        }
     
     gl.popMatrix();
     
@@ -119,5 +126,7 @@ Leukocyte.prototype.eatParticle = function() {
     this.activeTimer = Leukocyte.prototype.eatTime;
     
     this.orientation.normalizeSelf().mulSelf(Leukocyte.prototype.entityRadius);
+    
+    this.deadParticle = new Particle(this.orientation);
     
 };

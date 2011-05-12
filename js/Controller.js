@@ -656,7 +656,7 @@ Controller.prototype = {
         }
         
         if (particleCount === 0) {
-            
+        
             Menu.showLoserScreen(this.points);
             game.state = "over";
             
