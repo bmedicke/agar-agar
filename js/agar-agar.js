@@ -1,29 +1,25 @@
 var canvas,
     gl,
     game,
-    time,
-    missingResourceCount = 0;
+    time;
 
 function initialize() {
     
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    
-    var cellSize = game.vectorfield.cellSize;
-    
     canvas = document.getElementById("canvas");
     
-    canvas.width = width = game.vectorfield.cols * cellSize;
-    canvas.height = height = game.vectorfield.rows * cellSize;
+    var cellSize = game.vectorfield.initialize(window.innerWidth, window.innerHeight);
+    
+    canvas.width = game.vectorfield.cols * cellSize;
+    canvas.height = game.vectorfield.rows * cellSize;
     
     gl = canvas.getContext("experimental-webgl");
     
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
-    gl.viewport(0, 0, width, height);
+    gl.viewport(0, 0, canvas.width, canvas.height);
     // gl.enable(gl.DEPTH_TEST);
     
     gl.translate(-1, 1);
-    gl.scale(1 / (width / 2) * cellSize, -1 / (height / 2) * cellSize);
+    gl.scale(1 / (canvas.width / 2) * cellSize, -1 / (canvas.height / 2) * cellSize);
     
     gl.lineWidth(2.0);
     gl.noFill();
@@ -33,17 +29,7 @@ function initialize() {
     
     game.initialize(gl);
     
-};
-
-function start() {
-    
-    if (missingResourceCount === 0) {
-        
-        time = (new Date()).getTime();
-        
-        run();
-        
-    }
+    time = (new Date()).getTime();
     
 };
 
@@ -73,10 +59,7 @@ function run() {
 
 window.onload = function() {
     
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    
-    game = new Game(width, height);
+    game = new Game();
     
     Menu.initialize();
     
@@ -89,12 +72,8 @@ window.onload = function() {
         
     }
     
-    missingResourceCount++;
-    
     initialize();
     
-    missingResourceCount--;
-    
-    start();
+    run();
 
 };

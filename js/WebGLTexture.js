@@ -15,7 +15,6 @@ WebGLRenderingContext.prototype.loadTexture = function(imagePath, callback) {
         
     }
     
-    missingResourceCount++;
     texture.image.src = imagePath;
     
     return texture;
@@ -42,8 +41,5 @@ WebGLRenderingContext.prototype.textureImageLoaded = function(texture, callback)
         callback(this);
     
     }
-    
-    missingResourceCount--;
-    start();
     
 };

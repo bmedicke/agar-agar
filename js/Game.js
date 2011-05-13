@@ -1,6 +1,6 @@
-var Game = function(width, height) {
+var Game = function() {
     
-    this.vectorfield = new Vectorfield(width, height);    
+    this.vectorfield = new Vectorfield();    
     this.inputHandler = new InputHandler(this.vectorfield);
     this.controller = new Controller(this.vectorfield);
     
@@ -36,9 +36,9 @@ Game.prototype = {
         Particle.initialize(gl);
         Leukocyte.initialize(gl);
         Devourer.initialize(gl);
-    
+        
         this.initLevel();
-        this.vectorfield.initialize();
+        
         this.inputHandler.initialize();
         this.stardust.initialize(gl);
         

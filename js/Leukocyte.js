@@ -13,7 +13,7 @@ Leukocyte.prototype.constructor = Entity;
 Leukocyte.prototype.mass = 300000;
 Leukocyte.prototype.moveSpeed = .3;
 
-Leukocyte.prototype.entityRadius = .5;
+Leukocyte.prototype.entityRadius = .7;
 Leukocyte.prototype.circleResolution = 16;
 
 Leukocyte.prototype.eatTime = 300;
@@ -93,6 +93,21 @@ Leukocyte.prototype.eatParticle = function(particlePosition) {
         Leukocyte.prototype.eatTime * 0.5,
         
         function() {
+            
+            // Animator.animate(
+            //     self.orientation, 
+            //     {"x" : 0.1, "y" : 0.1},
+            //     Leukocyte.prototype.eatTime * 0.2,
+            //     function() {
+            //         
+            //         Animator.animate(
+            //             self.orientation, 
+            //             {"x" : 0, "y" : 0},  
+            //             Leukocyte.prototype.eatTime * 0.2
+            //         );
+            //     
+            //     }
+            // );
             
             Animator.animate(
                 self.orientation, 

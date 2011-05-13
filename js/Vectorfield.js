@@ -12,16 +12,13 @@ var Forcefield = function(position, radius, force, isDynamic, angle, point, dura
     
 };
 
-var Vectorfield = function(width, height) {
+var Vectorfield = function() {
     
-    this.cellSize = Math.sqrt(width * height / this.numberOfCells);
-    this.cols = Math.ceil(width / this.cellSize);
-    this.rows = Math.ceil(height / this.cellSize);
+    this.cellSize = null;
+    this.cols = null;
+    this.rows = null;
     
-    this.boundaryOffset = {
-        x : this.cols - width / this.cellSize,
-        y : this.rows - height / this.cellSize
-    };
+    this.boundaryOffset = null;
     
     this.dynamicVectors = [];
     this.staticVectors = [];
@@ -44,7 +41,16 @@ Vectorfield.prototype = {
     
     minLength : 0.001,
     
-    initialize : function() {
+    initialize : function(width, height) {
+        
+        this.cellSize = Math.sqrt(width * height / this.numberOfCells);
+        this.cols = Math.ceil(width / this.cellSize);
+        this.rows = Math.ceil(height / this.cellSize);
+
+        this.boundaryOffset = {
+            x : this.cols - width / this.cellSize,
+            y : this.rows - height / this.cellSize
+        };
     
         for(var i = 0; i < this.rows * this.cols; i++) {
         
@@ -52,6 +58,8 @@ Vectorfield.prototype = {
             this.dynamicVectors[i] = new Vector();
             
         }
+        
+        return this.cellSize;
     
     },
     
