@@ -22,28 +22,6 @@ var InputHandler = function(vectorfield) {
         true
     );
 
-    var self = this;
-
-    document.getElementById("canvas").onmousedown = function(event) {
-        self.onMouseDown(event);
-    };
-    
-    document.body.onmousemove = function(event) {
-        self.onMouseMove(event);
-    };
-    
-    document.body.onmouseup = function(event) {
-        self.onMouseUp(event);
-    };
-    
-    document.onkeydown = function(event) {
-        self.onKeyDown(event);
-    };
-    
-    document.onkeyup = function(event) {
-        self.onKeyUp(event);
-    };
-
 };
 
 InputHandler.prototype = {
@@ -51,6 +29,32 @@ InputHandler.prototype = {
     force : 0.01,
     
     forceRadius : 4,
+    
+    initialize : function() {
+        
+        var self = this;
+
+        document.getElementById("canvas").onmousedown = function(event) {
+            self.onMouseDown(event);
+        };
+
+        document.body.onmousemove = function(event) {
+            self.onMouseMove(event);
+        };
+
+        document.body.onmouseup = function(event) {
+            self.onMouseUp(event);
+        };
+
+        document.onkeydown = function(event) {
+            self.onKeyDown(event);
+        };
+
+        document.onkeyup = function(event) {
+            self.onKeyUp(event);
+        };
+        
+    },
     
     update : function(dt) {
         

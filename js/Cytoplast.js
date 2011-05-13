@@ -62,13 +62,19 @@ Cytoplast.prototype.dockParticle = function(particlePosition) {
         target = new Vector(1, 0, 0);
     
     target.rotate2DSelf(Math.random() * Math.PI * 2);
-    target.mulSelf(Math.random() * (this.entityRadius - particle.entityRadius));
+    target.mulSelf(Math.random() * (this.entityRadius - 2 * particle.entityRadius));
     target.addSelf(this.position);
     
     Animator.animate(
         particle.position, 
         {"x" : target.x, "y" : target.y}, 
         target.sub(particlePosition).norm() * Cytoplast.prototype.infectionTime
+    );
+    
+    Animator.animate(
+        particle.position, 
+        {"z" : 0.3}, 
+        Cytoplast.prototype.infectionTime
     );
     
     this.dockedParticles.push(particle);

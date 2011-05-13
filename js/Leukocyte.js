@@ -90,10 +90,21 @@ Leukocyte.prototype.eatParticle = function(particlePosition) {
     Animator.animate(
         this.orientation, 
         {"x" : 0, "y" : 0}, 
-        Leukocyte.prototype.eatTime,
+        Leukocyte.prototype.eatTime * 0.5,
+        
         function() {
-            self.isActive = true;
+            
+            Animator.animate(
+                self.orientation, 
+                {"z" : 0.7}, 
+                Leukocyte.prototype.eatTime * 0.5,
+                function() {
+                    self.isActive = true;
+                }
+            );
+            
         }
+        
     );
     
 };

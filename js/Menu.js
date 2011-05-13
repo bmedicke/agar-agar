@@ -11,6 +11,7 @@ var Menu = {
         $("#about").hide();
         $("#donate").hide();
         $("#loser").hide();
+        $("#error").hide();
         
     },
 
@@ -130,6 +131,10 @@ var Menu = {
         $("#startnewgame").click(function() {
             Menu.startNewGame();
         });
+        
+        $("#overlay").click(function() {
+            Menu.close();
+        });
     },
     
     updatePoints : function(points) {
@@ -159,6 +164,13 @@ var Menu = {
         this.open();
         $("#loser").show();
         $("#score").text(points);
+        
+    },
+    
+    showErrorScreen : function() {
+        
+        this.open();
+        $("#error").show();
         
     }
 };

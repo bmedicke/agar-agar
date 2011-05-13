@@ -39,6 +39,7 @@ Game.prototype = {
     
         this.initLevel();
         this.vectorfield.initialize();
+        this.inputHandler.initialize();
         this.stardust.initialize(gl);
         
         gl.bindShader(gl.defaultShader);

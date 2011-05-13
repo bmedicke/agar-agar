@@ -71,6 +71,7 @@ Particle.draw = function(gl, particles) {
             
             this.vertexArray[i * 3] = particles[i].position.x;
             this.vertexArray[i * 3 + 1] = particles[i].position.y;
+            this.vertexArray[i * 3 + 2] = particles[i].position.z;
     
         }
         
@@ -80,7 +81,11 @@ Particle.draw = function(gl, particles) {
     
         for (i = 0; i < particles.length; i++) {
     
-            particlePositions.push(particles[i].position.x, particles[i].position.y, 1.0);
+            particlePositions.push(
+                particles[i].position.x,
+                particles[i].position.y,
+                particles[i].position.z
+            );
     
         }
         

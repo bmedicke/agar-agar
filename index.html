@@ -57,9 +57,9 @@
     <div class="info rounded" id="versions">
         <h2>Versions</h2>
         
-        <p>Drag your cursor over the culture medium to create a drift. Move your microorganisms toward each other so they can reproduce. Once you have produced enough microorganisms, move them to the destination cells in order to infiltrate them.</p>
+        <p><a href="http://agaragargame.com" class="rounded button">Latest Release</a></p>
         
-        <p>However, watch out for leukocytes and ciliated cells which feed upon your organisms.</p>
+        <p>Links to older Versions of Agar Agar</p>
     </div>
 
     <div class="info rounded" id="about">
@@ -85,6 +85,12 @@
             <a href="#" class="rounded button" id="facebooklink">Facebook</a> or 
             <a href="https://twitter.com/?status=Check%20out%20%23AgarAgar%21%20http%3A%2F%2Fagaragargame.com%2F" class="rounded button" id="twitterlink">Twitter</a>.
         </p>
+    </div>
+    
+    <div class="info rounded" id="error">
+        <h2>ERROR</h2>
+        <p>Your browser does not support WebGL.</p>
+        <a href="http://get.webgl.org" class="rounded button">Get WebGL</a></p>
     </div>
 
 <script id="vertex-shader" type="x-shader/x-vertex" charset="utf-8">
@@ -163,11 +169,15 @@
 
     attribute vec3 position;
     
+    varying float alpha;
+    
     void main(void) {
     
-       gl_Position = matrix * vec4(position, 1.0);
+       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
        
        gl_PointSize = size;
+       
+       alpha = 1.0 - position.z;
     
     }
     
@@ -181,12 +191,12 @@
     
     uniform sampler2D texture;
     
-    const vec3 color = vec3(0.5, 0.5, 0.7);
+    varying float alpha;
     
     void main(void) {
     
        gl_FragColor = texture2D( texture, gl_PointCoord );
-       //gl_FragColor.rgb = mix( color, gl_FragColor.rgb, 0.5 );
+       gl_FragColor.a *= alpha;
        
     }
     

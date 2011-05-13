@@ -6,20 +6,15 @@ var canvas,
 
 function initialize() {
     
-    time = (new Date()).getTime();
-    
-    canvas = document.getElementById("canvas");
-    
     var width = window.innerWidth;
     var height = window.innerHeight;
     
-    game = new Game(width, height);
-    
     var cellSize = game.vectorfield.cellSize;
+    
+    canvas = document.getElementById("canvas");
     
     canvas.width = width = game.vectorfield.cols * cellSize;
     canvas.height = height = game.vectorfield.rows * cellSize;
-    
     
     gl = canvas.getContext("experimental-webgl");
     
@@ -43,6 +38,8 @@ function initialize() {
 function start() {
     
     if (missingResourceCount === 0) {
+        
+        time = (new Date()).getTime();
         
         run();
         
@@ -76,7 +73,21 @@ function run() {
 
 window.onload = function() {
     
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    
+    game = new Game(width, height);
+    
     Menu.initialize();
+    
+    if (!window.WebGLRenderingContext) {
+        
+        game.state = "pause";
+        
+        Menu.showErrorScreen();
+        return;
+        
+    }
     
     missingResourceCount++;
     
