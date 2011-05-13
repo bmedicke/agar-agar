@@ -14,19 +14,16 @@ Cytoplast.prototype.mass = 800000;
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
 Cytoplast.prototype.maxFill = 30;
-Cytoplast.prototype.dockedParticleSpeed = 0.01;
+
+Cytoplast.prototype.infectionTime = 1000;
 
 Cytoplast.prototype.update = function(dt) {
 
     var positionChange = Entity.prototype.update.call(this, dt);
     
-    for(var i = 0; i < this.dockedParticles.length; i++) {
+    for (var i = 0; i < this.dockedParticles.length; i++) {
         
-        var particleTarget = this.dockedParticles[i].target.add(this.position),
-            particlePosition = this.dockedParticles[i].position;
-        
-        particlePosition.addSelf(positionChange);
-        particlePosition.addSelf(particleTarget.sub(particlePosition).normalizeSelf().mulSelf(this.dockedParticleSpeed));
+        this.dockedParticles[i].position.addSelf(positionChange);
     
     }
 
@@ -61,17 +58,22 @@ Cytoplast.prototype.isFull = function() {
 
 Cytoplast.prototype.dockParticle = function(particlePosition) {
     
-    var newParticle = new Particle(particlePosition.getCopy()),
-        randomInsideVector = new Vector(1, 0, 0);
+    var particle = new Particle(particlePosition.getCopy()),
+        target = new Vector(1, 0, 0);
     
-    randomInsideVector.rotate2DSelf(Math.random() * Math.PI * 2);
+    target.rotate2DSelf(Math.random() * Math.PI * 2);
+    target.mulSelf(Math.random() * (this.entityRadius - particle.entityRadius));
+    target.addSelf(this.position);
     
-    randomInsideVector.mulSelf(Math.random() * (this.entityRadius - Particle.prototype.entityRadius));
+    Animator.animate(
+        particle.position, 
+        {"x" : target.x, "y" : target.y}, 
+        target.sub(particlePosition).norm() * Cytoplast.prototype.infectionTime
+    );
     
-    newParticle.target = randomInsideVector;
-    
-    this.dockedParticles.push(newParticle);
-    
+    this.dockedParticles.push(particle);
     this.currentFill++;
+    
+    delete target;
     
 };
