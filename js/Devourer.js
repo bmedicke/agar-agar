@@ -2,6 +2,11 @@ var Devourer = function(position) {
 
 	Entity.call(this, position);
 	
+	this.rotation = 0;
+	this.speed = 0.0;
+	
+    this.animateSpeed(true);
+	
 };
 
 Devourer.prototype = new Entity();
@@ -15,14 +20,15 @@ Devourer.prototype.circleResolution = 16;
 
 Devourer.prototype.force = 0.1;
 Devourer.prototype.forceRadius = 8.0;
-Devourer.prototype.forceAngle = - Math.PI / 6;
 
-Devourer.prototype.rotateSpeed = 0.0005;
+Devourer.prototype.rotateSpeed = 0.0001;
+
+Devourer.prototype.textureSizeFactor = 2;
 
 Devourer.initialize = function(gl) {
     
     this.vertexBuffer = gl.createBuffer();
-    this.vertexBuffer.itemSize = 3;
+    this.vertexBuffer.itemSize = 4;
     this.vertexBuffer.vertexCount = 0;
     
     this.vertexArray = null;
@@ -36,7 +42,7 @@ Devourer.initialize = function(gl) {
     
     var self = this;
     
-    this.texture = gl.loadTexture("textures/tentacles.png", function(gl) {
+    this.texture = gl.loadTexture("textures/tentaclesAlpha.png", function(gl) {
         
         gl.bindShader(self.shader);
         gl.passTexture(self.texture);
@@ -45,30 +51,43 @@ Devourer.initialize = function(gl) {
     
     gl.uniform1f(
         gl.getUniformLocation(this.shader, "size"), 
-        game.vectorfield.cellSize * 4 * Devourer.prototype.entityRadius
+        game.vectorfield.cellSize * 2 * Devourer.prototype.textureSizeFactor * Devourer.prototype.entityRadius
     );
     
 };
 
 Devourer.draw = function(gl, devourers) {
     
+    // for (var i = 0; i < devourers.length; i++) {
+    //     
+    //     devourers[i].draw(gl);
+    //     
+    // }
+    
     if (devourers.length === this.vertexBuffer.vertexCount) {
-
+    
         for (i = 0; i < devourers.length; i++) {
             
-            this.vertexArray[i * 3] = devourers[i].position.x;
-            this.vertexArray[i * 3 + 1] = devourers[i].position.y;
-
+            this.vertexArray[i * 4] = devourers[i].position.x;
+            this.vertexArray[i * 4 + 1] = devourers[i].position.y;
+            this.vertexArray[i * 4 + 2] = devourers[i].rotation;
+            this.vertexArray[i * 4 + 3] = devourers[i].speed;
+    
         }
         
     } else {
         
         var devourerPositions = [];
-
+    
         for (i = 0; i < devourers.length; i++) {
-
-            devourerPositions.push(devourers[i].position.x, devourers[i].position.y, 1.0);
-
+    
+            devourerPositions.push(
+                devourers[i].position.x,
+                devourers[i].position.y,
+                devourers[i].rotation,
+                devourers[i].speed
+            );
+    
         }
         
         this.vertexArray = new Float32Array(devourerPositions);
@@ -99,8 +118,7 @@ Devourer.prototype.draw = function(gl) {
         
         gl.drawCircle(0, 0, this.entityRadius);
         
-        var angle = this.orientation.angle();
-        gl.rotate(this.orientation.y < 0 ? -angle : angle);
+        gl.rotate(this.rotation);
         
         gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
         
@@ -118,6 +136,30 @@ Devourer.prototype.update = function(dt) {
     
     Entity.prototype.update.call(this, dt);
     
-    this.orientation.rotate2DSelf(this.rotateSpeed * dt);
+    this.rotation += this.rotateSpeed * dt * this.speed * 10.0;
+    
+};
+
+Devourer.prototype.animateSpeed = function(clockwise) {
+    
+    var self = this;
+    
+    Animator.animate(
+        this, 
+        {"speed" : (clockwise ? -1.0 : 1.0)}, 
+        3000,
+        function() {
+            
+            Animator.animate(
+                self, 
+                {"speed" : (clockwise ? -1.0 : 1.0)}, 
+                5000,
+                function() {
+                    self.animateSpeed(!clockwise);
+                }
+            );
+            
+        }
+    );
     
 };

@@ -34,6 +34,9 @@ WebGLRenderingContext.prototype.textureImageLoaded = function(texture, callback)
     this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MAG_FILTER, this.LINEAR_MIPMAP_LINEAR );
     this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MIN_FILTER, this.LINEAR_MIPMAP_LINEAR );
     
+    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_WRAP_S, this.CLAMP_TO_EDGE );
+    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_WRAP_T, this.CLAMP_TO_EDGE );
+    
     this.bindTexture( this.TEXTURE_2D, null );
     
     if (callback) {

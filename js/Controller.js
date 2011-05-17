@@ -16,7 +16,7 @@ var Controller = function(vectorfield) {
         Devourer.prototype.forceRadius,
         Devourer.prototype.force,
         false,
-        Devourer.prototype.forceAngle
+        0.0
     );
 
 };
@@ -62,10 +62,10 @@ Controller.prototype = {
         }
 
         this.drawEntities(gl, this.cytoplasts);
-        
-        this.drawEntities(gl, this.devourers);
 
-        // Devourer.draw(gl, this.devourers);
+        // this.drawEntities(gl, this.devourers);
+
+        Devourer.draw(gl, this.devourers);
         
         Particle.draw(gl, this.particles);
 
@@ -474,6 +474,7 @@ Controller.prototype = {
         for (var i = 0; i < this.devourers.length; i++) {
 
             this.devourerForcefield.position = this.devourerForcefield.point = this.devourers[i].position;
+            this.devourerForcefield.angle = this.devourers[i].speed;
             this.vectorfield.applyForcefield(dt, this.devourerForcefield);
 
         }

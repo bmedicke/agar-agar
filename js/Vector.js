@@ -209,9 +209,15 @@ Vector.prototype = {
     
     angle: function(vector) {
         
-        vector = vector || new Vector(1, 0, 0);
-
-        return Math.acos(this.dot(vector) / this.norm() / vector.norm());
+        if (vector) {
+            
+            return Math.acos(this.dot(vector) / this.norm() / vector.norm());
+            
+        } else {
+            
+            return Math.atan2(this.y, this.x);
+            
+        }
         
     },
     

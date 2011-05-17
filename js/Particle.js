@@ -24,7 +24,7 @@ Particle.prototype.reproductionVelocity = 0.001
 Particle.prototype.count = 0;
 Particle.prototype.maxCount = 150;
 
-Particle.prototype.cohesionRadius = 2;
+Particle.prototype.textureSizeFactor = 2;
 
 Particle.initialize = function(gl) {
     
@@ -52,7 +52,7 @@ Particle.initialize = function(gl) {
     
     gl.uniform1f(
         gl.getUniformLocation(this.shader, "size"), 
-        game.vectorfield.cellSize * 4 * Particle.prototype.entityRadius
+        game.vectorfield.cellSize * 2 * Particle.prototype.textureSizeFactor * Particle.prototype.entityRadius
     );
     
 };

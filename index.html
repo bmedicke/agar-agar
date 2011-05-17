@@ -269,13 +269,19 @@
     uniform mat4 matrix;
     uniform float size;
 
-    attribute vec3 position;
+    attribute vec4 position;
+
+    varying float rotation;
+    varying float speed;
 
     void main(void) {
 
-       gl_Position = matrix * vec4(position, 1.0);
-   
+       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+
        gl_PointSize = size;
+
+       rotation = position.z;
+       speed = position.w;
 
     }
     
@@ -287,14 +293,38 @@
        precision highp float;
     #endif
 
-    uniform sampler2D texture;
+    const float PI = 3.1415926535897932384626433832;
 
-    const vec3 color = vec3(0.5, 0.5, 0.7);
+    uniform sampler2D texture;
+    
+    varying float rotation;
+    varying float speed;
+
+    const vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    const vec2 mid = vec2(0.5, 0.5);
+    
+    vec2 rotate( vec2 vector, float angle ) {
+    
+        return vec2(
+            cos( angle ) * vector.x - sin( angle ) * vector.y,
+            sin( angle ) * vector.x + cos( angle ) * vector.y
+        );
+        
+    }
 
     void main(void) {
-
-       gl_FragColor = texture2D( texture, gl_PointCoord );
-       //gl_FragColor.rgb = mix( color, gl_FragColor.rgb, 0.5 );
+        
+        gl_FragColor = color;
+        
+        vec2 vector = gl_PointCoord - mid;
+        float angle = length( vector ) * speed * 1.1;
+        
+        float alpha = 0.0;
+        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle ) ).a) * 2.0;
+        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle * 1.1 + 0.1 ) ).a) * 1.5;
+        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle * 1.15 + 0.15 ) ).a);
+        
+        gl_FragColor.a = alpha;
    
     }
     
