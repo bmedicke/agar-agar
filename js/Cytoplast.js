@@ -46,7 +46,7 @@ Cytoplast.prototype.draw = function(gl) {
     gl.setColor(.7, .7, .5, 1);
     Entity.prototype.draw.call(this, gl);
     
-    Particle.draw(gl, this.dockedParticles);
+    Particle.drawEnqueue(this.dockedParticles);
 
 };
 

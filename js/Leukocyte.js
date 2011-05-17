@@ -70,7 +70,7 @@ Leukocyte.prototype.draw = function(gl) {
         if (!this.isActive) {
     
             this.deadParticle.position = this.position.add(this.orientation);
-            Particle.draw(gl, [this.deadParticle]);
+            Particle.drawEnqueue([this.deadParticle]);
         
         }
     

@@ -24,6 +24,8 @@ Particle.prototype.reproductionVelocity = 0.001
 Particle.prototype.count = 0;
 Particle.prototype.maxCount = 150;
 
+Particle.prototype.absolutMaxCount = 250;
+
 Particle.prototype.textureSizeFactor = 2;
 
 Particle.initialize = function(gl) {
@@ -32,7 +34,7 @@ Particle.initialize = function(gl) {
     this.vertexBuffer.itemSize = 3;
     this.vertexBuffer.vertexCount = 0;
     
-    this.vertexArray = null;
+    this.vertexArray = new Float32Array(Particle.prototype.absolutMaxCount * this.vertexBuffer.itemSize);
 
     this.shader = gl.loadShader("particle-vertex-shader", "particle-fragment-shader");
     
@@ -57,42 +59,7 @@ Particle.initialize = function(gl) {
     
 };
 
-Particle.draw = function(gl, particles) {
-    
-    // for (var i = 0; i < particles.length; i++) {
-    //     
-    //     particles[i].draw(gl);
-    //     
-    // }
-    
-    if (particles.length === this.vertexBuffer.vertexCount) {
-    
-        for (i = 0; i < particles.length; i++) {
-            
-            this.vertexArray[i * 3] = particles[i].position.x;
-            this.vertexArray[i * 3 + 1] = particles[i].position.y;
-            this.vertexArray[i * 3 + 2] = particles[i].position.z;
-    
-        }
-        
-    } else {
-        
-        var particlePositions = [];
-    
-        for (i = 0; i < particles.length; i++) {
-    
-            particlePositions.push(
-                particles[i].position.x,
-                particles[i].position.y,
-                particles[i].position.z
-            );
-    
-        }
-        
-        this.vertexArray = new Float32Array(particlePositions);
-        this.vertexBuffer.vertexCount = particles.length;
-        
-    }
+Particle.draw = function(gl) {
     
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
@@ -104,7 +71,31 @@ Particle.draw = function(gl, particles) {
     
     gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
+    
+    this.vertexBuffer.vertexCount = 0;
 
+};
+
+Particle.drawEnqueue = function(particles) {
+    
+    // for (var i = 0; i < particles.length; i++) {
+    //     
+    //     particles[i].draw(gl);
+    //     
+    // }
+    
+    for (i = 0; i < particles.length; i++) {
+        
+        var index = (this.vertexBuffer.vertexCount + i) * 3;
+        
+        this.vertexArray[index] = particles[i].position.x;
+        this.vertexArray[index + 1] = particles[i].position.y;
+        this.vertexArray[index + 2] = particles[i].position.z;
+        
+    }
+    
+    this.vertexBuffer.vertexCount += particles.length;
+    
 };
 
 Particle.prototype.resetReproduction = function(time) {
