@@ -58,7 +58,7 @@ Leukocyte.prototype.draw = function(gl) {
         
         gl.translate(this.position.x, this.position.y);
         gl.updateMatrix();
-
+        
         gl.uniform2f(
             Leukocyte.shader.particleVectorUniformLocation, 
             this.orientation.x,
@@ -68,7 +68,7 @@ Leukocyte.prototype.draw = function(gl) {
         gl.passVertices(gl.LINE_LOOP, Leukocyte.circleBuffer);
         
         if (!this.isActive) {
-    
+        
             this.deadParticle.position = this.position.add(this.orientation);
             Particle.drawEnqueue([this.deadParticle]);
         
@@ -93,21 +93,6 @@ Leukocyte.prototype.eatParticle = function(particlePosition) {
         Leukocyte.prototype.eatTime * 0.5,
         
         function() {
-            
-            // Animator.animate(
-            //     self.orientation, 
-            //     {"x" : 0.1, "y" : 0.1},
-            //     Leukocyte.prototype.eatTime * 0.2,
-            //     function() {
-            //         
-            //         Animator.animate(
-            //             self.orientation, 
-            //             {"x" : 0, "y" : 0},  
-            //             Leukocyte.prototype.eatTime * 0.2
-            //         );
-            //     
-            //     }
-            // );
             
             Animator.animate(
                 self.orientation, 

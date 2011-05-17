@@ -15,7 +15,7 @@ Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
 Cytoplast.prototype.maxFill = 30;
 
-Cytoplast.prototype.infectionTime = 1000;
+Cytoplast.prototype.infectionTime = 2000;
 
 Cytoplast.prototype.update = function(dt) {
 

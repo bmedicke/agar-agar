@@ -136,7 +136,7 @@ Devourer.prototype.update = function(dt) {
     
     Entity.prototype.update.call(this, dt);
     
-    this.rotation += this.rotateSpeed * dt * this.speed * 10.0;
+    this.rotation += this.rotateSpeed * dt * this.speed * 5.0;
     
 };
 

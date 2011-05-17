@@ -114,11 +114,11 @@ Vectorfield.prototype = {
         // }
         
         
-        gl.setColor(0.4, 0.8, 0.4, 1.0);
+        gl.setColor(0.5, 1.0, 0.5, 1.0);
         
         this.drawVectors(this.dynamicVectors, this.dynamicLookupTable);
         
-        gl.setColor(0.4, 0.4, 0.8, 1.0);
+        gl.setColor(1.0, 0.5, 0.5, 1.0);
         
         this.drawVectors(this.staticVectors, this.staticLookupTable);
         
