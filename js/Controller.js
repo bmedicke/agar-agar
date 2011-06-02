@@ -237,7 +237,7 @@ Controller.prototype = {
 
                 if (devourer.checkCollision(cytoplast)) {
 
-                    this.addParticlesAt(cytoplast.currentFill, cytoplast.position, cytoplast.entityRadius / 2);
+                    this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
 
                     this.vectorfield.addForcefield(new Forcefield(
                         cytoplast.position.getCopy(),
@@ -421,7 +421,7 @@ Controller.prototype = {
             for(var j = 0; j < this.particles.length; j++) {
 
                 if(cytoplast.checkCollision(this.particles[j]) &&
-                   !cytoplast.isFull()) {
+                   !cytoplast.isFull() && cytoplast.pukeTimer <= 0) {
 
                     cytoplast.dockParticle(this.particles[j].position);
                     delete this.particles.splice(j, 1)[0].destroy();
@@ -443,28 +443,47 @@ Controller.prototype = {
                 cytoplast.collision(this.leukocytes[j]);
 
             }
+				
+			var forceVector = this.vectorfield.getVector(cytoplast.position);
+			var offset = Cytoplast.prototype.entityRadius;
 
-            var forceVector = this.vectorfield.getVector(cytoplast.position);
-            var offset = Cytoplast.prototype.entityRadius;
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x - offset, cytoplast.position.y))
+			);
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x, cytoplast.position.y + offset))
+			);
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x + offset, cytoplast.position.y))
+			);
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x, cytoplast.position.y - offset))
+			);
 
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x - offset, cytoplast.position.y))
-            );
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x, cytoplast.position.y + offset))
-            );
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x + offset, cytoplast.position.y))
-            );
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x, cytoplast.position.y - offset))
-            );
-
-            cytoplast.applyForce(forceVector.divSelf(5));
+			cytoplast.applyForce(forceVector.divSelf(5));
 
             cytoplast.checkBoundary(this.vectorfield);
 
             cytoplast.update(dt);
+			
+			if(cytoplast.puke) {
+			
+				this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
+			
+				this.vectorfield.addForcefield(new Forcefield(
+					cytoplast.position.getCopy(),
+					cytoplast.entityRadius * 2,
+					Entropyfier.prototype.force,
+					false,
+					Math.PI,
+					cytoplast.position,
+					Cytoplast.prototype.pukeTime
+				));
+			
+				cytoplast.puke = false;
+				cytoplast.dockedParticles = [];
+			
+			}
 
         }
 
