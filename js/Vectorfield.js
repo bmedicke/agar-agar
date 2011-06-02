@@ -41,7 +41,7 @@ Vectorfield.prototype = {
     
     minLength : 0.001,
     
-    initialize : function(width, height) {
+    initSize : function(width, height) {
         
         this.cellSize = Math.sqrt(width * height / this.numberOfCells);
         this.cols = Math.ceil(width / this.cellSize);
@@ -51,16 +51,42 @@ Vectorfield.prototype = {
             x : this.cols - width / this.cellSize,
             y : this.rows - height / this.cellSize
         };
-    
-        for(var i = 0; i < this.rows * this.cols; i++) {
-        
-            this.staticVectors[i] = new Vector();
-            this.dynamicVectors[i] = new Vector();
-            
-        }
         
         return this.cellSize;
     
+    },
+    
+    initialize : function(gl) {
+
+        this.vertexBuffer = gl.createBuffer();
+        this.vertexBuffer.itemSize = 4;
+        this.vertexBuffer.vertexCount = 0;
+
+        this.vertexArray = new Float32Array(this.cols * this.rows * this.vertexBuffer.itemSize);
+
+        this.shader = gl.loadShader("vectorfield-vertex-shader", "vectorfield-fragment-shader");
+
+        gl.bindShader(this.shader);
+
+        this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+        gl.passMatrix();
+
+        var self = this;
+
+        this.texture = gl.loadTexture("textures/vector.png", function(gl) {
+
+            gl.bindShader(self.shader);
+            gl.passTexture(self.texture);
+
+        });
+
+        for (var i = 0; i < this.rows * this.cols; i++) {
+        
+            this.staticVectors[i] = new Vector();
+            this.dynamicVectors[i] = new Vector();
+        
+        }
+
     },
     
     update : function(dt) {
@@ -113,15 +139,87 @@ Vectorfield.prototype = {
         //     
         // }
         
+        // gl.setColor(0.5, 1.0, 0.5, 1.0);
+        // 
+        // this.drawVectors(this.dynamicVectors, this.dynamicLookupTable);
+        // 
+        // gl.setColor(1.0, 0.5, 0.5, 1.0);
+        // 
+        // this.drawVectors(this.staticVectors, this.staticLookupTable);
         
-        gl.setColor(0.5, 1.0, 0.5, 1.0);
+        this.dynamicLookupTable.sort(function(a, b){return a - b;});
+        this.staticLookupTable.sort(function(a, b){return a - b;});
         
-        this.drawVectors(this.dynamicVectors, this.dynamicLookupTable);
+        var i = 0,
+            j = 0;
         
-        gl.setColor(1.0, 0.5, 0.5, 1.0);
+        while (i < this.dynamicLookupTable.length && j < this.staticLookupTable.length) {
+            
+            var dynCellID = this.dynamicLookupTable[i],
+                statCellID = this.staticLookupTable[j];
+            
+            if (dynCellID === statCellID) {
+                
+                this.drawVector(dynCellID, this.staticVectors[statCellID].addSelf(this.dynamicVectors[dynCellID]));
+                i++; j++;
+                
+            } else if (dynCellID < statCellID) {
+                
+                this.drawVector(dynCellID, this.dynamicVectors[dynCellID]);
+                i++;
+                
+            } else {
+                
+                this.drawVector(statCellID, this.staticVectors[statCellID]);
+                j++;
+                
+            }
         
-        this.drawVectors(this.staticVectors, this.staticLookupTable);
+        }
         
+        while (i < this.dynamicLookupTable.length) {
+        
+            var cellID = this.dynamicLookupTable[i];
+            this.drawVector(cellID, this.dynamicVectors[cellID]);
+            i++;
+        
+        }
+        
+        while (j < this.staticLookupTable.length) {
+        
+            var cellID = this.staticLookupTable[j];
+            this.drawVector(cellID, this.staticVectors[cellID]);
+            j++;
+        
+        }
+        
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
+        
+        gl.bindShader(this.shader);
+        gl.enableAlpha();
+        
+        gl.passVertices(gl.POINTS, this.vertexBuffer);
+        
+        gl.disableAlpha();
+        gl.bindShader(gl.defaultShader);
+        
+        this.vertexBuffer.vertexCount = 0;
+        
+    },
+    
+    drawVector : function(cellID, vector) {
+        
+        var i = this.vertexBuffer.vertexCount,
+            l = vector.norm();
+        
+        this.vertexArray[i * 4] = cellID % this.cols + .5;
+        this.vertexArray[i * 4 + 1] = Math.floor(cellID / this.cols) + .5;
+        this.vertexArray[i * 4 + 2] = (l < 1.0 ? l : 1.0) * this.cellSize;
+        this.vertexArray[i * 4 + 3] = vector.angle();
+        
+        this.vertexBuffer.vertexCount++;
     },
     
     reset : function() {
