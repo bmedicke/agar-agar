@@ -13,7 +13,7 @@ Entropyfier.prototype = {
     entropyTime : 3000,
     entropyRadius : 3,
     forceTime : 1000,
-    force : 1,
+    force : 5,
 
     update : function(dt) {
 

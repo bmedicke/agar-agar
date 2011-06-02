@@ -29,7 +29,7 @@ Game.prototype = {
     particleRate : 1000,
     particleAmount : 3,
     
-    entropyRate : 10000,
+    entropyRate : 5000,
     entropyAmount : 1,
     
     devourerRate : 60000,

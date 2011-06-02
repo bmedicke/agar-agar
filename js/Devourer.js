@@ -18,7 +18,7 @@ Devourer.prototype.moveSpeed = 0.5;
 Devourer.prototype.entityRadius = 2.0;
 Devourer.prototype.circleResolution = 16;
 
-Devourer.prototype.force = 0.1;
+Devourer.prototype.force = 3.0;
 Devourer.prototype.forceRadius = 8.0;
 
 Devourer.prototype.rotateSpeed = 0.0001;

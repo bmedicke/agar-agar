@@ -34,12 +34,13 @@ Vectorfield.prototype = {
     
     numberOfCells : 2000,
     
-    maxForce : 1,
+    maxForce : 1.5,
     
     dampCoefficient : 0.0005,
     forceCoefficient : 0.005,
     
     minLength : 0.001,
+    maxLength : 1.5,
     
     initSize : function(width, height) {
         
@@ -216,7 +217,7 @@ Vectorfield.prototype = {
         
         this.vertexArray[i * 4] = cellID % this.cols + .5;
         this.vertexArray[i * 4 + 1] = Math.floor(cellID / this.cols) + .5;
-        this.vertexArray[i * 4 + 2] = (l < 1.0 ? l : 1.0) * this.cellSize;
+        this.vertexArray[i * 4 + 2] = (l < this.maxLength ? l : this.maxLength) * this.cellSize;
         this.vertexArray[i * 4 + 3] = vector.angle();
         
         this.vertexBuffer.vertexCount++;
@@ -241,6 +242,7 @@ Vectorfield.prototype = {
             
             this.applyForcefield(dt, this.forcefields[i]);
             
+            this.forcefields[i].force *= 0.95;
             this.forcefields[i].duration -= dt;
             
             if (this.forcefields[i].duration <= 0) {
@@ -338,6 +340,12 @@ Vectorfield.prototype = {
             bottom = Math.ceil(cell.y + forcefield.radius > this.rows ? this.rows : cell.y + forcefield.radius),
             setVector = forcefield.isDynamic ? this.setDynamicVector : this.setStaticVector,
             cellVector = new Vector();
+            
+        if (!forcefield.isDynamic) {
+            
+            dt = 1;
+            
+        }
         
         for (var i = left; i < right; i++) {
             
