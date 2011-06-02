@@ -237,7 +237,7 @@ Controller.prototype = {
 
                 if (devourer.checkCollision(cytoplast)) {
 
-                    this.addParticlesAt(cytoplast.currentFill, cytoplast.position, cytoplast.entityRadius / 2);
+                    this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
 
                     this.vectorfield.addForcefield(new Forcefield(
                         cytoplast.position.getCopy(),
@@ -250,7 +250,7 @@ Controller.prototype = {
                     ));
 
                     delete this.cytoplasts.splice(j, 1)[0].destroy();
-                    this.addCytoplasts(1);
+                    // this.addCytoplasts(1);
 
 
                     if(cytoplast.isFull()) {
@@ -291,7 +291,7 @@ Controller.prototype = {
                 this.vectorfield.getVector(particle.position)
             );
 
-            this.applySwarmBehaviourAndReproduction(particleDistances[i], particle, particleCount);
+            this.applySwarmBehaviour(particleDistances[i], particle, particleCount);
 
             particle.checkBoundary(this.vectorfield);
 
@@ -305,7 +305,7 @@ Controller.prototype = {
 
     },
 
-    applySwarmBehaviourAndReproduction : function(distances, particle, particleCount) {
+    applySwarmBehaviour : function(distances, particle, particleCount) {
 
         var separationCenter = new Vector(),
             separationCount = 0,
@@ -329,39 +329,6 @@ Controller.prototype = {
 
                 cohesionCenter.addSelf(this.particles[j].position);
                 cohesionCount++;
-
-                if (particleCount <= particle.maxCount &&
-                    particle.reproductionPotency &&
-                    this.particles[j].reproductionPotency &&
-                    distances[j] < particle.reproductionRadius * particle.reproductionRadius) {
-
-                    for (var k = 0; k < particleCount; k++) {
-
-                        if (this.particles[k].reproductionPotency &&
-                            j != k &&
-                            typeof distances[k] !== 'undefined' &&
-                            this.particles[j].position.sub(this.particles[k].position).normSquared() <
-                                particle.reproductionRadius * particle.reproductionRadius &&
-                            particle.velocity.add(this.particles[j].velocity).add(this.particles[k].velocity).norm() <
-                                particle.reproductionVelocity) {
-
-                            var averagePosition = particle.position.add(this.particles[j].position.add(this.particles[k].position)).divSelf(3);
-
-                            this.particles.push(new Particle(averagePosition));
-
-                            particle.resetReproduction();
-                            this.particles[j].resetReproduction();
-                            this.particles[k].resetReproduction();
-
-                            this.addPoints("particleSpawn");
-
-                            break;
-
-                        }
-
-                    }
-
-                }
 
             }
 
@@ -421,7 +388,7 @@ Controller.prototype = {
             for(var j = 0; j < this.particles.length; j++) {
 
                 if(cytoplast.checkCollision(this.particles[j]) &&
-                   !cytoplast.isFull()) {
+                   !cytoplast.isFull() && !cytoplast.puking) {
 
                     cytoplast.dockParticle(this.particles[j].position);
                     delete this.particles.splice(j, 1)[0].destroy();
@@ -443,28 +410,47 @@ Controller.prototype = {
                 cytoplast.collision(this.leukocytes[j]);
 
             }
+				
+			var forceVector = this.vectorfield.getVector(cytoplast.position);
+			var offset = Cytoplast.prototype.entityRadius;
 
-            var forceVector = this.vectorfield.getVector(cytoplast.position);
-            var offset = Cytoplast.prototype.entityRadius;
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x - offset, cytoplast.position.y))
+			);
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x, cytoplast.position.y + offset))
+			);
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x + offset, cytoplast.position.y))
+			);
+			forceVector.addSelf(this.vectorfield.getVector(
+				new Vector(cytoplast.position.x, cytoplast.position.y - offset))
+			);
 
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x - offset, cytoplast.position.y))
-            );
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x, cytoplast.position.y + offset))
-            );
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x + offset, cytoplast.position.y))
-            );
-            forceVector.addSelf(this.vectorfield.getVector(
-                new Vector(cytoplast.position.x, cytoplast.position.y - offset))
-            );
-
-            cytoplast.applyForce(forceVector.divSelf(5));
+			cytoplast.applyForce(forceVector.divSelf(5));
 
             cytoplast.checkBoundary(this.vectorfield);
 
             cytoplast.update(dt);
+			
+			if(cytoplast.puke) {
+			
+				this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
+			
+				this.vectorfield.addForcefield(new Forcefield(
+					cytoplast.position.getCopy(),
+					cytoplast.entityRadius * 2,
+					Entropyfier.prototype.force,
+					false,
+					Math.PI,
+					cytoplast.position,
+					Cytoplast.prototype.pukeTime
+				));
+			
+				cytoplast.puke = false;
+				cytoplast.dockedParticles = [];
+			
+			}
 
         }
 
@@ -630,16 +616,8 @@ Controller.prototype = {
     },
     
     checkGameOver : function() {
-        
-        var particleCount = this.particles.length;
-        
-        for (var i = 0; i < this.cytoplasts.length; i++) {
-            
-            particleCount += this.cytoplasts[i].dockedParticles.length;
-            
-        }
-        
-        if (particleCount === 0) {
+                
+        if (this.cytoplasts.length === 0) {
         
             Menu.showLoserScreen(this.points);
             game.state = "over";

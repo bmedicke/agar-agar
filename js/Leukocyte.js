@@ -1,10 +1,10 @@
 var Leukocyte = function(position) {
 
-	Entity.call(this, position);
-	
-	this.isActive = true;
-	this.activeTimer = 0;
-	
+    Entity.call(this, position);
+    
+    this.isActive = true;
+    this.activeTimer = 0;
+    
 };
 
 Leukocyte.prototype = new Entity();

@@ -12,6 +12,7 @@ var Game = function() {
     this.drawStardust = true;
     
     this.leukoTime = 0;
+    this.particleTime = 0;
     this.devourerTime = 0;
     this.entropyTime = 0;
     
@@ -24,6 +25,9 @@ Game.prototype = {
     leukoRate : 5000,
     leukoAmount : 1,
     leukoCap : 20,
+    
+    particleRate : 1000,
+    particleAmount : 3,
     
     entropyRate : 10000,
     entropyAmount : 1,
@@ -114,6 +118,7 @@ Game.prototype = {
         Animator.reset();
         
         this.leukoTime = 0;
+        this.particleTime = 0;
         this.devourerTime = 0;
         this.entropyTime = 0;
     
@@ -129,6 +134,7 @@ Game.prototype = {
         this.leukoTime += dt;
         this.entropyTime += dt;
         this.devourerTime += dt;
+        this.particleTime += dt;
     
         if( this.leukoTime > this.leukoRate &&
             this.controller.leukocytes.length < this.leukoCap) {
@@ -136,6 +142,15 @@ Game.prototype = {
             this.controller.addLeukocytes(this.leukoAmount);
             
             this.leukoTime -= this.leukoRate;
+        
+        }
+        
+        if( this.particleTime > this.particleRate &&
+            this.controller.particles.length < Particle.prototype.maxCount) {
+
+            this.controller.addParticles(this.particleAmount);
+            
+            this.particleTime -= this.particleRate;
         
         }
         
