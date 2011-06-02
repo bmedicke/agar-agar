@@ -75,9 +75,13 @@ Entity.prototype = {
             this.applyForce(vector.normalize().mulSelf(this.moveSpeed));
             entity.applyForce(vector.normalize().mulSelf(entity.moveSpeed * -1));
 
+			delete vector;
+			
+			return true;
+			
         }
-
-        delete vector;
+		
+		return false;
 
     },
     

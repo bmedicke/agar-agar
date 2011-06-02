@@ -10,6 +10,7 @@ var Controller = function(vectorfield) {
 
     this.points = 0;
     this.multiplier = 1;
+	this.multiplierCooldown = 0;
 
     this.devourerForcefield = new Forcefield(
         new Vector(),
@@ -26,6 +27,8 @@ Controller.prototype = {
     separationFactor : 10,
 
     cohesionFactor : .5,
+	
+	defaultCooldown : 5000,
 
     pointValues : {
 
@@ -237,27 +240,19 @@ Controller.prototype = {
 
                 if (devourer.checkCollision(cytoplast)) {
 
-                    this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
-
-                    this.vectorfield.addForcefield(new Forcefield(
-                        cytoplast.position.getCopy(),
-                        cytoplast.entityRadius,
-                        Entropyfier.prototype.force,
-                        false,
-                        Math.PI,
-                        devourer.position,
-                        Entropyfier.prototype.forceTime
-                    ));
-
-                    delete this.cytoplasts.splice(j, 1)[0].destroy();
-                    // this.addCytoplasts(1);
-
-
-                    if(cytoplast.isFull()) {
+                    if(cytoplast.spikeState) {
 
                         this.addPoints("devourerDeath");
 
                         this.multiplier++;
+						this.multiplierCooldown = Controller.prototype.defaultCooldown;
+						
+						Animator.animate(
+							this,
+							{"multiplierCooldown" : 0},
+							Controller.prototype.defaultCooldown,
+							this.resetMultiplier
+						);
 
                         delete this.devourers.splice(i, 1)[0].destroy();
                         i--;
@@ -265,8 +260,21 @@ Controller.prototype = {
                         break;
 
                     } else {
+					
+						this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
 
-                        this.multiplier = 1;
+						this.vectorfield.addForcefield(new Forcefield(
+							cytoplast.position.getCopy(),
+							cytoplast.entityRadius,
+							Entropyfier.prototype.force,
+							false,
+							Math.PI,
+							devourer.position,
+							Entropyfier.prototype.forceTime
+						));
+
+						delete this.cytoplasts.splice(j, 1)[0].destroy();
+                        this.resetMultiplier();
 
                     }
 
@@ -407,7 +415,12 @@ Controller.prototype = {
 
             for(var j = 0; j < this.leukocytes.length; j++) {
 
-                cytoplast.collision(this.leukocytes[j]);
+                if(cytoplast.collision(this.leukocytes[j]) && cytoplast.spikeState) {
+				
+					this.addPoints("leukoDeath");
+					delete this.leukocytes.splice(j, 1)[0].destroy();
+				
+				}
 
             }
 				
@@ -485,9 +498,15 @@ Controller.prototype = {
         this.points = 0;
         Menu.updatePoints(0);
         
-        this.multiplier = 1;
+        this.resetMultiplier();
 
     },
+	
+	resetMultiplier : function() {
+		
+		this.multiplier = 1;
+	
+	},
     
     deleteEntities : function(entities) {
         
