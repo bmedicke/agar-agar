@@ -7,7 +7,7 @@ function initialize() {
     
     canvas = document.getElementById("canvas");
     
-    var cellSize = game.vectorfield.initialize(window.innerWidth, window.innerHeight);
+    var cellSize = game.vectorfield.initSize(window.innerWidth, window.innerHeight);
     
     canvas.width = game.vectorfield.cols * cellSize;
     canvas.height = game.vectorfield.rows * cellSize;

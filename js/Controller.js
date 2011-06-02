@@ -537,16 +537,35 @@ Controller.prototype = {
 
     },
 
-    addParticles : function(amount) {
+    addInitialParticles : function(amount) {
 
         for (var i = 0; i < amount; i++) {
 
             this.particles.push(new Particle(
                 new Vector(Math.random() * this.vectorfield.cols,
-                           Math.random() * this.vectorfield.rows))
+                           Math.random() * this.vectorfield.rows),
+                1.0)
             );
 
         }
+
+    },
+    
+    addParticle : function() {
+        
+        var particle = new Particle(new Vector(
+            Math.random() * this.vectorfield.cols,
+            Math.random() * this.vectorfield.rows,
+            0.0
+        ), 0.5)
+        
+        Animator.animate(
+            particle,
+            {"alpha" : 1.0},
+            500
+        );
+
+        this.particles.push(particle);
 
     },
 
@@ -558,7 +577,7 @@ Controller.prototype = {
         for (var i = 0; i < amount; i++) {
 
             offset.rotate2DSelf(Math.random() * Math.PI * 2);
-            this.particles.push(new Particle(position.add(offset)));
+            this.particles.push(new Particle(position.add(offset), 1.0));
 
         }
 

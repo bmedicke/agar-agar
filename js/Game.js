@@ -26,10 +26,9 @@ Game.prototype = {
     leukoAmount : 1,
     leukoCap : 20,
     
-    particleRate : 1000,
-    particleAmount : 3,
+    particleRate : 500,
     
-    entropyRate : 10000,
+    entropyRate : 5000,
     entropyAmount : 1,
     
     devourerRate : 60000,
@@ -43,6 +42,7 @@ Game.prototype = {
         
         this.initLevel();
         
+        this.vectorfield.initialize(gl);
         this.inputHandler.initialize();
         this.stardust.initialize(gl);
         
@@ -98,7 +98,7 @@ Game.prototype = {
         
         this.resetLevel();
         
-        this.controller.addParticles(this.particleCount);
+        this.controller.addInitialParticles(this.particleCount);
         
         var midPoint = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0),
             randomPosition = this.controller.getRandomOutsidePosition().subSelf(midPoint).mulSelf(.5);
@@ -144,10 +144,12 @@ Game.prototype = {
         
         }
         
+        
+        // FIXME: count particles in Cytoplast
         if( this.particleTime > this.particleRate &&
             this.controller.particles.length < Particle.prototype.maxCount) {
 
-            this.controller.addParticles(this.particleAmount);
+            this.controller.addParticle();
             
             this.particleTime -= this.particleRate;
         
