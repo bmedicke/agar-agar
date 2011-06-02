@@ -1,12 +1,9 @@
-var Particle = function(position) {
+var Particle = function(position, alpha) {
 
     Entity.call(this, position);
     
-    // this.reproductionPotency = false;
-    Particle.prototype.count++;
+    this.alpha = alpha || 1.0;
 
-    // this.resetReproduction(500 * (Particle.prototype.count % 20));
-    
 };
 
 Particle.prototype = new Entity();
@@ -16,10 +13,6 @@ Particle.prototype.mass = 100000;
 Particle.prototype.entityRadius = 0.15;
 Particle.prototype.separationRadius = 0.3;
 Particle.prototype.cohesionRadius = 2;
-
-// Particle.prototype.reproductionRadius = .5;
-// Particle.prototype.reproductionWaitTime = 10000;
-// Particle.prototype.reproductionVelocity = 0.001
 
 Particle.prototype.count = 0;
 Particle.prototype.maxCount = 150;
@@ -90,25 +83,10 @@ Particle.drawEnqueue = function(particles) {
         
         this.vertexArray[index] = particles[i].position.x;
         this.vertexArray[index + 1] = particles[i].position.y;
-        this.vertexArray[index + 2] = particles[i].position.z;
+        this.vertexArray[index + 2] = particles[i].alpha;
         
     }
     
     this.vertexBuffer.vertexCount += particles.length;
     
 };
-
-// Particle.prototype.resetReproduction = function(time) {
-//     
-//     time = time || this.reproductionWaitTime;
-//     this.reproductionPotency = false;
-//     
-//     var self = this;
-//     
-//     setTimeout(function() {
-//         
-//         self.reproductionPotency = true;
-//         
-//     }, time);
-//     
-// };
