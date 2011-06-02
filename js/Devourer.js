@@ -1,12 +1,12 @@
 var Devourer = function(position) {
 
-	Entity.call(this, position);
-	
-	this.rotation = 0;
-	this.speed = 0.0;
-	
+    Entity.call(this, position);
+    
+    this.rotation = 0;
+    this.speed = 0.0;
+    
     this.animateSpeed(true);
-	
+    
 };
 
 Devourer.prototype = new Entity();
