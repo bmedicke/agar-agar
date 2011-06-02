@@ -227,13 +227,13 @@ Vectorfield.prototype = {
         
         for(var i = 0; i < this.dynamicLookupTable.length; i++) {
             
-            var cellID = this.dynamicLookupTable[i];
-            
-            this.dynamicVectors[cellID].set(0, 0, 0);
+            this.dynamicVectors[this.dynamicLookupTable[i]].set(0, 0, 0);
             
         }
         
         this.dynamicLookupTable = [];
+        this.forcefields = [];
+        
     },
     
     updateForcefields : function(dt) {
