@@ -250,7 +250,7 @@ Controller.prototype = {
                     ));
 
                     delete this.cytoplasts.splice(j, 1)[0].destroy();
-                    this.addCytoplasts(1);
+                    // this.addCytoplasts(1);
 
 
                     if(cytoplast.isFull()) {
@@ -630,16 +630,8 @@ Controller.prototype = {
     },
     
     checkGameOver : function() {
-        
-        var particleCount = this.particles.length;
-        
-        for (var i = 0; i < this.cytoplasts.length; i++) {
-            
-            particleCount += this.cytoplasts[i].dockedParticles.length;
-            
-        }
-        
-        if (particleCount === 0) {
+                
+        if (this.cytoplasts.length === 0) {
         
             Menu.showLoserScreen(this.points);
             game.state = "over";
