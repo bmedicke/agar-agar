@@ -388,7 +388,7 @@ Controller.prototype = {
             for(var j = 0; j < this.particles.length; j++) {
 
                 if(cytoplast.checkCollision(this.particles[j]) &&
-                   !cytoplast.isFull() && cytoplast.pukeTimer <= 0) {
+                   !cytoplast.isFull() && !cytoplast.puking) {
 
                     cytoplast.dockParticle(this.particles[j].position);
                     delete this.particles.splice(j, 1)[0].destroy();

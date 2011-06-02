@@ -4,12 +4,9 @@ var Cytoplast = function(position) {
     
     this.dockedParticles = [];
 	
-	this.spikyfied = false;
+	this.spikeState = false;
 	this.puke = false;
-	
-	this.infectionTimer = 0;
-	this.spikyTimer = 0;
-	this.pukeTimer = 0;
+	this.puking = false;
     
 };
 
@@ -17,55 +14,19 @@ Cytoplast.prototype = new Entity();
 Cytoplast.prototype.constructor = Entity;
 
 Cytoplast.prototype.mass = 800000;
+Cytoplast.prototype.spikeMass = 80000;
+
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
 Cytoplast.prototype.maxFill = 30;
 
 Cytoplast.prototype.infectionTime = 3000;
-Cytoplast.prototype.spikyTime = 2000;
+Cytoplast.prototype.spikeTime = 5000;
 Cytoplast.prototype.pukeTime = 1000;
 
 Cytoplast.prototype.update = function(dt) {
 
-	this.infectionTimer = this.infectionTimer - dt <= 0 ? 0 : this.infectionTimer - dt;
-	
-	this.pukeTimer = this.pukeTimer - dt <= 0 ? 0 : this.pukeTimer - dt;
-
-	switch(this.spikyfied) {
-	
-		case true:
-			this.spikyTimer -= dt;
-			
-			if(this.spikyTimer <= 0) {
-			
-				this.spikyfied = false;
-				this.dockedParticles = [];
-			
-			}
-			
-			break;
-		
-		case false:
-			if(this.isFull()) {
-			
-				this.spikyfied = true;
-						
-				this.spikyTimer = Cytoplast.prototype.spikyTime;
-			
-			} else if(this.infectionTimer <= 0 && this.dockedParticles.length > 0
-					  && this.pukeTimer <= 0) {
-	
-				// note: setting the variable false again is done in controller
-				this.puke = true;
-				this.pukeTimer = Cytoplast.prototype.pukeTime;
-			
-			}
-			
-			break;
-	
-	}
-	
-	if(this.pukeTimer > 0) {
+	if(this.puking) {
 
 		this.force.set(0, 0, 0);
 
@@ -86,7 +47,7 @@ Cytoplast.prototype.draw = function(gl) {
     gl.fill();
     gl.enableAlpha();
     
-    if(!this.spikyfied) {
+    if(!this.spikeState) {
 
 		gl.setColor(0.9, 1.0, .9, Math.sqrt(this.dockedParticles.length / this.maxFill));
 		Entity.prototype.draw.call(this, gl);
@@ -117,11 +78,60 @@ Cytoplast.prototype.isFull = function() {
 
 };
 
+Cytoplast.prototype.checkPuke = function() {
+
+	if(!this.spikeState) {
+	
+		this.puke = true;
+		this.puking = true;
+		
+		Animator.animate(
+			this,
+			0,
+			Cytoplast.prototype.pukeTime,
+			function() {
+				this.puking = false;
+			}
+		);
+		
+	}
+
+}
+
+Cytoplast.prototype.spikify = function() {
+
+	this.spikeState = true;
+	this.mass = Cytoplast.prototype.spikeMass;
+	
+	Animator.animate(
+		this,
+		0,
+		Cytoplast.prototype.spikeTime,
+		function() {
+			this.deSpikify();
+		}
+	);
+
+}
+
+Cytoplast.prototype.deSpikify = function() {
+	
+	this.spikeState = false;
+	this.mass = Cytoplast.prototype.mass;
+	this.dockedParticles = [];
+	
+}
+
 Cytoplast.prototype.dockParticle = function(particlePosition) {
 
 	if(this.dockedParticles.length == 0) {
-	
-		this.infectionTimer = Cytoplast.prototype.infectionTime;
+		
+		Animator.animate(
+			this,
+			0,
+			Cytoplast.prototype.infectionTime,
+			Cytoplast.prototype.checkPuke
+		);
 	
 	}
     
@@ -145,6 +155,12 @@ Cytoplast.prototype.dockParticle = function(particlePosition) {
     );
     
     this.dockedParticles.push(particle);
+	
+	if(this.isFull()) {
+	
+		this.spikify();
+		
+	}
     
     delete target;
     

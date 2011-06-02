@@ -42,7 +42,7 @@ Animation.prototype.update = function(dt) {
         
         if (this.callback) {
             
-            this.callback();
+            this.callback.call(this.object);
             
         }
         
