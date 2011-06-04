@@ -18,6 +18,8 @@ Leukocyte.prototype.circleResolution = 16;
 
 Leukocyte.prototype.eatTime = 300;
 
+Leukocyte.prototype.glowRadius = .7;
+
 Leukocyte.initialize = function(gl) {
 
     this.shader = gl.loadShader("leukocyte-vertex-shader", "leukocyte-fragment-shader");

@@ -40,6 +40,8 @@ Game.prototype = {
         Leukocyte.initialize(gl);
         Devourer.initialize(gl);
         
+        Glow.initialize(gl);
+        
         this.initLevel();
         
         this.vectorfield.initialize(gl);

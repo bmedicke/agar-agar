@@ -376,6 +376,51 @@
     
 </script>
 
+<script id="glow-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+    uniform float size;
+
+    attribute vec3 position;
+    
+    varying float alpha;
+    
+    void main(void) {
+    
+       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+       
+       gl_PointSize = size * position.z;
+       
+       alpha = position.z;
+    
+    }
+    
+</script>
+
+<script id="glow-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    #ifdef GL_ES
+       precision highp float;
+    #endif
+    
+    uniform sampler2D texture;
+    
+    varying float alpha;
+    
+    const vec3 color = vec3(0.9, 1.0, 0.9);
+    
+    void main(void) {
+    
+       //gl_FragColor.rgb = color;
+       //gl_FragColor.a = .a * 2.0;
+       
+       gl_FragColor = texture2D( texture, gl_PointCoord );
+       gl_FragColor.a *= 2.3;
+       
+    }
+    
+</script>
+
 <script type='text/javascript' src="http://code.jquery.com/jquery-1.5.js" charset="utf-8"></script>
 <script type='text/javascript' src="./js/Menu.js" charset="utf-8"></script>
 <script type='text/javascript' src="./js/Animator.js" charset="utf-8"></script>
@@ -396,6 +441,8 @@
 <script type="text/javascript" src="./js/Cytoplast.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/Devourer.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/Entropyfier.js" charset="utf-8"></script>
+
+<script type="text/javascript" src="./js/Glow.js" charset="utf-8"></script>
 
 <script type="text/javascript" src="./js/DustParticle.js" charset="utf-8"></script>
 <script type="text/javascript" src="./js/Stardust.js" charset="utf-8"></script>
