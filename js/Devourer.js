@@ -43,12 +43,27 @@ Devourer.initialize = function(gl) {
     
     var self = this;
     
-    this.texture = gl.loadTexture("textures/tentaclesAlpha.png", function(gl) {
+    
+    this.tentacleTexture = gl.loadTexture("textures/tentaclesAlpha.png", function(gl) {
         
         gl.bindShader(self.shader);
-        gl.passTexture(self.texture);
+        
+        gl.activeTexture( gl["TEXTURE" + self.tentacleTexture.ID] );
+        gl.bindTexture( gl.TEXTURE_2D, self.tentacleTexture );
+        gl.uniform1i( gl.getUniformLocation( gl.activeShader, "tentacleTexture" ), self.tentacleTexture.ID );
         
     });
+    
+    this.corpusTexture = gl.loadTexture("textures/devourerCorpus.png", function(gl) {
+        
+        gl.bindShader(self.shader);
+        
+        gl.activeTexture( gl["TEXTURE" + self.corpusTexture.ID] );
+        gl.bindTexture( gl.TEXTURE_2D, self.corpusTexture );
+        gl.uniform1i( gl.getUniformLocation( gl.activeShader, "corpusTexture" ), self.corpusTexture.ID );
+        
+    });
+    
     
     gl.uniform1f(
         gl.getUniformLocation(this.shader, "size"), 
