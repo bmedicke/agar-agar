@@ -64,11 +64,11 @@ Controller.prototype = {
 
         }
 		
-        Devourer.draw(gl, this.devourers);
-        
-        Glow.drawEnqueue(this.devourers);
+		Glow.drawEnqueue(this.devourers);
         Glow.drawEnqueue(this.leukocytes);
         Glow.draw(gl);
+		
+        Devourer.draw(gl, this.devourers);              
 
         this.drawEntities(gl, this.cytoplasts);
 

@@ -20,7 +20,7 @@ var Glow = {
     
         var self = this;
     
-        this.texture = gl.loadTexture("textures/_glow.png", function(gl) {
+        this.texture = gl.loadTexture("textures/glow.png", function(gl) {
         
             gl.bindShader(self.shader);
             gl.passTexture(self.texture);
