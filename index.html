@@ -330,6 +330,39 @@
     
 </script>
 
+<script id="cytoplast-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+    uniform float size;
+
+    attribute vec4 position;
+
+    void main(void) {
+
+       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+
+       gl_PointSize = size;
+
+    }
+    
+</script>
+
+<script id="cytoplast-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    #ifdef GL_ES
+       precision highp float;
+    #endif
+
+    uniform sampler2D texture;
+
+    void main(void) {
+        
+        gl_FragColor = texture2D( texture, gl_PointCoord );
+   
+    }
+    
+</script>
+
 <script id="vectorfield-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
