@@ -173,6 +173,21 @@ WebGLRenderingContext.prototype.initUtilityBuffers = function() {
     this.circleBuffer = this.createCircleBuffer(1, 24);
     
     
+    this.quadVertexBuffer = gl.createBuffer();
+    this.quadVertexBuffer.itemSize = 2;
+    this.quadVertexBuffer.vertexCount = 4;
+    
+    var vertexArray = new Float32Array([
+        -0.5, -0.5,
+        0.5, -0.5,
+        0.5, 0.5,
+        -0.5, 0.5
+    ]);
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.quadVertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexArray, gl.STATIC_DRAW);
+    
+    
     var texCoords = [
         0.0, 0.0,
         1.0, 0.0,

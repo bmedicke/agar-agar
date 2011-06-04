@@ -40,7 +40,7 @@ Vectorfield.prototype = {
     forceCoefficient : 0.005,
     
     minLength : 0.001,
-    maxLength : 1.5,
+    maxLength : 1.0,
     
     initSize : function(width, height) {
         
@@ -77,7 +77,7 @@ Vectorfield.prototype = {
         this.texture = gl.loadTexture("textures/vector.png", function(gl) {
 
             gl.bindShader(self.shader);
-            gl.passTexture(self.texture);
+            gl.passTexture(self.texture, gl.getUniformLocation(self.shader, "texture"));
 
         });
 

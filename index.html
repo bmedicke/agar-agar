@@ -335,15 +335,17 @@
 <script id="cytoplast-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
-    uniform float size;
 
-    attribute vec4 position;
+    attribute vec2 position;
+    attribute vec2 textureCoord;
+    
+    varying vec2 pointCoord;
 
     void main(void) {
 
-       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+       gl_Position = matrix * vec4(position, 1.0, 1.0);
 
-       gl_PointSize = size;
+       pointCoord = textureCoord;
 
     }
     
@@ -356,10 +358,12 @@
     #endif
 
     uniform sampler2D texture;
+    
+    varying vec2 pointCoord;
 
     void main(void) {
         
-        gl_FragColor = texture2D( texture, gl_PointCoord );
+        gl_FragColor = texture2D( texture, pointCoord );
 		// gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
    
     }

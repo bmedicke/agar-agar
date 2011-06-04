@@ -27,20 +27,6 @@ Devourer.prototype.textureSizeFactor = 2;
 Devourer.prototype.glowRadius = 3.5;
 
 Devourer.initialize = function(gl) {
-    
-    this.vertexBuffer = gl.createBuffer();
-    this.vertexBuffer.itemSize = 2;
-    this.vertexBuffer.vertexCount = 4;
-    
-    var vertexArray = new Float32Array([
-        -0.5, -0.5,
-        0.5, -0.5,
-        0.5, 0.5,
-        -0.5, 0.5
-    ]);
-    
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertexArray, gl.STATIC_DRAW);
 
     this.shader = gl.loadShader("devourer-vertex-shader", "devourer-fragment-shader");
     
@@ -58,20 +44,14 @@ Devourer.initialize = function(gl) {
     this.tentacleTexture = gl.loadTexture("textures/tentaclesAlpha.png", function(gl) {
         
         gl.bindShader(self.shader);
-        
-        gl.activeTexture( gl["TEXTURE" + self.tentacleTexture.ID] );
-        gl.bindTexture( gl.TEXTURE_2D, self.tentacleTexture );
-        gl.uniform1i( gl.getUniformLocation( gl.activeShader, "tentacleTexture" ), self.tentacleTexture.ID );
+        gl.passTexture(self.tentacleTexture, gl.getUniformLocation( self.shader, "tentacleTexture" ));
         
     });
     
     this.corpusTexture = gl.loadTexture("textures/devourerCorpus.png", function(gl) {
         
         gl.bindShader(self.shader);
-        
-        gl.activeTexture( gl["TEXTURE" + self.corpusTexture.ID] );
-        gl.bindTexture( gl.TEXTURE_2D, self.corpusTexture );
-        gl.uniform1i( gl.getUniformLocation( gl.activeShader, "corpusTexture" ), self.corpusTexture.ID );
+        gl.passTexture(self.corpusTexture, gl.getUniformLocation( self.shader, "corpusTexture" ));
         
     });
     
@@ -104,7 +84,7 @@ Devourer.draw = function(gl, devourers) {
         gl.rotate(devourers[i].rotation);
         
         gl.passMatrix();
-        gl.drawQuadTexture(this.vertexBuffer);
+        gl.drawQuadTexture();
         
         gl.popMatrix();
     

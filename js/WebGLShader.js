@@ -100,20 +100,20 @@ WebGLRenderingContext.prototype.passVertices = function(drawMode, buffer) {
     
 };
 
-WebGLRenderingContext.prototype.passTexture = function(texture) {
+WebGLRenderingContext.prototype.passTexture = function(texture, uniformLocation) {
     
     this.activeTexture( this["TEXTURE" + texture.ID] );
     this.bindTexture( this.TEXTURE_2D, texture );
-    this.uniform1i( this.getUniformLocation( this.activeShader, "texture" ), texture.ID );
+    this.uniform1i( uniformLocation, texture.ID );
     
 };
 
-WebGLRenderingContext.prototype.drawQuadTexture = function(vertexBuffer) {
+WebGLRenderingContext.prototype.drawQuadTexture = function() {
     
-    this.bindBuffer(this.ARRAY_BUFFER, vertexBuffer);
+    this.bindBuffer(this.ARRAY_BUFFER, this.quadVertexBuffer);
     
     var positionAttribLocation = 0;
-    this.vertexAttribPointer(positionAttribLocation, vertexBuffer.itemSize, this.FLOAT, false, 0, 0);
+    this.vertexAttribPointer(positionAttribLocation, this.quadVertexBuffer.itemSize, this.FLOAT, false, 0, 0);
 
     this.bindBuffer(this.ARRAY_BUFFER, this.quadTextureCoordsBuffer);
     

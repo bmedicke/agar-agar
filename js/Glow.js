@@ -23,7 +23,7 @@ var Glow = {
         this.texture = gl.loadTexture("textures/glow.png", function(gl) {
         
             gl.bindShader(self.shader);
-            gl.passTexture(self.texture);
+            gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
         
         });
     
