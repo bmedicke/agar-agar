@@ -17,7 +17,7 @@ var Glow = {
 
         this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
         gl.passMatrix();
-    
+
         var self = this;
     
         this.texture = gl.loadTexture("textures/glow.png", function(gl) {

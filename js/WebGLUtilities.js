@@ -172,6 +172,29 @@ WebGLRenderingContext.prototype.initUtilityBuffers = function() {
     
     this.circleBuffer = this.createCircleBuffer(1, 24);
     
+    
+    var texCoords = [
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    ];
+    
+    this.quadTextureCoordsBuffer = this.createBuffer();
+    this.quadTextureCoordsBuffer.itemSize = 2;
+    this.quadTextureCoordsBuffer.vertexCount = 4;
+    
+    this.bindBuffer(this.ARRAY_BUFFER, this.quadTextureCoordsBuffer);
+    this.bufferData(this.ARRAY_BUFFER, new Float32Array(texCoords), this.STATIC_DRAW);
+    
+    
+    this.quadIndexBuffer = this.createBuffer();
+    this.quadIndexBuffer.itemSize = 1;
+    this.quadIndexBuffer.vertexCount = 4;
+    
+    this.bindBuffer(this.ELEMENT_ARRAY_BUFFER, this.quadIndexBuffer);
+    this.bufferData(this.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 3]), this.STATIC_DRAW);
+    
 };
 
 WebGLRenderingContext.prototype.createCircleBuffer = function(radius, resolution) {
