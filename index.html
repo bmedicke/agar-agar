@@ -328,10 +328,9 @@
         
         gl_FragColor.a = alpha;
         
+        vec4 corpus = texture2D( corpusTexture, (gl_PointCoord - mid / 2.0 ) * 2.0 );
         
-        vec4 corpus = texture2D( corpusTexture, (gl_PointCoord + mid) / 2.0 );
-        
-        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.2 ) * 0.9 );
+        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.22 ) * 0.8 );
         
     }
     
