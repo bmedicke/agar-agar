@@ -65,8 +65,12 @@ Controller.prototype = {
         }
 		
         Devourer.draw(gl, this.devourers);
-		
-		this.drawEntities(gl, this.cytoplasts);
+        
+        Glow.drawEnqueue(this.devourers);
+        Glow.drawEnqueue(this.leukocytes);
+        Glow.draw(gl);
+
+        this.drawEntities(gl, this.cytoplasts);
 
         // this.drawEntities(gl, this.devourers);
 

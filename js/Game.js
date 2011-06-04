@@ -41,6 +41,8 @@ Game.prototype = {
         Devourer.initialize(gl);
 		Cytoplast.initialize(gl);
         
+        Glow.initialize(gl);
+        
         this.initLevel();
         
         this.vectorfield.initialize(gl);
