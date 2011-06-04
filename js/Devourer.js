@@ -27,48 +27,33 @@ Devourer.prototype.textureSizeFactor = 2;
 Devourer.prototype.glowRadius = 3.5;
 
 Devourer.initialize = function(gl) {
-    
-    this.vertexBuffer = gl.createBuffer();
-    this.vertexBuffer.itemSize = 4;
-    this.vertexBuffer.vertexCount = 0;
-    
-    this.vertexArray = null;
 
     this.shader = gl.loadShader("devourer-vertex-shader", "devourer-fragment-shader");
     
     gl.bindShader(this.shader);
     
+    this.shader.speedUniformLocation = gl.getUniformLocation(this.shader, "speed");
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
     gl.passMatrix();
     
-    var self = this;
+    gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "position"));
+    gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "textureCoord"));
     
+    var self = this;
     
     this.tentacleTexture = gl.loadTexture("textures/tentaclesAlpha.png", function(gl) {
         
         gl.bindShader(self.shader);
-        
-        gl.activeTexture( gl["TEXTURE" + self.tentacleTexture.ID] );
-        gl.bindTexture( gl.TEXTURE_2D, self.tentacleTexture );
-        gl.uniform1i( gl.getUniformLocation( gl.activeShader, "tentacleTexture" ), self.tentacleTexture.ID );
+        gl.passTexture(self.tentacleTexture, gl.getUniformLocation( self.shader, "tentacleTexture" ));
         
     });
     
     this.corpusTexture = gl.loadTexture("textures/devourerCorpus.png", function(gl) {
         
         gl.bindShader(self.shader);
-        
-        gl.activeTexture( gl["TEXTURE" + self.corpusTexture.ID] );
-        gl.bindTexture( gl.TEXTURE_2D, self.corpusTexture );
-        gl.uniform1i( gl.getUniformLocation( gl.activeShader, "corpusTexture" ), self.corpusTexture.ID );
+        gl.passTexture(self.corpusTexture, gl.getUniformLocation( self.shader, "corpusTexture" ));
         
     });
-    
-    
-    gl.uniform1f(
-        gl.getUniformLocation(this.shader, "size"), 
-        game.vectorfield.cellSize * 2 * Devourer.prototype.textureSizeFactor * Devourer.prototype.entityRadius
-    );
     
 };
 
@@ -80,44 +65,30 @@ Devourer.draw = function(gl, devourers) {
     //     
     // }
     
-    if (devourers.length === this.vertexBuffer.vertexCount) {
-    
-        for (i = 0; i < devourers.length; i++) {
-            
-            this.vertexArray[i * 4] = devourers[i].position.x;
-            this.vertexArray[i * 4 + 1] = devourers[i].position.y;
-            this.vertexArray[i * 4 + 2] = devourers[i].rotation;
-            this.vertexArray[i * 4 + 3] = devourers[i].speed;
-    
-        }
-        
-    } else {
-        
-        var devourerPositions = [];
-    
-        for (i = 0; i < devourers.length; i++) {
-    
-            devourerPositions.push(
-                devourers[i].position.x,
-                devourers[i].position.y,
-                devourers[i].rotation,
-                devourers[i].speed
-            );
-    
-        }
-        
-        this.vertexArray = new Float32Array(devourerPositions);
-        this.vertexBuffer.vertexCount = devourers.length;
-        
-    }
-    
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
-    
     gl.bindShader(this.shader);
     gl.enableAlpha();
     
-    gl.passVertices(gl.POINTS, this.vertexBuffer);
+    var size = Devourer.prototype.textureSizeFactor * Devourer.prototype.entityRadius * 2;
+    
+    for (var i = 0; i < devourers.length; i++) {
+        
+        gl.pushMatrix();
+        
+        gl.uniform1f(
+            this.shader.speedUniformLocation, 
+            devourers[i].speed
+        );
+        
+        gl.translate(devourers[i].position.x, devourers[i].position.y);
+        gl.scale(size, size);
+        gl.rotate(devourers[i].rotation);
+        
+        gl.passMatrix();
+        gl.drawQuadTexture();
+        
+        gl.popMatrix();
+    
+    }
     
     gl.disableAlpha();
     gl.bindShader(gl.defaultShader);

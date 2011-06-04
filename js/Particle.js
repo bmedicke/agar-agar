@@ -41,7 +41,7 @@ Particle.initialize = function(gl) {
     this.texture = gl.loadTexture("textures/particle.png", function(gl) {
         
         gl.bindShader(self.shader);
-        gl.passTexture(self.texture);
+        gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
         
     });
     
