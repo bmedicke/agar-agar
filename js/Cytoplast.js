@@ -18,11 +18,35 @@ Cytoplast.prototype.spikeMass = 80000;
 
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
-Cytoplast.prototype.maxFill = 30;
+Cytoplast.prototype.maxFill = 10;
 
 Cytoplast.prototype.infectionTime = 3000;
 Cytoplast.prototype.spikeTime = 5000;
 Cytoplast.prototype.pukeTime = 1000;
+
+Cytoplast.prototype.corpusTextureSize = 0.7;
+Cytoplast.prototype.spikeTextureSize = 1.0;
+
+Cytoplast.initialize = function(gl) {
+	
+	this.vertexBuffer = gl.createBuffer();
+    this.vertexBuffer.itemSize = 2;
+    this.vertexBuffer.vertexCount = 1;
+	
+	this.vertexArray = new Float32Array([0, 0]);
+
+    this.shader = gl.loadShader("cytoplast-vertex-shader", "cytoplast-fragment-shader");
+    
+    gl.bindShader(this.shader);
+    
+    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    gl.passMatrix();
+    
+    this.corpusTexture = gl.loadTexture("textures/cytoplast_corpus.png");
+
+    this.spikeTexture = gl.loadTexture("textures/cytoplast_spikes.png");
+	
+};
 
 Cytoplast.prototype.update = function(dt) {
 
@@ -43,34 +67,145 @@ Cytoplast.prototype.update = function(dt) {
 };
 
 Cytoplast.prototype.draw = function(gl) {
+
+	Cytoplast.vertexArray[0] = this.position.x;
+	Cytoplast.vertexArray[1] = this.position.y;
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, Cytoplast.vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, Cytoplast.vertexArray, gl.STATIC_DRAW);
     
-    gl.fill();
+    gl.bindShader(Cytoplast.shader);
+	
+	gl.passTexture(Cytoplast.corpusTexture);
+	
+	gl.uniform1f(
+        gl.getUniformLocation(Cytoplast.shader, "size"), 
+        game.vectorfield.cellSize * 2 * Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.entityRadius
+    );
+	
     gl.enableAlpha();
     
-    if(!this.spikeState) {
+    gl.passVertices(gl.POINTS, Cytoplast.vertexBuffer);    
 
-		gl.setColor(0.9, 1.0, .9, Math.sqrt(this.dockedParticles.length / this.maxFill));
-		Entity.prototype.draw.call(this, gl);
+	if(this.spikeState) {
+		
+		gl.passTexture(Cytoplast.spikeTexture);
+	
+		gl.uniform1f(
+			gl.getUniformLocation(Cytoplast.shader, "size"), 
+			game.vectorfield.cellSize * 2 * Cytoplast.prototype.spikeTextureSize * Cytoplast.prototype.entityRadius
+		);
+		
+		gl.passVertices(gl.POINTS, Cytoplast.vertexBuffer);
 
-	} else {
-	
-		// TODO: implement proper spiky drawing
-		gl.setColor(1.0, 0.0, 0.0, .7);
-		Entity.prototype.draw.call(this, gl);
-	
 	}
-    
-    
-    gl.disableAlpha();
-    gl.noFill();
-    
-    
-    gl.setColor(.7, .7, .5, 1);
+	
+	gl.disableAlpha();
+    gl.bindShader(gl.defaultShader);
+	
+	gl.setColor(1.0, 0.0, 0.0, 1);
     Entity.prototype.draw.call(this, gl);
     
     Particle.drawEnqueue(this.dockedParticles);
 
 };
+
+// Cytoplast.drawAll = function(gl, cytoplasts) {
+
+	// if (cytoplasts.length === this.vertexBuffer.vertexCount) {
+    
+        // for (i = 0; i < cytoplasts.length; i++) {
+            
+            // this.vertexArray[i * 4] = cytoplasts[i].position.x;
+            // this.vertexArray[i * 4 + 1] = cytoplasts[i].position.y;
+    
+        // }
+        
+    // } else {
+        
+        // var devourerPositions = [];
+    
+        // for (i = 0; i < cytoplasts.length; i++) {
+    
+            // devourerPositions.push(
+                // cytoplasts[i].position.x,
+                // cytoplasts[i].position.y
+            // );
+    
+        // }
+        
+        // this.vertexArray = new Float32Array(devourerPositions);
+        // this.vertexBuffer.vertexCount = cytoplasts.length;
+        
+    // }
+    
+    // gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    // gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
+    
+    // gl.bindShader(this.shader);
+    // gl.enableAlpha();
+    
+    // gl.passVertices(gl.POINTS, this.vertexBuffer);
+    
+    // gl.disableAlpha();
+    // gl.bindShader(gl.defaultShader);
+
+// };
+
+// Cytoplast.prototype.draw = function(gl) {
+
+	// if(this.spikeState) {
+		
+		// var spikeVertexArray = new Float32Array([this.position.x, this.position.y]);
+		
+		// gl.bindBuffer(gl.ARRAY_BUFFER, Cytoplast.spikeBuffer);
+		// gl.bufferData(gl.ARRAY_BUFFER, spikeVertexArray, gl.STATIC_DRAW);
+	
+		// gl.bindShader(Cytoplast.spikeShader);
+		// gl.enableAlpha();
+		
+		// gl.passVertices(gl.POINTS, Cytoplast.spikeBuffer);
+		
+		// gl.disableAlpha();
+		// gl.bindShader(gl.defaultShader);
+	// }       
+	
+	// gl.setColor(1.0, 0.0, 0.0, 1);
+    // Entity.prototype.draw.call(this, gl);
+    
+    // Particle.drawEnqueue(this.dockedParticles);
+
+// };
+
+// cytoplast.prototype.draw = function(gl) {
+    
+    // gl.fill();
+    // gl.enablealpha();
+    
+    // if(!this.spikestate) {
+
+		// gl.setcolor(0.9, 1.0, .9, math.sqrt(this.dockedparticles.length / this.maxfill));
+		// entity.prototype.draw.call(this, gl);
+
+	// } else {
+	
+		// // todo: implement proper spiky drawing
+		// gl.setcolor(1.0, 0.0, 0.0, .7);
+		// entity.prototype.draw.call(this, gl);
+	
+	// }
+    
+    
+    // gl.disablealpha();
+    // gl.nofill();
+    
+    
+    // gl.setcolor(.7, .7, .5, 1);
+    // entity.prototype.draw.call(this, gl);
+    
+    // particle.drawenqueue(this.dockedparticles);
+
+// };
 
 Cytoplast.prototype.isFull = function() {
 

@@ -39,6 +39,9 @@ Game.prototype = {
         Particle.initialize(gl);
         Leukocyte.initialize(gl);
         Devourer.initialize(gl);
+		Cytoplast.initialize(gl);
+        
+        Glow.initialize(gl);
         
         this.initLevel();
         
@@ -80,15 +83,15 @@ Game.prototype = {
             
             this.stardust.draw(gl);
             
-        }
-        
-        this.controller.draw(gl);
+        }       
         
         if (this.drawVectorfield) {
             
             this.vectorfield.draw(gl);
             
         }
+		
+		this.controller.draw(gl);
         
         this.inputHandler.draw(gl);
         
