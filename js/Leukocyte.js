@@ -11,7 +11,7 @@ Leukocyte.prototype = new Entity();
 Leukocyte.prototype.constructor = Entity;
 
 Leukocyte.prototype.mass = 300000;
-Leukocyte.prototype.moveSpeed = .3;
+Leukocyte.prototype.moveSpeed = 0.3;
 
 Leukocyte.prototype.entityRadius = .7;
 Leukocyte.prototype.circleResolution = 16;

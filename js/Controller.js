@@ -62,14 +62,14 @@ Controller.prototype = {
 
             this.entropyfiers[i].draw(gl);
 
-        }
+        }        
+        
+        this.drawEntities(gl, this.cytoplasts);
+        
+        this.drawEntities(gl, this.leukocytes);
 		
         Devourer.draw(gl, this.devourers);              
 
-        this.drawEntities(gl, this.cytoplasts);
-
-        this.drawEntities(gl, this.leukocytes);
-        
         Particle.drawEnqueue(this.particles);
         Particle.draw(gl);
         

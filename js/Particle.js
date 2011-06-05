@@ -11,7 +11,7 @@ Particle.prototype.constructor = Entity;
 
 Particle.prototype.mass = 100000;
 Particle.prototype.entityRadius = 0.15;
-Particle.prototype.separationRadius = 0.3;
+Particle.prototype.separationRadius = 0.4;
 Particle.prototype.cohesionRadius = 2;
 
 Particle.prototype.count = 0;

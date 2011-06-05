@@ -15,6 +15,8 @@ Entity.prototype = {
     
     dampCoefficient : 0.001,
     
+    repulsionForce : 10,
+    
     update : function(dt) {
         
         var acceleration = this.force.div(this.mass);
@@ -73,7 +75,8 @@ Entity.prototype = {
            (this.entityRadius + entity.entityRadius)) {
 
             this.applyForce(vector.normalize().mulSelf(this.moveSpeed));
-            entity.applyForce(vector.normalize().mulSelf(entity.moveSpeed * -1));
+            
+            entity.applyForce(vector.normalize().mulSelf(entity.moveSpeed * -Entity.prototype.repulsionForce));
 
 			delete vector;
 			
