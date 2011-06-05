@@ -245,12 +245,12 @@ Controller.prototype = {
                         this.multiplier++;
 						this.multiplierCooldown = Controller.prototype.defaultCooldown;
 						
-						Animator.animate(
-							this,
-							{"multiplierCooldown" : 0},
-							Controller.prototype.defaultCooldown,
-							this.resetMultiplier
-						);
+						Animator.animate({
+							object: this,
+							values: {"multiplierCooldown" : 0},
+							duration: Controller.prototype.defaultCooldown,
+							callback: this.resetMultiplier
+						});
 
                         delete this.devourers.splice(i, 1)[0].destroy();
                         i--;
@@ -557,11 +557,11 @@ Controller.prototype = {
             0.0
         ), 0.5)
         
-        Animator.animate(
-            particle,
-            {"alpha" : 1.0},
-            500
-        );
+        Animator.animate({
+            object: particle,
+            values: {"alpha" : 1.0},
+            duration: 500
+        });
 
         this.particles.push(particle);
 
@@ -575,7 +575,15 @@ Controller.prototype = {
         for (var i = 0; i < amount; i++) {
 
             offset.rotate2DSelf(Math.random() * Math.PI * 2);
-            this.particles.push(new Particle(position.add(offset), 1.0));
+            var particle = new Particle(position.add(offset), 0.5);
+            
+            Animator.animate({
+                object: particle,
+                values: {"alpha" : 1.0},
+                duration: 500
+            });
+
+            this.particles.push(particle);
 
         }
 

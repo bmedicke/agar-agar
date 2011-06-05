@@ -131,22 +131,22 @@ Devourer.prototype.animateSpeed = function(clockwise) {
     
     var self = this;
     
-    Animator.animate(
-        this, 
-        {"speed" : (clockwise ? -1.0 : 1.0)}, 
-        3000,
-        function() {
+    Animator.animate({
+        object: this, 
+        values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
+        duration: 3000,
+        callback: function() {
             
-            Animator.animate(
-                self, 
-                {"speed" : (clockwise ? -1.0 : 1.0)}, 
-                5000,
-                function() {
+            Animator.animate({
+                object: self, 
+                values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
+                duration: 5000,
+                callback: function() {
                     self.animateSpeed(!clockwise);
                 }
-            );
+            });
             
         }
-    );
+    });
     
 };

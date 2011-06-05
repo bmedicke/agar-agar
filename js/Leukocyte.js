@@ -89,26 +89,26 @@ Leukocyte.prototype.eatParticle = function(particlePosition) {
     
     var self = this;
     
-    Animator.animate(
-        this.orientation, 
-        {"x" : 0, "y" : 0}, 
-        Leukocyte.prototype.eatTime * 0.5,
+    Animator.animate({
+        object: this.orientation, 
+        values: {"x" : 0, "y" : 0}, 
+        duration: Leukocyte.prototype.eatTime * 0.5,
         
-        function() {
+        callback: function() {
             
             self.orientation.set(0, 0, 0);
             
-            Animator.animate(
-                self.deadParticle, 
-                {"alpha" : 0.7}, 
-                Leukocyte.prototype.eatTime * 0.5,
-                function() {
+            Animator.animate({
+                object: self.deadParticle, 
+                values: {"alpha" : 0.7}, 
+                duration: Leukocyte.prototype.eatTime * 0.5,
+                callback: function() {
                     self.isActive = true;
                 }
-            );
+            });
             
         }
         
-    );
+    });
     
 };
