@@ -83,7 +83,10 @@ Game.prototype = {
             
             this.stardust.draw(gl);
             
-        }       
+        }
+        
+        Glow.draw(gl, this.controller.devourers, Devourer.prototype.glowRadius);
+        Glow.draw(gl, this.controller.leukocytes, Leukocyte.prototype.glowRadius);
         
         if (this.drawVectorfield) {
             
