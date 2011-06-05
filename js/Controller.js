@@ -64,19 +64,19 @@ Controller.prototype = {
 
         }
 
-        if (this.devourers.length) {
-            
-            Devourer.draw(gl, this.devourers); 
-            
-        }             
-
-        this.drawEntities(gl, this.cytoplasts);
+        this.drawEntities(gl, this.cytoplasts);        
 
         if (this.leukocytes.length) {
             
             Leukocyte.draw(gl, this.leukocytes);
             
         }
+
+        if (this.devourers.length) {
+            
+            Devourer.draw(gl, this.devourers); 
+            
+        }             
         
         Particle.drawEnqueue(this.particles);
         Particle.draw(gl);
