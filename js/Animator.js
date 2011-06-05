@@ -52,43 +52,6 @@ Animation.prototype.update = function(dt) {
     
 };
 
-
-var PreciseAnimation = function(object, values, duration, callback) {
-    
-    Entity.call(this, object, values, duration, callback);
-    
-    this.values = values;
-    
-};
-
-PreciseAnimation.prototype = new Animation();
-PreciseAnimation.prototype.constructor = Animation;
-
-PreciseAnimation.prototype.update = function(dt) {
-    
-    if (!Animation.prototype.update.call(this, dt)) {
-        
-        return true;
-        
-    } else {
-        
-        for (var key in this.values) {
-            
-            if (this.values.hasOwnProperty(key)) {
-                
-                this.object[key] = this.values[key];
-            
-            }
-          
-        }
-        
-        return false;
-        
-    }
-    
-};
-
-
 var Animator = {
     
     animations : [],
@@ -110,12 +73,6 @@ var Animator = {
     animate : function(object, values, duration, callback) {
         
         this.animations.push(new Animation(object, values, duration, callback));
-        
-    },
-    
-    animatePrecise : function(object, values, duration, callback) {
-        
-        this.animations.push(new PreciseAnimation(object, values, duration, callback));
         
     },
     

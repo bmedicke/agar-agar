@@ -96,9 +96,11 @@ Leukocyte.prototype.eatParticle = function(particlePosition) {
         
         function() {
             
+            self.orientation.set(0, 0, 0);
+            
             Animator.animate(
-                self.orientation, 
-                {"z" : 0.7}, 
+                self.deadParticle, 
+                {"alpha" : 0.7}, 
                 Leukocyte.prototype.eatTime * 0.5,
                 function() {
                     self.isActive = true;
