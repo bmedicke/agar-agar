@@ -77,7 +77,7 @@ Particle.drawEnqueue = function(particles) {
     //     
     // }
     
-    for (i = 0; i < particles.length; i++) {
+    for (var i = 0; i < particles.length; i++) {
         
         var index = (this.vertexBuffer.vertexCount + i) * 3;
         

@@ -204,49 +204,27 @@
 </script>
 
 <script id="leukocyte-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
-
-    const float PI = 3.1415926535897932384626433832;
     
     uniform mat4 matrix;
-    uniform vec2 particleVector;
-    uniform float radius;
+    uniform float size;
 
-    attribute vec3 position;
-    
+    attribute vec2 position;
+    attribute vec3 params;
+
+    varying float rotation;
+    varying float distance;
+    varying float time;
+
     void main(void) {
-        
-        float distanceFromCenter = clamp( 
-            length( particleVector ), 
-            0.0, 
-            radius * 2.0
-        );
-        
-        float angle = acos( 
-            dot( position.xy, particleVector ) / 
-            length( position.xy ) / 
-            ( length( particleVector ) + 0.001 ) 
-        );
-        
-        
-        float factor = sin( distanceFromCenter / ( radius * 2.0 ) * PI );
-        
-        float stretchFactor = factor * ( cos( angle ) * 0.5 + 0.5 );
-        float crushFactor = factor * ( sin( angle ) * 0.5 + 0.5 );
-        
-        // float factor = sin( distanceFromCenter / ( radius * 2.0 ) * PI ) * ( 1.0 - angle / PI );
-        
-        // cool mouth
-        // factor *= step( PI * 0.25, abs( angle ) );
-        
-        //factor *= step( abs( angle ), PI * 0.25 );
-        
-        vec2 stretch = normalize( particleVector + 0.001 ) * stretchFactor * radius * 0.5;
-        
-        vec2 crush = normalize( position.xy * -1.0 ) * crushFactor * radius * 0.25;
-        
-        
-        gl_Position = matrix * vec4( position.xy + stretch + crush, 1.0 , 1.0 );
+
+        gl_Position = matrix * vec4(position, 1.0, 1.0);
     
+        gl_PointSize = size;
+    
+        distance = params.x;
+        rotation = -params.y;
+        time = params.z;
+
     }
     
 </script>
@@ -256,11 +234,32 @@
     #ifdef GL_ES
        precision highp float;
     #endif
-    
+
+    uniform sampler2D texture;
+    uniform float radius;
+
+    varying float distance;
+    varying float rotation;
+    varying float time;
+
+    const vec2 center = vec2( 0.5, 0.5 );
+    const vec3 color = vec3( 0.3, 0.3, 0.3 );
+
     void main(void) {
     
-       gl_FragColor = vec4(0.6, 0.6, 0.6, 1.0);
-       
+        vec2 point = gl_PointCoord - center;
+        
+        point *= 1.0 + radius / 5.0 * 
+            sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
+            sin( 6.0 * atan( point.y, point.x ) - time * 5.0 );
+            
+        point = vec2(
+            cos( rotation ) * point.x - sin( rotation ) * point.y,
+            sin( rotation ) * point.x + cos( rotation ) * point.y
+        );
+        
+        gl_FragColor = texture2D( texture, point + center );
+        gl_FragColor.a *= 2.0;
     }
     
 </script>
@@ -320,9 +319,9 @@
         
         float alpha = 0.0;
    
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a * 2.0;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.1 + 0.1 ) ).a * 1.5;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.15 + 0.15 ) ).a;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a * 3.0;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.1 + 0.2 ) ).a * 3.0;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.15 + 0.15 ) ).a * 3.0;
         
         gl_FragColor.a = alpha;
         

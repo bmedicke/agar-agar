@@ -4,6 +4,7 @@ var Leukocyte = function(position) {
     
     this.isActive = true;
     this.activeTimer = 0;
+    this.age = 0;
     
 };
 
@@ -20,64 +21,113 @@ Leukocyte.prototype.eatTime = 300;
 
 Leukocyte.prototype.glowRadius = .7;
 
+Leukocyte.prototype.absolutMaxCount = 30;
+Leukocyte.prototype.textureSizeFactor = 1.2;
+
 Leukocyte.initialize = function(gl) {
+    
+    this.vertexBuffer = gl.createBuffer();
+    this.vertexBuffer.itemSize = 2;
+    
+    this.vertexArray = new Float32Array(Leukocyte.prototype.absolutMaxCount * this.vertexBuffer.itemSize);
+    
+    this.paramsBuffer = gl.createBuffer();
+    this.paramsBuffer.itemSize = 3;
+    
+    this.paramsArray = new Float32Array(Leukocyte.prototype.absolutMaxCount * this.paramsBuffer.itemSize);
+    
+    this.indexBuffer = gl.createBuffer();
+    this.indexBuffer.itemSize = 1;
+    
+    var length = Leukocyte.prototype.absolutMaxCount * this.indexBuffer.itemSize,
+        indexArray = new Float32Array(length);
+    
+    for (var i = 0; i < length; i++) {
+        
+        indexArray[i] = i;
+        
+    }
+    
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexArray), gl.STATIC_DRAW);
 
     this.shader = gl.loadShader("leukocyte-vertex-shader", "leukocyte-fragment-shader");
     
-    this.circleBuffer = gl.createCircleBuffer(
-        Leukocyte.prototype.entityRadius * 0.8, 
-        Leukocyte.prototype.circleResolution
-    );
-    
     gl.bindShader(this.shader);
-    
-    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    this.shader.particleVectorUniformLocation = gl.getUniformLocation(this.shader, "particleVector");
     
     gl.uniform1f(
         gl.getUniformLocation(this.shader, "radius"),
         Leukocyte.prototype.entityRadius
     );
     
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.circleBuffer);
+    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    gl.passMatrix();
+    
+    var self = this;
+    
+    this.texture = gl.loadTexture("textures/leukocyte.png", function(gl) {
+        
+        gl.bindShader(self.shader);
+        gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
+        
+    });
+    
+    gl.uniform1f(
+        gl.getUniformLocation(this.shader, "size"), 
+        game.vectorfield.cellSize * 2 * Leukocyte.prototype.textureSizeFactor * Leukocyte.prototype.entityRadius
+    );
     
 };
 
-Leukocyte.prototype.draw = function(gl) {
-        
-    // gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
-    // 
-    // if (!this.isActive) {
-    // 
-    //     this.deadParticle.position = this.position.add(this.orientation);
-    //     this.deadParticle.draw(gl);
-    // 
-    // }
-
-    gl.bindShader(Leukocyte.shader);
+Leukocyte.draw = function(gl, leukocytes) {
     
-    gl.pushMatrix();
+    for (var i = 0; i < leukocytes.length; i++) {
         
-        gl.translate(this.position.x, this.position.y);
-        gl.updateMatrix();
+        this.vertexArray[i * 2] = leukocytes[i].position.x;
+        this.vertexArray[i * 2 + 1] = leukocytes[i].position.y;
         
-        gl.uniform2f(
-            Leukocyte.shader.particleVectorUniformLocation, 
-            this.orientation.x,
-            this.orientation.y
-        );
+        this.paramsArray[i * 3] = leukocytes[i].orientation.norm();
+        this.paramsArray[i * 3 + 1] = leukocytes[i].orientation.angle();
+        this.paramsArray[i * 3 + 2] = leukocytes[i].age * 0.001;
         
-        gl.passVertices(gl.LINE_LOOP, Leukocyte.circleBuffer);
+        if (!leukocytes[i].isActive) {
         
-        if (!this.isActive) {
-        
-            this.deadParticle.position = this.position.add(this.orientation);
-            Particle.drawEnqueue([this.deadParticle]);
+            leukocytes[i].deadParticle.position = leukocytes[i].position.add(leukocytes[i].orientation);
+            Particle.drawEnqueue([leukocytes[i].deadParticle]);
         
         }
+        
+    }
     
-    gl.popMatrix();
+    gl.bindShader(this.shader);
+    gl.enableAlpha();
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
+    
+    var positionAttribLocation = 0;
+    gl.vertexAttribPointer(positionAttribLocation, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.paramsBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, this.paramsArray, gl.STATIC_DRAW);
+    
+    var textureCoordAttribLocation = 1;
+    gl.vertexAttribPointer(textureCoordAttribLocation, this.paramsBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+    gl.drawElements(gl.POINTS, leukocytes.length, gl.UNSIGNED_SHORT, 0);
+    
+    gl.disableAlpha();
+    gl.bindShader(gl.defaultShader);
 
+};
+
+Leukocyte.prototype.update = function(dt) {
+    
+    Entity.prototype.update.call(this, dt);
+    
+    this.age += dt;
+    
 };
 
 Leukocyte.prototype.eatParticle = function(particlePosition) {
@@ -95,7 +145,6 @@ Leukocyte.prototype.eatParticle = function(particlePosition) {
         duration: Leukocyte.prototype.eatTime * 0.5,
         
         callback: function() {
-            
             self.orientation.set(0, 0, 0);
             
             Animator.animate({

@@ -63,12 +63,20 @@ Controller.prototype = {
             this.entropyfiers[i].draw(gl);
 
         }
-		
-        Devourer.draw(gl, this.devourers);              
+
+        if (this.devourers.length) {
+            
+            Devourer.draw(gl, this.devourers); 
+            
+        }             
 
         this.drawEntities(gl, this.cytoplasts);
 
-        this.drawEntities(gl, this.leukocytes);
+        if (this.leukocytes.length) {
+            
+            Leukocyte.draw(gl, this.leukocytes);
+            
+        }
         
         Particle.drawEnqueue(this.particles);
         Particle.draw(gl);
@@ -131,14 +139,14 @@ Controller.prototype = {
             }
         
             if (leukocyte.checkCollision(particle)) {
-        
+                    
                 leukocyte.eatParticle(particle.position);
                 
                 delete this.particles.splice(j, 1)[0].destroy();
                 j--;
                 
                 return;
-        
+                    
             }
         
         }

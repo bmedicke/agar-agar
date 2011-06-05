@@ -34,14 +34,13 @@ Devourer.initialize = function(gl) {
     
     this.shader.speedUniformLocation = gl.getUniformLocation(this.shader, "speed");
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    gl.passMatrix();
     
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "position"));
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "textureCoord"));
     
     var self = this;
     
-    this.tentacleTexture = gl.loadTexture("textures/tentaclesAlpha.png", function(gl) {
+    this.tentacleTexture = gl.loadTexture("textures/tentacles.png", function(gl) {
         
         gl.bindShader(self.shader);
         gl.passTexture(self.tentacleTexture, gl.getUniformLocation( self.shader, "tentacleTexture" ));
