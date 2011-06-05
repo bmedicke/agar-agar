@@ -19,7 +19,7 @@ Particle.prototype.maxCount = 150;
 
 Particle.prototype.absolutMaxCount = 250;
 
-Particle.prototype.textureSizeFactor = 2;
+Particle.prototype.textureSizeFactor = 4;
 
 Particle.initialize = function(gl) {
     

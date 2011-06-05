@@ -1,15 +1,8 @@
 var Glow = {
     
-    maxCount : 200,
     textureSizeFactor : 2.5,
     
     initialize : function(gl) {
-    
-        this.vertexBuffer = gl.createBuffer();
-        this.vertexBuffer.itemSize = 3;
-        this.vertexBuffer.vertexCount = 0;
-
-        this.vertexArray = new Float32Array(this.maxCount * this.vertexBuffer.itemSize);
 
         this.shader = gl.loadShader("glow-vertex-shader", "glow-fragment-shader");
 
@@ -26,44 +19,33 @@ var Glow = {
             gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
         
         });
-    
-        gl.uniform1f(
-            gl.getUniformLocation(this.shader, "size"), 
-            game.vectorfield.cellSize * 2 * this.textureSizeFactor
-        );
         
     },
     
-    drawEnqueue : function(entities) {
+    draw : function(gl, entities, glowRadius) {
 
-        for (i = 0; i < entities.length; i++) {
-
-            var index = (this.vertexBuffer.vertexCount + i) * 3;
-
-            this.vertexArray[index] = entities[i].position.x;
-            this.vertexArray[index + 1] = entities[i].position.y;
-            this.vertexArray[index + 2] = entities[i].glowRadius;
-
-        }
-
-        this.vertexBuffer.vertexCount += entities.length;
-
-    },
-    
-    draw : function(gl) {
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
+        var size = glowRadius * 2 * this.textureSizeFactor;
+        
+        log(size);
 
         gl.bindShader(this.shader);
         gl.enableAlpha();
+        
+        for (var i = 0; i < entities.length; i++) {
+            
+            gl.pushMatrix();
 
-        gl.passVertices(gl.POINTS, this.vertexBuffer);
+            gl.translate(entities[i].position.x, entities[i].position.y);
+            gl.scale(size, size);
+
+            gl.passMatrix();
+            gl.drawQuadTexture();
+
+            gl.popMatrix();
+            
+        }
 
         gl.disableAlpha();
-        gl.bindShader(gl.defaultShader);
-
-        this.vertexBuffer.vertexCount = 0;
 
     }
     

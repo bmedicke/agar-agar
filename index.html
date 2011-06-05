@@ -197,7 +197,7 @@
     
        gl_FragColor = texture2D( texture, gl_PointCoord );
        gl_FragColor.a *= alpha;
-       
+       gl_FragColor.a *= 1.5;
     }
     
 </script>
@@ -241,10 +241,10 @@
         
         vec2 stretch = normalize( particleVector + 0.001 ) * stretchFactor * radius * 0.5;
         
-        vec2 crush = normalize( position.xy * -1.0 ) * crushFactor * radius * 0.25;
+        //vec2 crush = normalize( position.xy * -1.0 ) * crushFactor * radius * 0.25;
         
         
-        gl_Position = matrix * vec4( position.xy + stretch + crush, 1.0 , 1.0 );
+        gl_Position = matrix * vec4( position.xy + stretch, 1.0 , 1.0 );
     
     }
     
@@ -258,7 +258,7 @@
     
     void main(void) {
     
-       gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);
+       gl_FragColor = vec4(0.6, 0.6, 0.6, 1.0);
        
     }
     
@@ -323,11 +323,12 @@
         alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.1 + 0.1 ) ).a * 1.5;
         alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.15 + 0.15 ) ).a;
         
-        gl_FragColor.a = alpha;        
-
-        vec4 corpus = texture2D( corpusTexture, (gl_PointCoord - mid / 2.0 ) * 2.0 );
+        gl_FragColor.a = alpha;
         
-        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.22 ) * 0.8 );
+        vec4 corpus = texture2D( corpusTexture, (pointCoord - mid / 2.0 ) * 2.0 );
+        corpus.a *= 1.2;
+        
+        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.215 ) * 0.8 );
         
     }
     
@@ -407,6 +408,7 @@
     varying float rotation;
     
     const vec2 center = vec2( 0.5, 0.5 );
+    const vec3 color = vec3( 0.3, 0.3, 0.3 );
     
     void main(void) {
         
@@ -417,7 +419,8 @@
             sin( rotation ) * point.x + cos( rotation ) * point.y
         ) + center;
         
-        gl_FragColor = texture2D( texture, point );
+        gl_FragColor.a = texture2D( texture, point ).a;
+        gl_FragColor.rgb = color;
     }
     
 </script>
@@ -425,19 +428,16 @@
 <script id="glow-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
-    uniform float size;
 
-    attribute vec3 position;
+    attribute vec2 position;
+    attribute vec2 textureCoord;
     
-    varying float alpha;
+    varying vec2 pointCoord;
     
     void main(void) {
     
-       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
-       
-       gl_PointSize = size * position.z;
-       
-       alpha = position.z;
+       gl_Position = matrix * vec4(position, 1.0, 1.0);
+       pointCoord = textureCoord;
     
     }
     
@@ -451,17 +451,18 @@
     
     uniform sampler2D texture;
     
-    varying float alpha;
+    varying vec2 pointCoord;
     
-    const vec3 color = vec3(0.9, 1.0, 0.9);
+    const vec3 color = vec3(0.7, 0.9, 0.7);
     
     void main(void) {
     
-       //gl_FragColor.rgb = color;
-       //gl_FragColor.a = .a * 2.0;
+       gl_FragColor.rgb = color;
+       gl_FragColor.a = texture2D( texture, pointCoord ).a * 2.3;
+       gl_FragColor.a *= step( 0.72, gl_FragColor.a );
        
-       gl_FragColor = texture2D( texture, gl_PointCoord );
-       gl_FragColor.a *= 2.3;
+       //gl_FragColor = texture2D( texture, pointCoord );
+       //gl_FragColor.a *= 2.3;
        
     }
     

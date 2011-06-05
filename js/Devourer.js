@@ -24,7 +24,7 @@ Devourer.prototype.forceRadius = 8.0;
 Devourer.prototype.rotateSpeed = 0.0001;
 
 Devourer.prototype.textureSizeFactor = 2;
-Devourer.prototype.glowRadius = 3.5;
+Devourer.prototype.glowRadius = 3.3;
 
 Devourer.initialize = function(gl) {
 
