@@ -24,9 +24,7 @@ var Glow = {
     
     draw : function(gl, entities, glowRadius) {
 
-        var size = glowRadius * 2 * this.textureSizeFactor;
-        
-        log(size);
+        var size = glowRadius * 2 * this.textureSizeFactor;        
 
         gl.bindShader(this.shader);
         gl.enableAlpha();

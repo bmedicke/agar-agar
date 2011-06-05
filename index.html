@@ -368,7 +368,7 @@
     void main(void) {
         
         // gl_FragColor = texture2D( texture, pointCoord );
-		// gl_FragColor = mix(vec4(1.0, 0.0, 0.0, 0.5), texture2D( texture, pointCoord ), 0.7);
+
 		vec4 textureColor = texture2D( texture, pointCoord );
 		
 		gl_FragColor = vec4(mix(textureColor.rgb, color.rgb, color.a), textureColor.a);
