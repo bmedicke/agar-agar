@@ -4,9 +4,18 @@ var Cytoplast = function(position) {
     
     this.dockedParticles = [];
 	
+	this.color = {
+		r : 1,
+		g : 0,
+		b : 0,
+		a : 0
+	};
+	
 	this.spikeState = false;
 	this.puke = false;
 	this.puking = false;
+	
+	this.spikeTimer = 0;
     
 };
 
@@ -39,6 +48,8 @@ Cytoplast.initialize = function(gl) {
     
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
     gl.passMatrix();
+	
+	this.shader.colorUniformLocation = gl.getUniformLocation(this.shader, "color");
     
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "position"));
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "textureCoord"));
@@ -51,6 +62,17 @@ Cytoplast.initialize = function(gl) {
 };
 
 Cytoplast.prototype.update = function(dt) {
+
+	// code for fading in & out a red color, when in spike-state. still to decide if we use it or not
+	// if(this.spikeState) {
+	
+		// this.color.a = Math.sin(this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI / 2) * 0.3;
+	
+	// } else {
+	
+		// this.color.a = 0.0;
+	
+	// }
 
 	if(this.puking) {
 
@@ -79,6 +101,14 @@ Cytoplast.prototype.draw = function(gl) {
 	
 	gl.bindShader(Cytoplast.shader);
 	gl.enableAlpha();
+	
+	gl.uniform4f(
+		Cytoplast.shader.colorUniformLocation,
+		this.color.r,
+		this.color.g,
+		this.color.b,
+		this.color.a
+	);
 	
 	if(this.spikeState) {
 	    
@@ -141,26 +171,37 @@ Cytoplast.prototype.checkPuke = function() {
 }
 
 Cytoplast.prototype.spikify = function() {
-	
+
 	this.spikeState = true;
 	this.mass = Cytoplast.prototype.spikeMass;
+	this.spikeTimer = Cytoplast.prototype.spikeTime;
 	
 	this.squeeze();
 	
 	Animator.animate(
 		this,
-		0,
+		{"spikeTimer" : 0},
 		Cytoplast.prototype.spikeTime,
 		Cytoplast.prototype.deSpikify
 	);
 
 }
 
-Cytoplast.prototype.deSpikify = function() {
+Cytoplast.prototype.deSpikify = function() {	
 	
-	this.spikeState = false;
-	this.mass = Cytoplast.prototype.mass;
-	this.dockedParticles = [];
+	Animator.animate(
+		this,
+		{"spikeTextureSize" : Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor},
+		Cytoplast.prototype.squeezeTime,
+		function() {
+		
+			this.spikeState = false;
+			this.mass = Cytoplast.prototype.mass;
+			this.dockedParticles = [];
+			this.spikeTimer = 0;
+
+		}
+	);
 	
 }
 
