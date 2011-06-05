@@ -30,7 +30,7 @@ Cytoplast.prototype.spikeMass = 80000;
 
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
-Cytoplast.prototype.maxFill = 5;
+Cytoplast.prototype.maxFill = 15;
 
 Cytoplast.prototype.infectionTime = 3000;
 Cytoplast.prototype.spikeTime = 5000;

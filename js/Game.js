@@ -26,7 +26,7 @@ Game.prototype = {
     leukoAmount : 1,
     leukoCap : 20,
     
-    particleRate : 500,
+    particleRate : 1500,
     
     entropyRate : 5000,
     entropyAmount : 1,

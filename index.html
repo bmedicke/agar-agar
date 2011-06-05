@@ -60,6 +60,8 @@
         <p><a href="http://agaragargame.com" class="rounded button">Latest Release</a></p>
         
         <p>Links to older Versions of Agar Agar</p>
+        <p><a href="http://agaragargame.com/v0.6" class="rounded button">v0.6</a></p>
+        <p><a href="http://agaragargame.com/v0.5" class="rounded button">v0.5</a></p>
     </div>
 
     <div class="info rounded" id="about">
@@ -240,10 +242,10 @@
         
         vec2 stretch = normalize( particleVector + 0.001 ) * stretchFactor * radius * 0.5;
         
-        //vec2 crush = normalize( position.xy * -1.0 ) * crushFactor * radius * 0.25;
+        vec2 crush = normalize( position.xy * -1.0 ) * crushFactor * radius * 0.25;
         
         
-        gl_Position = matrix * vec4( position.xy + stretch, 1.0 , 1.0 );
+        gl_Position = matrix * vec4( position.xy + stretch + crush, 1.0 , 1.0 );
     
     }
     
