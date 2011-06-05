@@ -207,13 +207,16 @@
     
     uniform mat4 matrix;
     uniform float size;
+    uniform float radius;
 
     attribute vec2 position;
     attribute vec3 params;
 
     varying float rotation;
-    varying float distance;
+    varying float factor;
     varying float time;
+    
+    const float PI = 3.1415926535897932384626433832;
 
     void main(void) {
 
@@ -221,10 +224,12 @@
     
         gl_PointSize = size;
     
-        distance = params.x;
+        float distance = clamp( params.x, 0.0, radius * 2.0 );
+        factor = sin( distance / ( radius * 2.0 ) * PI );
+        
         rotation = -params.y;
         time = params.z;
-
+        
     }
     
 </script>
@@ -238,25 +243,36 @@
     uniform sampler2D texture;
     uniform float radius;
 
-    varying float distance;
+    varying float factor;
     varying float rotation;
     varying float time;
 
     const vec2 center = vec2( 0.5, 0.5 );
-    const vec3 color = vec3( 0.3, 0.3, 0.3 );
 
     void main(void) {
-    
-        vec2 point = gl_PointCoord - center;
         
-        point *= 1.0 + radius / 5.0 * 
-            sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
-            sin( 6.0 * atan( point.y, point.x ) - time * 5.0 );
+        vec2 point = ( gl_PointCoord - center ) * 2.0;
             
         point = vec2(
             cos( rotation ) * point.x - sin( rotation ) * point.y,
             sin( rotation ) * point.x + cos( rotation ) * point.y
         );
+        
+        float stretchFactor = factor * ( cos( atan( point.y, point.x ) ) * 0.5 + 0.5 );
+        float crushFactor = factor * ( sin( atan( point.y, point.x ) ) * 0.5 + 0.5 );
+        
+        vec2 stretch = vec2( 1.0, 0.0 ) * stretchFactor * 0.1;
+        vec2 crush = vec2( 0.0, 1.0 ) * crushFactor * 0.1;
+        
+        point -= stretch - crush;
+        
+        point *= 1.0 + radius / 4.0 * 
+            sin( 2.0 * atan( point.y, point.x ) + time * 2.0 ) *
+            sin( 9.0 * atan( point.y, point.x ) - time * 4.0 );  
+        
+        // point *= 1.0 + radius / 5.0 * 
+        //     sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
+        //     sin( 6.0 * atan( point.y, point.x ) - time * 5.0 );
         
         gl_FragColor = texture2D( texture, point + center );
         gl_FragColor.a *= 2.0;
@@ -298,7 +314,8 @@
     
     varying vec2 pointCoord;
 
-    const vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    const vec3 color = vec3(0.0, 0.0, 0.0);
+    const vec3 color2 = vec3(0.9, 0.9, 0.95);
     const vec2 mid = vec2(0.5, 0.5);
     
     vec2 rotate( vec2 vector, float angle ) {
@@ -312,21 +329,20 @@
 
     void main(void) {
         
-        gl_FragColor = color;
+        gl_FragColor.rgb = color;
         
         vec2 vector = pointCoord - mid;
-        float angle = length( vector ) * speed * 1.1;
+        float angle = length( vector ) * speed * 1.5;
         
         float alpha = 0.0;
    
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a * 3.0;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.1 + 0.2 ) ).a * 3.0;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.15 + 0.15 ) ).a * 3.0;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a * 0.3;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.9, angle * 1.1 + 0.2 ) ).a * 0.2;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.95, angle * 1.15 + 0.15 ) ).a * 0.1;
         
         gl_FragColor.a = alpha;
         
-        vec4 corpus = texture2D( corpusTexture, (pointCoord - mid / 2.0 ) * 2.0 );
-        corpus.a *= 1.2;
+        vec4 corpus = vec4( color2, texture2D( corpusTexture, (pointCoord - mid / 2.0 ) * 2.0 ).a * 1.2 );
         
         gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.215 ) * 0.8 );
         

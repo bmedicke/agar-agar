@@ -22,7 +22,7 @@ Leukocyte.prototype.eatTime = 300;
 Leukocyte.prototype.glowRadius = .7;
 
 Leukocyte.prototype.absolutMaxCount = 30;
-Leukocyte.prototype.textureSizeFactor = 1.2;
+Leukocyte.prototype.textureSizeFactor = 2.0;
 
 Leukocyte.initialize = function(gl) {
     
