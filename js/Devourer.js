@@ -34,14 +34,13 @@ Devourer.initialize = function(gl) {
     
     this.shader.speedUniformLocation = gl.getUniformLocation(this.shader, "speed");
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    gl.passMatrix();
     
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "position"));
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "textureCoord"));
     
     var self = this;
     
-    this.tentacleTexture = gl.loadTexture("textures/tentaclesAlpha.png", function(gl) {
+    this.tentacleTexture = gl.loadTexture("textures/tentacles.png", function(gl) {
         
         gl.bindShader(self.shader);
         gl.passTexture(self.tentacleTexture, gl.getUniformLocation( self.shader, "tentacleTexture" ));
@@ -131,22 +130,22 @@ Devourer.prototype.animateSpeed = function(clockwise) {
     
     var self = this;
     
-    Animator.animate(
-        this, 
-        {"speed" : (clockwise ? -1.0 : 1.0)}, 
-        3000,
-        function() {
+    Animator.animate({
+        object: this, 
+        values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
+        duration: 3000,
+        callback: function() {
             
-            Animator.animate(
-                self, 
-                {"speed" : (clockwise ? -1.0 : 1.0)}, 
-                5000,
-                function() {
+            Animator.animate({
+                object: self, 
+                values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
+                duration: 5000,
+                callback: function() {
                     self.animateSpeed(!clockwise);
                 }
-            );
+            });
             
         }
-    );
+    });
     
 };

@@ -22,11 +22,11 @@ Game.prototype = {
     
     particleCount : 20,
     
-    leukoRate : 5000,
+    leukoRate : 500,
     leukoAmount : 1,
-    leukoCap : 20,
+    leukoCap : Leukocyte.prototype.absolutMaxCount,
     
-    particleRate : 500,
+    particleRate : 1500,
     
     entropyRate : 5000,
     entropyAmount : 1,
@@ -93,9 +93,8 @@ Game.prototype = {
             this.vectorfield.draw(gl);
             
         }
-		
-		this.controller.draw(gl);
-        
+
+        this.controller.draw(gl);
         this.inputHandler.draw(gl);
         
     },
@@ -111,8 +110,6 @@ Game.prototype = {
         
         this.controller.devourers.push(new Devourer(midPoint.add(randomPosition)));
         this.controller.cytoplasts.push(new Cytoplast(midPoint.add(randomPosition.mulSelf(-1))));
-        
-        delete midPoint, randomPosition;
         
         this.state = "run";
         

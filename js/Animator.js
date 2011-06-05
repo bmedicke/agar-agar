@@ -1,18 +1,22 @@
-var Animation = function(object, values, duration, callback) {
+var Animation = function(params) {
     
-    this.object = object;
-    this.values = values;
+    this.object = params.object || null;
+    this.values = params.values || null;
     
-    this.duration = duration;
-    this.callback = callback;
+    this.duration = params.duration || 0;
+    this.callback = params.callback || null;
+    
+    this.fullDuration = this.duration;
+    
+    this.easing = params.easing || "linear";
     
     this.steps = {};
     
-    for (var key in values) {
+    for (var key in this.values) {
         
-        if (values.hasOwnProperty(key)) {
+        if (this.values.hasOwnProperty(key)) {
             
-            this.steps[key] = (values[key] - object[key]) / duration;
+            this.steps[key] = (this.values[key] - this.object[key]) / this.duration;
             
         }
         
@@ -30,7 +34,15 @@ Animation.prototype.update = function(dt) {
             
             if (this.steps.hasOwnProperty(key)) {
                 
-                this.object[key] += this.steps[key] * dt;
+                var step = this.steps[key] * dt;
+                
+                if (this.easing === "easeOut") {
+                    
+                    step *= 0.5 + this.duration / this.fullDuration;
+                    
+                }
+                
+                this.object[key] += step;
             
             }
           
@@ -52,6 +64,7 @@ Animation.prototype.update = function(dt) {
     
 };
 
+
 var Animator = {
     
     animations : [],
@@ -70,9 +83,9 @@ var Animator = {
         
     },
     
-    animate : function(object, values, duration, callback) {
+    animate : function(params) {
         
-        this.animations.push(new Animation(object, values, duration, callback));
+        this.animations.push(new Animation(params));
         
     },
     
