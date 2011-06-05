@@ -17,6 +17,9 @@ var Cytoplast = function(position) {
     
     this.spikeTimer = 0;
     
+    this.rotation = 0;
+    this.rotateSpeed = Cytoplast.prototype.defaultRotateSpeed;
+    
 };
 
 Cytoplast.prototype = new Entity();
@@ -35,10 +38,13 @@ Cytoplast.prototype.pukeTime = 1000;
 Cytoplast.prototype.dockTime = 1000;
 
 Cytoplast.prototype.corpusTextureSize = 1.1;
-Cytoplast.prototype.spikeTextureSize = 1.3;
+Cytoplast.prototype.spikeTextureSize = 1.9;
 
-Cytoplast.prototype.squeezeTime = 500;
+Cytoplast.prototype.squeezeTime = 700;
 Cytoplast.prototype.squeezeFactor = 0.8;
+
+Cytoplast.prototype.defaultRotateSpeed = 0.0002;
+Cytoplast.prototype.spikeRotateSpeed = 0.0006;
 
 Cytoplast.initialize = function(gl) {
 
@@ -80,6 +86,12 @@ Cytoplast.prototype.update = function(dt) {
 
     }
     
+    var rotateStep = this.rotateSpeed * dt;
+    
+    this.rotation += rotateStep;
+    
+    this.rotateDockedParticles(rotateStep);
+    
     var positionChange = Entity.prototype.update.call(this, dt);
     
     for (var i = 0; i < this.dockedParticles.length; i++) {
@@ -88,6 +100,25 @@ Cytoplast.prototype.update = function(dt) {
     
     }
     
+};
+
+Cytoplast.prototype.rotateDockedParticles = function(angle) {
+
+    var targetVector = new Vector(),
+        rotatedTargetVector = new Vector();
+    
+    for(var i = 0; i < this.dockedParticles.length; i++) {
+    
+        targetVector = this.dockedParticles[i].position.sub(this.position);
+        
+        rotatedTargetVector = targetVector.rotate2D(angle);
+        
+        rotatedTargetVector.subSelf(targetVector);
+        
+        this.dockedParticles[i].position.addSelf(rotatedTargetVector);
+    
+    }
+
 };
 
 Cytoplast.prototype.draw = function(gl) {
@@ -115,7 +146,10 @@ Cytoplast.prototype.draw = function(gl) {
         gl.pushMatrix();
         
         size = 2 * this.spikeTextureSize * Cytoplast.prototype.entityRadius;
-        gl.scale(size, size)
+        
+        gl.scale(size, size);
+        gl.rotate(this.rotation);
+
         gl.passMatrix();
 
         gl.passTexture(Cytoplast.spikeTexture, Cytoplast.textureUniformLocation);
@@ -126,7 +160,10 @@ Cytoplast.prototype.draw = function(gl) {
     }
     
     size = 2 * this.corpusTextureSize * Cytoplast.prototype.entityRadius;
-    gl.scale(size, size)
+    
+    gl.scale(size, size);
+    gl.rotate(this.rotation);
+    
     gl.passMatrix();
     
     gl.passTexture(Cytoplast.corpusTexture, Cytoplast.textureUniformLocation);
@@ -174,6 +211,7 @@ Cytoplast.prototype.spikify = function() {
     this.spikeState = true;
     this.mass = Cytoplast.prototype.spikeMass;
     this.spikeTimer = Cytoplast.prototype.spikeTime;
+    this.rotateSpeed = Cytoplast.prototype.spikeRotateSpeed;
     
     this.squeeze();
     
@@ -198,6 +236,7 @@ Cytoplast.prototype.deSpikify = function() {
             this.mass = Cytoplast.prototype.mass;
             this.dockedParticles = [];
             this.spikeTimer = 0;
+            this.rotateSpeed = Cytoplast.prototype.defaultRotateSpeed;
 
         }
     });
