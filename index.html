@@ -295,9 +295,7 @@
 
     const float PI = 3.1415926535897932384626433832;
 
-    uniform sampler2D corpusTexture;
-    uniform sampler2D tentacleTexture;
-    
+    uniform sampler2D texture;
     
     varying float rotation;
     varying float speed;
@@ -322,17 +320,12 @@
         float angle = length( vector ) * speed * 1.1;
         
         float alpha = 0.0;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, rotation - angle ) ).a * 2.0;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, rotation - angle * 1.1 + 0.1 ) ).a * 1.5;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, rotation - angle * 1.15 + 0.15 ) ).a;
+        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle ) ).a) * 2.0;
+        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle * 1.1 + 0.1 ) ).a) * 1.5;
+        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle * 1.15 + 0.15 ) ).a);
         
         gl_FragColor.a = alpha;
-        
-        
-        vec4 corpus = texture2D( corpusTexture, (gl_PointCoord + mid) / 2.0 );
-        
-        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.2 ) * 0.9 );
-        
+   
     }
     
 </script>
@@ -361,11 +354,13 @@
     #endif
 
     uniform sampler2D texture;
+	
+	uniform vec4 color;
 
     void main(void) {
         
         gl_FragColor = texture2D( texture, gl_PointCoord );
-		// gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+		// gl_FragColor = color;
    
     }
     

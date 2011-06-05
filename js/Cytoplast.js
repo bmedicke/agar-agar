@@ -4,9 +4,18 @@ var Cytoplast = function(position) {
     
     this.dockedParticles = [];
 	
+	this.color = {
+		r : 0,
+		g : 0,
+		b : 0,
+		a : 1
+	};
+	
 	this.spikeState = false;
 	this.puke = false;
 	this.puking = false;
+	
+	this.spikeTimer = 0;
     
 };
 
@@ -45,6 +54,8 @@ Cytoplast.initialize = function(gl) {
     
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
     gl.passMatrix();
+	
+	this.shader.colorUniformLocation = gl.getUniformLocation(this.shader, "color");
     
     this.corpusTexture = gl.loadTexture("textures/cytoplast_corpus.png");
 
@@ -53,6 +64,22 @@ Cytoplast.initialize = function(gl) {
 };
 
 Cytoplast.prototype.update = function(dt) {
+
+	if(this.spikeState) {
+	
+		this.color.r = Math.sin(this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI / 2) * 0.5 + 0.5;
+		this.color.g = 0;
+		this.color.b = 0;
+		this.color.a = 0.8;
+	
+	} else {
+	
+		this.color.r = 0;
+		this.color.g = 1;
+		this.color.b = 0;
+		this.color.a = 0.8;
+	
+	}
 
 	if(this.puking) {
 
@@ -81,6 +108,14 @@ Cytoplast.prototype.draw = function(gl) {
 	gl.bindShader(Cytoplast.shader);
 	
 	gl.enableAlpha();
+	
+	gl.uniform4f(
+		Cytoplast.colorUniformLocation,
+		this.color.r,
+		this.color.g,
+		this.color.b,
+		this.color.a
+	);
 	
 	if(this.spikeState) {
 		
@@ -144,12 +179,13 @@ Cytoplast.prototype.spikify = function() {
 	
 	this.spikeState = true;
 	this.mass = Cytoplast.prototype.spikeMass;
+	this.spikeTimer = Cytoplast.prototype.spikeTime;
 	
 	this.squeeze();
 	
 	Animator.animate(
 		this,
-		0,
+		{"spikeTimer" : 0},
 		Cytoplast.prototype.spikeTime,
 		Cytoplast.prototype.deSpikify
 	);
@@ -161,6 +197,7 @@ Cytoplast.prototype.deSpikify = function() {
 	this.spikeState = false;
 	this.mass = Cytoplast.prototype.mass;
 	this.dockedParticles = [];
+	this.spikeTimer = 0;
 	
 }
 
