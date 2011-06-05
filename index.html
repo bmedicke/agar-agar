@@ -267,21 +267,17 @@
 <script id="devourer-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
-    uniform float size;
 
-    attribute vec4 position;
-
-    varying float rotation;
-    varying float speed;
+    attribute vec2 position;
+    attribute vec2 textureCoord;
+    
+    varying vec2 pointCoord;
 
     void main(void) {
 
-       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
-
-       gl_PointSize = size;
-
-       rotation = position.z;
-       speed = position.w;
+       gl_Position = matrix * vec4(position, 1.0, 1.0);
+       
+       pointCoord = textureCoord;
 
     }
     
@@ -295,10 +291,12 @@
 
     const float PI = 3.1415926535897932384626433832;
 
-    uniform sampler2D texture;
+    uniform sampler2D corpusTexture;
+    uniform sampler2D tentacleTexture;
     
-    varying float rotation;
-    varying float speed;
+    uniform float speed;
+    
+    varying vec2 pointCoord;
 
     const vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
     const vec2 mid = vec2(0.5, 0.5);
@@ -316,16 +314,21 @@
         
         gl_FragColor = color;
         
-        vec2 vector = gl_PointCoord - mid;
+        vec2 vector = pointCoord - mid;
         float angle = length( vector ) * speed * 1.1;
         
         float alpha = 0.0;
-        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle ) ).a) * 2.0;
-        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle * 1.1 + 0.1 ) ).a) * 1.5;
-        alpha += (1.0 - texture2D( texture, mid + rotate( vector, rotation - angle * 1.15 + 0.15 ) ).a);
-        
-        gl_FragColor.a = alpha;
    
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a * 2.0;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.1 + 0.1 ) ).a * 1.5;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle * 1.15 + 0.15 ) ).a;
+        
+        gl_FragColor.a = alpha;        
+
+        vec4 corpus = texture2D( corpusTexture, (gl_PointCoord - mid / 2.0 ) * 2.0 );
+        
+        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.22 ) * 0.8 );
+        
     }
     
 </script>
@@ -333,15 +336,17 @@
 <script id="cytoplast-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
-    uniform float size;
 
-    attribute vec4 position;
+    attribute vec2 position;
+    attribute vec2 textureCoord;
+    
+    varying vec2 pointCoord;
 
     void main(void) {
 
-       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+       gl_Position = matrix * vec4(position, 1.0, 1.0);
 
-       gl_PointSize = size;
+       pointCoord = textureCoord;
 
     }
     
@@ -357,10 +362,15 @@
 	
 	uniform vec4 color;
 
+    varying vec2 pointCoord;
+
     void main(void) {
         
-        gl_FragColor = texture2D( texture, gl_PointCoord );
-		// gl_FragColor = color;
+        // gl_FragColor = texture2D( texture, pointCoord );
+		// gl_FragColor = mix(vec4(1.0, 0.0, 0.0, 0.5), texture2D( texture, pointCoord ), 0.7);
+		vec4 textureColor = texture2D( texture, pointCoord );
+		
+		gl_FragColor = vec4(mix(textureColor.rgb, color.rgb, color.a), textureColor.a);
    
     }
     
