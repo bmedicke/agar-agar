@@ -631,29 +631,26 @@ Controller.prototype = {
 
         for (var i = 0; i < amount; i++) {
 
-            var extraBubble = Math.random() > .5 ? true : false;
-
             var center = new Vector(Math.random() * this.vectorfield.cols,
                                     Math.random() * this.vectorfield.rows);
 
             var radius = Entropyfier.prototype.entropyRadius * (Math.random() * .3 + .7);
             var time = Entropyfier.prototype.entropyTime * (Math.random() * .3 + .7);
 
-            this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time, radius));
+            this.entropyfiers.push(new Entropyfier(center.getCopy(), time, radius));
 
-            center.addSelf(center.sub(new Vector(center.x + radius, center.y)).rotate2DSelf(Math.random() * Math.PI * 2));
+            center.addSelf(new Vector(radius, 0).rotate2DSelf(Math.random() * Math.PI * 2));
 
-            this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.07, radius / 2));
+            this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.07, radius / 2));
 
 
-            if(extraBubble) {
+            if (Math.random() > .5) {
 
-                center.addSelf(center.sub(new Vector(center.x + radius / 2, center.y)).rotate2DSelf(Math.random() * Math.PI * 2));
+                center.addSelf(new Vector(radius * 0.5, 0).rotate2DSelf(Math.random() * Math.PI * 2));
 
-                this.entropyfiers.push(new Entropyfier(new Vector(center.x, center.y), time * 1.11, radius / 3));
+                this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.11, radius / 3));
 
             }
-
 
         }
 
