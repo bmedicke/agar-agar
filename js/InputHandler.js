@@ -161,8 +161,7 @@ InputHandler.prototype = {
     
     setMousePosition : function(event) {
         
-        var coords = getRelativeCoordinates(event, canvas);
-        this.mouse.set(coords.x / this.vectorfield.cellSize, coords.y / this.vectorfield.cellSize, 0);
+        this.mouse.set(event.clientX / this.vectorfield.cellSize, event.clientY / this.vectorfield.cellSize, 0);
         
     },
     
