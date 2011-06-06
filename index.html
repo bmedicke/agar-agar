@@ -169,9 +169,10 @@
     uniform mat4 matrix;
     uniform float size;
 
-    attribute vec3 position;
+    attribute vec4 position;
     
     varying float alpha;
+    varying float time;
     
     void main(void) {
     
@@ -180,6 +181,8 @@
        gl_PointSize = size;
        
        alpha = position.z;
+       
+       time = position.w;
     
     }
     
@@ -195,10 +198,20 @@
     
     varying float alpha;
     
+    varying float time;
+    
+    const vec2 center = vec2(0.5, 0.5);
+    
     void main(void) {
     
-       gl_FragColor = texture2D( texture, gl_PointCoord );
-       gl_FragColor.a *= alpha * 1.5;
+        vec2 point = ( gl_PointCoord - center );
+
+        point *= 1.0 + 0.50 / 12.0 * sin( 2.0 * atan( point.y, point.x ) + time * 5.0 ) +
+                       0.50 / 12.0 * sin( 3.0 * atan( point.y, point.x ) - time * 2.5 );
+
+        gl_FragColor = texture2D( texture, point + center );
+        gl_FragColor.a *= alpha * 1.5;
+       
     }
     
 </script>

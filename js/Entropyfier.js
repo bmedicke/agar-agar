@@ -11,7 +11,7 @@ var Entropyfier = function(position, chargeTime, entityRadius) {
 Entropyfier.prototype = {
     
     entropyTime : 3000,
-    entropyRadius : 3,
+    entropyRadius : 10,
     forceTime : 1000,
     force : 5,
 

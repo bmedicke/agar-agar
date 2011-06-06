@@ -31,8 +31,7 @@ Game.prototype = {
     entropyRate : 5000,
     entropyAmount : 1,
     
-    devourerRate : 60000,
-    
+    devourerRate : 15000,
 
     initialize : function(gl) {
         

@@ -11,7 +11,7 @@ Particle.prototype.constructor = Entity;
 
 Particle.prototype.mass = 100000;
 Particle.prototype.entityRadius = 0.15;
-Particle.prototype.separationRadius = 0.4;
+Particle.prototype.separationRadius = 0.3;
 Particle.prototype.cohesionRadius = 2;
 
 Particle.prototype.count = 0;
@@ -24,7 +24,7 @@ Particle.prototype.textureSizeFactor = 4;
 Particle.initialize = function(gl) {
     
     this.vertexBuffer = gl.createBuffer();
-    this.vertexBuffer.itemSize = 3;
+    this.vertexBuffer.itemSize = 4;
     this.vertexBuffer.vertexCount = 0;
     
     this.vertexArray = new Float32Array(Particle.prototype.absolutMaxCount * this.vertexBuffer.itemSize);
@@ -79,11 +79,12 @@ Particle.drawEnqueue = function(particles) {
     
     for (var i = 0; i < particles.length; i++) {
         
-        var index = (this.vertexBuffer.vertexCount + i) * 3;
+        var index = (this.vertexBuffer.vertexCount + i) * 4;
         
         this.vertexArray[index] = particles[i].position.x;
         this.vertexArray[index + 1] = particles[i].position.y;
         this.vertexArray[index + 2] = particles[i].alpha;
+        this.vertexArray[index + 3] = particles[i].age * 0.001;
         
     }
     

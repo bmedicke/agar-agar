@@ -4,7 +4,6 @@ var Leukocyte = function(position) {
     
     this.isActive = true;
     this.activeTimer = 0;
-    this.age = 0;
     
 };
 
@@ -126,14 +125,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
 
-};
-
-Leukocyte.prototype.update = function(dt) {
-    
-    Entity.prototype.update.call(this, dt);
-    
-    this.age += dt;
-    
 };
 
 Leukocyte.prototype.eatParticle = function(particlePosition) {
