@@ -40,11 +40,11 @@ Leukocyte.initialize = function(gl) {
     this.indexBuffer.itemSize = 1;
     
     var length = Leukocyte.prototype.absolutMaxCount * this.indexBuffer.itemSize,
-        indexArray = new Float32Array(length);
+        indexArray = [];
     
     for (var i = 0; i < length; i++) {
         
-        indexArray[i] = i;
+        indexArray.push(i);
         
     }
     
@@ -77,6 +77,12 @@ Leukocyte.initialize = function(gl) {
         game.vectorfield.cellSize * 2 * Leukocyte.prototype.textureSizeFactor * Leukocyte.prototype.entityRadius
     );
     
+    this.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
+    this.paramsAttribLocation = gl.getAttribLocation(this.shader, "params");
+    
+    gl.enableVertexAttribArray(this.positionAttribLocation);
+    gl.enableVertexAttribArray(this.paramsAttribLocation);
+    
 };
 
 Leukocyte.draw = function(gl, leukocytes) {
@@ -102,17 +108,17 @@ Leukocyte.draw = function(gl, leukocytes) {
     gl.bindShader(this.shader);
     gl.enableAlpha();
     
+    gl.passMatrix();
+    
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
     
-    var positionAttribLocation = 0;
-    gl.vertexAttribPointer(positionAttribLocation, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(this.positionAttribLocation, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
     gl.bindBuffer(gl.ARRAY_BUFFER, this.paramsBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, this.paramsArray, gl.STATIC_DRAW);
     
-    var textureCoordAttribLocation = 1;
-    gl.vertexAttribPointer(textureCoordAttribLocation, this.paramsBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(this.paramsAttribLocation, this.paramsBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.drawElements(gl.POINTS, leukocytes.length, gl.UNSIGNED_SHORT, 0);

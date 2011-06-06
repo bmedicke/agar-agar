@@ -22,7 +22,7 @@ Game.prototype = {
     
     particleCount : 20,
     
-    leukoRate : 500,
+    leukoRate : 2500,
     leukoAmount : 1,
     leukoCap : Leukocyte.prototype.absolutMaxCount,
     

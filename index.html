@@ -212,15 +212,15 @@
     attribute vec2 position;
     attribute vec3 params;
 
-    varying float rotation;
     varying float factor;
+    varying float rotation;
     varying float time;
     
     const float PI = 3.1415926535897932384626433832;
 
     void main(void) {
 
-        gl_Position = matrix * vec4(position, 1.0, 1.0);
+        gl_Position = matrix * vec4( position, 1.0, 1.0 );
     
         gl_PointSize = size;
     
