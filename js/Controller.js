@@ -480,7 +480,7 @@ Controller.prototype = {
         for (var i = 0; i < this.devourers.length; i++) {
 
             this.devourerForcefield.position = this.devourerForcefield.point = this.devourers[i].position;
-            this.devourerForcefield.angle = this.devourers[i].speed;
+            this.devourerForcefield.angle = -this.devourers[i].speed;
             this.vectorfield.applyForcefield(dt, this.devourerForcefield);
 
         }
