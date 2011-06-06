@@ -16,6 +16,8 @@ Stardust.prototype = {
 
         this.dustShader = gl.loadShader("stardust-vertex-shader", "stardust-fragment-shader");
         
+        this.dustShader.positionAttribLocation = gl.getAttribLocation(this.dustShader, "position");
+        
         this.dustBuffer = gl.createBuffer();
         this.dustBuffer.itemSize = 3;
         

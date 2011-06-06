@@ -32,6 +32,9 @@ Devourer.initialize = function(gl) {
     
     gl.bindShader(this.shader);
     
+    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
+    this.shader.textureCoordAttribLocation = gl.getAttribLocation(this.shader, "textureCoord");
+    
     this.shader.speedUniformLocation = gl.getUniformLocation(this.shader, "speed");
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
     

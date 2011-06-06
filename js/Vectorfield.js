@@ -69,6 +69,8 @@ Vectorfield.prototype = {
 
         gl.bindShader(this.shader);
 
+        this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
+
         this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
         gl.passMatrix();
 

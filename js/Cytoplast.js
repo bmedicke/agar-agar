@@ -52,18 +52,20 @@ Cytoplast.initialize = function(gl) {
     
     gl.bindShader(this.shader);
     
-    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    gl.passMatrix();
+    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
+    this.shader.textureCoordAttribLocation = gl.getAttribLocation(this.shader, "textureCoord");
     
     this.shader.colorUniformLocation = gl.getUniformLocation(this.shader, "color");
+    this.textureUniformLocation = gl.getUniformLocation(this.shader, "texture");
+    
+    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    gl.passMatrix();
     
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "position"));
     gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "textureCoord"));
     
     this.corpusTexture = gl.loadTexture("textures/cytoplast_corpus.png");
     this.spikeTexture = gl.loadTexture("textures/cytoplast_spikes.png");
-    
-    this.textureUniformLocation = gl.getUniformLocation(this.shader, "texture");
 
 };
 
