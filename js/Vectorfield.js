@@ -32,7 +32,7 @@ var Vectorfield = function() {
 
 Vectorfield.prototype = {
     
-    numberOfCells : 2000,
+    numberOfCells : 3000,
     
     maxForce : 1.5,
     

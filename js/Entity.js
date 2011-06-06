@@ -4,6 +4,7 @@ var Entity = function(position) {
     this.force = new Vector();
     this.velocity = new Vector();
     this.orientation = new Vector(1, 0, 0);
+    this.age = Math.random() * 100;
     
 };
 
@@ -29,6 +30,8 @@ Entity.prototype = {
     	this.position.addSelf(positionChange);
         
         this.velocity.mulSelf(1 - this.dampCoefficient * dt);
+        
+        this.age += dt;
         
         delete acceleration;
         

@@ -33,7 +33,7 @@ Cytoplast.prototype.moveSpeed = 0;
 Cytoplast.prototype.maxFill = 15;
 
 Cytoplast.prototype.infectionTime = 3000;
-Cytoplast.prototype.spikeTime = 5000;
+Cytoplast.prototype.spikeTime = 10000;
 Cytoplast.prototype.pukeTime = 1000;
 Cytoplast.prototype.dockTime = 1000;
 

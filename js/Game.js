@@ -22,7 +22,7 @@ Game.prototype = {
     
     particleCount : 20,
     
-    leukoRate : 500,
+    leukoRate : 2500,
     leukoAmount : 1,
     leukoCap : Leukocyte.prototype.absolutMaxCount,
     
@@ -31,8 +31,7 @@ Game.prototype = {
     entropyRate : 5000,
     entropyAmount : 1,
     
-    devourerRate : 60000,
-    
+    devourerRate : 15000,
 
     initialize : function(gl) {
         
