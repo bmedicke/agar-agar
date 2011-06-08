@@ -4,6 +4,7 @@ var Leukocyte = function(position) {
     
     this.isActive = true;
     this.activeTimer = 0;
+    this.angle = 0;
     
 };
 
@@ -84,6 +85,14 @@ Leukocyte.initialize = function(gl) {
     
 };
 
+Leukocyte.prototype.update = function(dt) {
+
+    this.angle += (this.orientation.angle() - this.angle) * 0.01;
+
+    Entity.prototype.update.call(this, dt);
+
+};
+
 Leukocyte.draw = function(gl, leukocytes) {
     
     for (var i = 0; i < leukocytes.length; i++) {
@@ -92,7 +101,7 @@ Leukocyte.draw = function(gl, leukocytes) {
         this.vertexArray[i * 2 + 1] = leukocytes[i].position.y;
         
         this.paramsArray[i * 3] = leukocytes[i].orientation.norm();
-        this.paramsArray[i * 3 + 1] = leukocytes[i].orientation.angle();
+        this.paramsArray[i * 3 + 1] = leukocytes[i].angle;
         this.paramsArray[i * 3 + 2] = leukocytes[i].age * 0.001;
         
         if (!leukocytes[i].isActive) {
@@ -142,7 +151,6 @@ Leukocyte.prototype.eatParticle = function(particlePosition) {
         duration: Leukocyte.prototype.eatTime * 0.5,
         
         callback: function() {
-            self.orientation.set(0, 0, 0);
             
             Animator.animate({
                 object: self.deadParticle, 
