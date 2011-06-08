@@ -5,9 +5,9 @@ var Cytoplast = function(position) {
     this.dockedParticles = [];
     
     this.color = {
-        r : 1,
-        g : 0,
-        b : 0,
+        r : 0.99,
+        g : 0.92,
+        b : 0.08,
         a : 0
     };
     
@@ -27,10 +27,11 @@ Cytoplast.prototype.constructor = Entity;
 
 Cytoplast.prototype.mass = 800000;
 Cytoplast.prototype.spikeMass = 80000;
+Cytoplast.prototype.pukeForce = 25;
 
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
-Cytoplast.prototype.maxFill = 15;
+Cytoplast.prototype.maxFill = 5;
 
 Cytoplast.prototype.infectionTime = 3000;
 Cytoplast.prototype.spikeTime = 10000;
@@ -71,16 +72,16 @@ Cytoplast.initialize = function(gl) {
 
 Cytoplast.prototype.update = function(dt) {
 
-    // code for fading in & out a red color, when in spike-state. still to decide if we use it or not
-    // if(this.spikeState) {
+    // code for fading in & out a color, when in spike-state. still to decide if we use it or not
+    if(this.spikeState) {
     
-        // this.color.a = Math.sin(this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI / 2) * 0.3;
+        this.color.a = Math.cos(this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI * 0.5) * 0.3;
     
-    // } else {
+    } else {
     
-        // this.color.a = 0.0;
+        this.color.a = 0.0;
     
-    // }
+    }
 
     if(this.puking) {
 
@@ -104,33 +105,13 @@ Cytoplast.prototype.update = function(dt) {
     
 };
 
-Cytoplast.prototype.rotateDockedParticles = function(angle) {
-
-    var targetVector = new Vector(),
-        rotatedTargetVector = new Vector();
-    
-    for(var i = 0; i < this.dockedParticles.length; i++) {
-    
-        targetVector = this.dockedParticles[i].position.sub(this.position);
-        
-        rotatedTargetVector = targetVector.rotate2D(angle);
-        
-        rotatedTargetVector.subSelf(targetVector);
-        
-        this.dockedParticles[i].position.addSelf(rotatedTargetVector);
-    
-    }
-
-};
-
 Cytoplast.prototype.draw = function(gl) {
 
     gl.pushMatrix();
     
     gl.translate(this.position.x, this.position.y);
     
-    var size;
-    
+    var size;    
     
     gl.bindShader(Cytoplast.shader);
     
@@ -178,6 +159,25 @@ Cytoplast.prototype.draw = function(gl) {
     // Entity.prototype.draw.call(this, gl);
     
     Particle.drawEnqueue(this.dockedParticles);
+
+};
+
+Cytoplast.prototype.rotateDockedParticles = function(angle) {
+
+    var targetVector = new Vector(),
+        rotatedTargetVector = new Vector();
+    
+    for(var i = 0; i < this.dockedParticles.length; i++) {
+    
+        targetVector = this.dockedParticles[i].position.sub(this.position);
+        
+        rotatedTargetVector = targetVector.rotate2D(angle);
+        
+        rotatedTargetVector.subSelf(targetVector);
+        
+        this.dockedParticles[i].position.addSelf(rotatedTargetVector);
+    
+    }
 
 };
 
@@ -261,7 +261,7 @@ Cytoplast.prototype.inflate = function() {
     Animator.animate({
         object: this,
         values: {"corpusTextureSize" : Cytoplast.prototype.corpusTextureSize,
-         "spikeTextureSize" : Cytoplast.prototype.spikeTextureSize},
+                 "spikeTextureSize" : Cytoplast.prototype.spikeTextureSize},
         duration: Cytoplast.prototype.squeezeTime
     });
 

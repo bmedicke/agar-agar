@@ -156,6 +156,7 @@ Game.prototype = {
             this.controller.particles.length < Particle.prototype.maxCount) {
 
             this.controller.addParticle();
+            this.controller.addPoints("particleSpawn");
             
             this.particleTime -= this.particleRate;
         

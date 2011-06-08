@@ -70,16 +70,16 @@ Controller.prototype = {
             
             Leukocyte.draw(gl, this.leukocytes);
             
-        }
-
+        }               
+        
+        Particle.drawEnqueue(this.particles);
+        Particle.draw(gl);
+        
         if (this.devourers.length) {
             
             Devourer.draw(gl, this.devourers); 
             
-        }             
-        
-        Particle.drawEnqueue(this.particles);
-        Particle.draw(gl);
+        }
         
         gl.bindShader(gl.defaultShader);
 
@@ -459,7 +459,7 @@ Controller.prototype = {
 				this.vectorfield.addForcefield(new Forcefield(
 					cytoplast.position.getCopy(),
 					cytoplast.entityRadius * 2,
-					Entropyfier.prototype.force,
+					Cytoplast.prototype.pukeForce,
 					false,
 					Math.PI,
 					cytoplast.position,

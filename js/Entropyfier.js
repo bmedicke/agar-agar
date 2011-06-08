@@ -4,7 +4,7 @@ var Entropyfier = function(position, chargeTime, entityRadius) {
     this.timer = 0;
     this.chargeTime = chargeTime || 0;
     this.entityRadius = entityRadius || 0;
-    this.forceRadius = this.entityRadius * 2.5;
+    this.forceRadius = this.entityRadius * 2.0;
 
 };
 
@@ -24,9 +24,9 @@ Entropyfier.initialize = function(gl) {
 Entropyfier.prototype = {
     
     entropyTime : 5000,
-    entropyRadius : 5,
+    entropyRadius : 7,
     forceTime : 1000,
-    force : 100,
+    force : 25,
 
     update : function(dt) {
 
