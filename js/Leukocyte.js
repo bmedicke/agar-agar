@@ -105,7 +105,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     }
     
     gl.bindShader(this.shader);
-    gl.enableAlpha();
     
     gl.passMatrix();
     
@@ -122,7 +121,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.drawElements(gl.POINTS, leukocytes.length, gl.UNSIGNED_SHORT, 0);
     
-    gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
 
 };

@@ -71,7 +71,7 @@ WebGLRenderingContext.prototype.enableAlpha = function() {
 
     this.enable(this.BLEND);
     this.blendFunc(this.SRC_ALPHA, this.ONE_MINUS_SRC_ALPHA);
-    
+
 };
 
 WebGLRenderingContext.prototype.disableAlpha = function() {

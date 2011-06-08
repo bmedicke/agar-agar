@@ -37,8 +37,6 @@ Entropyfier.prototype = {
     draw : function(gl) {
 
         // if (this.timer <= this.chargeTime) {
-        //     
-        //     gl.enableAlpha();
         //     gl.fill();
         // 
         //     gl.setColor(.9, .9, .9, Math.sqrt(this.timer / this.chargeTime));
@@ -48,14 +46,11 @@ Entropyfier.prototype = {
         // 
         //     gl.setColor(.7, .7, .7, Math.sqrt(this.timer / this.chargeTime));
         //     gl.drawCircle(this.position.x, this.position.y, Math.sqrt(this.timer / this.chargeTime) * this.entityRadius);
-        // 
-        //     gl.disableAlpha();
         //     
         // }
         
         if (this.timer <= this.chargeTime) {
         
-            gl.enableAlpha();
             gl.fill();
         
             gl.bindShader(Entropyfier.shader);
@@ -66,8 +61,6 @@ Entropyfier.prototype = {
             );
         
             gl.drawCircle(this.position.x, this.position.y, (Math.sqrt(this.timer / this.chargeTime) + 1) * this.entityRadius * 0.5);
-        
-            gl.disableAlpha();
             
         }
     

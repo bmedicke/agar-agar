@@ -23,6 +23,7 @@ function initialize() {
     
     gl.lineWidth(2.0);
     gl.noFill();
+    gl.enableAlpha();
 
     gl.setupDefaultShader();    
     gl.initUtilityBuffers();
@@ -47,8 +48,9 @@ function run() {
         
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
         
-        gl.setColor(1, 0, 0, 1);
-        gl.drawRect(0, 0, 1, 1);
+        // Agar Meter
+        // gl.setColor(1, 0, 0, 1);
+        // gl.drawRect(0, 0, 1, 1);
         
         game.update(dt);
         game.draw(gl);

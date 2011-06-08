@@ -133,7 +133,6 @@ Cytoplast.prototype.draw = function(gl) {
     
     
     gl.bindShader(Cytoplast.shader);
-    gl.enableAlpha();
     
     gl.uniform4f(
         Cytoplast.shader.colorUniformLocation,
@@ -171,7 +170,6 @@ Cytoplast.prototype.draw = function(gl) {
     gl.passTexture(Cytoplast.corpusTexture, Cytoplast.textureUniformLocation);
     gl.drawQuadTexture();
     
-    gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
     
     gl.popMatrix();

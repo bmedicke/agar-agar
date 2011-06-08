@@ -24,7 +24,7 @@ Devourer.prototype.forceRadius = 8.0;
 Devourer.prototype.rotateSpeed = 0.0005;
 
 Devourer.prototype.textureSizeFactor = 2;
-Devourer.prototype.glowRadius = 3.3;
+Devourer.prototype.glowRadius = 4.0;
 
 Devourer.initialize = function(gl) {
 
@@ -68,7 +68,6 @@ Devourer.draw = function(gl, devourers) {
     // }
     
     gl.bindShader(this.shader);
-    gl.enableAlpha();
     
     var size = Devourer.prototype.textureSizeFactor * Devourer.prototype.entityRadius * 2;
     
@@ -92,7 +91,6 @@ Devourer.draw = function(gl, devourers) {
     
     }
     
-    gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
 
 };

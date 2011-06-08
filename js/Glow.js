@@ -1,6 +1,6 @@
 var Glow = {
     
-    textureSizeFactor : 2.5,
+    textureSizeFactor : 1.5,
     
     initialize : function(gl) {
 
@@ -30,7 +30,6 @@ var Glow = {
         var size = glowRadius * 2 * this.textureSizeFactor;
 
         gl.bindShader(this.shader);
-        gl.enableAlpha();
         
         for (var i = 0; i < entities.length; i++) {
             
@@ -45,8 +44,6 @@ var Glow = {
             gl.popMatrix();
             
         }
-
-        gl.disableAlpha();
 
     }
     

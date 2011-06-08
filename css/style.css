@@ -94,6 +94,7 @@ body{
     
 #canvas {
   position: absolute;
+  background-color: black;
 }
 
 .item{
@@ -238,3 +239,13 @@ a.button{
 a.button:hover{
     background-color: #AAA;
     }
+    
+#background{
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: -webkit-gradient(radial, 50% 50%, 200, 50% 50%, 800, from(#FFF), to(rgb(228,231,237)));
+    background: -moz-radial-gradient(50% 50%, circle, #fff 200px, rgb(237,241,248) 400px);
+}
