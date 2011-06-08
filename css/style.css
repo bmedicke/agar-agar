@@ -309,3 +309,20 @@ a.button:hover{
 .input_button:hover{
     background-color: #AAA;
     }
+    
+a#tryagain{
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    padding: 20px 0;
+    margin: 35px auto 16px auto;
+    color: #000;
+    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    font-size: 28px;
+    background-color: #FFF;
+    }
+
+a#tryagain:hover{
+    background-color: #AAA;
+    }
