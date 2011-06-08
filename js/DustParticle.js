@@ -1,6 +1,8 @@
 var DustParticle = function(position, velocity) {
     
     this.position = position;
+    //this.position.z = 0.9;
+    
     this.velocity = velocity;
     
     if (!velocity.normSquared()) {
@@ -16,7 +18,7 @@ var DustParticle = function(position, velocity) {
     this.mass = Math.random() * DustParticle.prototype.mass + DustParticle.prototype.mass / 2;
     
     this.velocity.divSelf(this.mass);
-    this.timer = Math.random() * DustParticle.prototype.lifeTime / 2;
+    this.timer = 0;
     
 };
 
@@ -30,7 +32,7 @@ DustParticle.prototype.update = function(dt) {
     
     this.velocity.divSelf(this.mass);
     this.position.addSelf(this.velocity);
-    this.position.z = Math.sin(this.timer / this.lifeTime * Math.PI);
+    this.position.z = Math.cos(this.timer / this.lifeTime * Math.PI * 2) * -0.5 + 0.5;
 
 };
 

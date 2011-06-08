@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
 </head>
 <body>
-    
+    <div id="background"></div>
     <canvas id="canvas">Your browser does not support &lt;canvas&gt;.</canvas>
     <div id="overlay"></div>
 
@@ -210,7 +210,7 @@
                        0.50 / 12.0 * sin( 3.0 * atan( point.y, point.x ) - time * 2.5 );
 
         gl_FragColor = texture2D( texture, point + center );
-        gl_FragColor.a *= alpha * 1.5;
+        gl_FragColor.a *= alpha;
        
     }
     
@@ -487,11 +487,8 @@
     void main(void) {
     
        gl_FragColor.rgb = color;
-       gl_FragColor.a = texture2D( texture, pointCoord ).a * 2.3;
-       gl_FragColor.a *= step( 0.72, gl_FragColor.a );
-       
-       //gl_FragColor = texture2D( texture, pointCoord );
-       //gl_FragColor.a *= 2.3;
+       gl_FragColor.a = texture2D( texture, pointCoord ).a * 1.5;
+       //gl_FragColor.a *= step( 0.72, gl_FragColor.a );
        
     }
     
@@ -541,7 +538,7 @@
 
         float alphaFactor = clamp( 40.0 - 40.0 * len, 0.0, 1.0);
 
-        gl_FragColor.a = max( 1.0, sqrt( lifeTime ) ) * alphaFactor;
+        gl_FragColor.a = max( 0.0, lifeTime ) * alphaFactor;
 
         float innerRadius = 0.57 + lifeTime / 3.0;
         
@@ -555,6 +552,7 @@
         // color = mix( whiteColor, color, length( vPosition - glowCenter ) * 2.0 );
         
         gl_FragColor.rgb = mix( whiteColor, color, lifeTime * 0.5 );
+        gl_FragColor.a = max( 0.0, lifeTime ) * alphaFactor;
 
     }
     
