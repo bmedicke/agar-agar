@@ -264,24 +264,26 @@
 
     void main(void) {
         
-        vec2 point = ( gl_PointCoord - center ) * 2.0;
-            
+        vec2 point = gl_PointCoord - center;
+        
         point = vec2(
             cos( rotation ) * point.x - sin( rotation ) * point.y,
             sin( rotation ) * point.x + cos( rotation ) * point.y
         );
         
-        float stretchFactor = factor * ( cos( atan( point.y, point.x ) ) * 0.5 + 0.5 );
-        float crushFactor = factor * ( sin( atan( point.y, point.x ) ) * 0.5 + 0.5 );
+        float angle = atan( point.y, point.x );
         
-        vec2 stretch = vec2( 1.0, 0.0 ) * stretchFactor * 0.1;
-        vec2 crush = vec2( 0.0, 1.0 ) * crushFactor * 0.1;
+        float stretchFactor = factor * ( cos( angle ) * 0.5 + 0.5 );
+        float crushFactor = factor * ( sin( angle ) * 0.5 + 0.5 );
+        
+        vec2 stretch = vec2( 1.0, 0.0 ) * stretchFactor * 0.05;
+        vec2 crush = vec2( 0.0, 1.0 ) * crushFactor * 0.05;
         
         point -= stretch - crush;
         
-        point *= 1.0 + radius / 4.0 * 
-            sin( 2.0 * atan( point.y, point.x ) + time * 2.0 ) *
-            sin( 9.0 * atan( point.y, point.x ) - time * 4.0 );  
+        point *= 1.0 + radius / 8.0 * 
+            sin( 2.0 * angle + time * 2.0 ) *
+            sin( 9.0 * angle - time * 4.0 );  
         
         // point *= 1.0 + radius / 5.0 * 
         //     sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
