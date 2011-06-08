@@ -21,7 +21,7 @@ Devourer.prototype.circleResolution = 16;
 Devourer.prototype.force = 3.0;
 Devourer.prototype.forceRadius = 8.0;
 
-Devourer.prototype.rotateSpeed = 0.0001;
+Devourer.prototype.rotateSpeed = 0.0005;
 
 Devourer.prototype.textureSizeFactor = 2;
 Devourer.prototype.glowRadius = 3.3;
@@ -31,6 +31,9 @@ Devourer.initialize = function(gl) {
     this.shader = gl.loadShader("devourer-vertex-shader", "devourer-fragment-shader");
     
     gl.bindShader(this.shader);
+    
+    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
+    this.shader.textureCoordAttribLocation = gl.getAttribLocation(this.shader, "textureCoord");
     
     this.shader.speedUniformLocation = gl.getUniformLocation(this.shader, "speed");
     this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
@@ -122,7 +125,7 @@ Devourer.prototype.update = function(dt) {
     
     Entity.prototype.update.call(this, dt);
     
-    this.rotation += this.rotateSpeed * dt * this.speed * 5.0;
+    this.rotation += this.rotateSpeed * dt * this.speed;
     
 };
 
@@ -134,12 +137,14 @@ Devourer.prototype.animateSpeed = function(clockwise) {
         object: this, 
         values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
         duration: 3000,
+        // easing: "easeIn",
         callback: function() {
             
             Animator.animate({
                 object: self, 
                 values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
                 duration: 5000,
+                // easing: "easeOut",
                 callback: function() {
                     self.animateSpeed(!clockwise);
                 }

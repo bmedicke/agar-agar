@@ -8,6 +8,9 @@ var Glow = {
 
         gl.bindShader(this.shader);
 
+        this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
+        this.shader.textureCoordAttribLocation = gl.getAttribLocation(this.shader, "textureCoord");
+
         this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
         gl.passMatrix();
 

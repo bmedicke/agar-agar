@@ -37,9 +37,11 @@ Game.prototype = {
         
         Particle.initialize(gl);
         Leukocyte.initialize(gl);
-        Devourer.initialize(gl);
-		Cytoplast.initialize(gl);
         
+        Devourer.initialize(gl);
+        Cytoplast.initialize(gl);
+        
+        Entropyfier.initialize(gl);
         Glow.initialize(gl);
         
         this.initLevel();
@@ -109,6 +111,8 @@ Game.prototype = {
         
         this.controller.devourers.push(new Devourer(midPoint.add(randomPosition)));
         this.controller.cytoplasts.push(new Cytoplast(midPoint.add(randomPosition.mulSelf(-1))));
+        
+        this.controller.addEntropyfiers(2);
         
         this.state = "run";
         

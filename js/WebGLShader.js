@@ -92,9 +92,7 @@ WebGLRenderingContext.prototype.passColor = function(color) {
 WebGLRenderingContext.prototype.passVertices = function(drawMode, buffer) {
     
     this.bindBuffer(this.ARRAY_BUFFER, buffer);
-
-    var positionAttribLocation = 0;
-    this.vertexAttribPointer(positionAttribLocation, buffer.itemSize, this.FLOAT, false, 0, 0);
+    this.vertexAttribPointer(this.activeShader.positionAttribLocation, buffer.itemSize, this.FLOAT, false, 0, 0);
     
     this.drawArrays(drawMode, 0, buffer.vertexCount);
     
@@ -111,14 +109,10 @@ WebGLRenderingContext.prototype.passTexture = function(texture, uniformLocation)
 WebGLRenderingContext.prototype.drawQuadTexture = function() {
     
     this.bindBuffer(this.ARRAY_BUFFER, this.quadVertexBuffer);
-    
-    var positionAttribLocation = 0;
-    this.vertexAttribPointer(positionAttribLocation, this.quadVertexBuffer.itemSize, this.FLOAT, false, 0, 0);
+    this.vertexAttribPointer(this.activeShader.positionAttribLocation, this.quadVertexBuffer.itemSize, this.FLOAT, false, 0, 0);
 
     this.bindBuffer(this.ARRAY_BUFFER, this.quadTextureCoordsBuffer);
-    
-    var textureCoordAttribLocation = 1;
-    this.vertexAttribPointer(textureCoordAttribLocation, this.quadTextureCoordsBuffer.itemSize, this.FLOAT, false, 0, 0);
+    this.vertexAttribPointer(this.activeShader.textureCoordAttribLocation, this.quadTextureCoordsBuffer.itemSize, this.FLOAT, false, 0, 0);
 
     this.bindBuffer(this.ELEMENT_ARRAY_BUFFER, this.quadIndexBuffer);
     this.drawElements(this.TRIANGLE_FAN, this.quadIndexBuffer.vertexCount, this.UNSIGNED_SHORT, 0);

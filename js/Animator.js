@@ -40,6 +40,10 @@ Animation.prototype.update = function(dt) {
                     
                     step *= 0.5 + this.duration / this.fullDuration;
                     
+                } else if (this.easing === "easeIn") {
+                    
+                    step *= 1.5 - this.duration / this.fullDuration;
+                    
                 }
                 
                 this.object[key] += step;
