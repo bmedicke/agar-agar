@@ -87,7 +87,8 @@ Leukocyte.initialize = function(gl) {
 
 Leukocyte.prototype.update = function(dt) {
 
-    this.angle += (this.orientation.angle() - this.angle) * 0.01;
+    // this.angle += (this.orientation.angle() - this.angle) * 0.05;
+    // this.angle = this.orientation.angle();
 
     Entity.prototype.update.call(this, dt);
 
@@ -101,7 +102,7 @@ Leukocyte.draw = function(gl, leukocytes) {
         this.vertexArray[i * 2 + 1] = leukocytes[i].position.y;
         
         this.paramsArray[i * 3] = leukocytes[i].orientation.norm();
-        this.paramsArray[i * 3 + 1] = leukocytes[i].angle;
+        this.paramsArray[i * 3 + 1] = leukocytes[i].orientation.angle();;
         this.paramsArray[i * 3 + 2] = leukocytes[i].age * 0.001;
         
         if (!leukocytes[i].isActive) {
@@ -114,7 +115,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     }
     
     gl.bindShader(this.shader);
-    gl.enableAlpha();
     
     gl.passMatrix();
     
@@ -131,7 +131,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.drawElements(gl.POINTS, leukocytes.length, gl.UNSIGNED_SHORT, 0);
     
-    gl.disableAlpha();
     gl.bindShader(gl.defaultShader);
 
 };

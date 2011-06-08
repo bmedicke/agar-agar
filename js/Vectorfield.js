@@ -201,12 +201,8 @@ Vectorfield.prototype = {
         gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
         
         gl.bindShader(this.shader);
-        gl.enableAlpha();
         
         gl.passVertices(gl.POINTS, this.vertexBuffer);
-        
-        gl.disableAlpha();
-        gl.bindShader(gl.defaultShader);
         
         this.vertexBuffer.vertexCount = 0;
         

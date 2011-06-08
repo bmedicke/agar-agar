@@ -10,49 +10,71 @@ var Stardust = function(vectorfield) {
 
 Stardust.prototype = {
     
-    maxParticles : 2000,
+    maxParticles : 1000,
     
     initialize : function(gl) {
-
-        this.dustShader = gl.loadShader("stardust-vertex-shader", "stardust-fragment-shader");
         
-        this.dustShader.positionAttribLocation = gl.getAttribLocation(this.dustShader, "position");
+        this.vertexBuffer = gl.createBuffer();
+        this.vertexBuffer.itemSize = 3;
+        this.vertexBuffer.vertexCount = this.maxParticles;
         
-        this.dustBuffer = gl.createBuffer();
-        this.dustBuffer.itemSize = 3;
+        var vertices = [];
         
-        gl.bindShader(this.dustShader);
-        
-        this.dustShader.matrixUniformLocation = gl.getUniformLocation(this.dustShader, "matrix");
-        gl.passMatrix();
-        
-        gl.bindShader(gl.defaultShader);
-    
-    },
-    
-    update : function(dt) {
-        
-        for (var i = 0; i < this.dustParticles.length; i++) {
-        
-            this.dustParticles[i].velocity = this.vectorfield.getVector(this.dustParticles[i].position);
-            this.dustParticles[i].update(dt);
+        for (var i = 0; i < this.maxParticles; i++) {
             
-            if (this.dustParticles[i].timer > DustParticle.prototype.lifeTime) {
-            
-                this.dustParticles.splice(i, 1);
-            
-            }
-        
-        }
-        
-        for (var i = this.dustParticles.length; i < this.maxParticles; i++) {
-        
             var position = new Vector(
                 Math.random() * this.vectorfield.cols, 
                 Math.random() * this.vectorfield.rows
             );
             
-            this.dustParticles.push(new DustParticle(position, this.vectorfield.getVector(position)));
+            this.dustParticles.push(new DustParticle(
+                position, 
+                this.vectorfield.getVector(position),
+                Math.random() * DustParticle.prototype.lifeTime
+            ));
+            
+            vertices.push(position.x);
+            vertices.push(position.y);
+            vertices.push(position.z);
+            
+        }
+        
+        this.vertexArray = new Float32Array(vertices);
+
+        this.dustShader = gl.loadShader("stardust-vertex-shader", "stardust-fragment-shader");
+        
+        this.dustShader.positionAttribLocation = gl.getAttribLocation(this.dustShader, "position");
+        
+        gl.bindShader(this.dustShader);
+        
+        this.dustShader.matrixUniformLocation = gl.getUniformLocation(this.dustShader, "matrix");
+        gl.passMatrix();
+    
+    },
+    
+    update : function(dt) {
+        
+        for (var i = 0; i < this.maxParticles; i++) {
+            
+            var particle = this.dustParticles[i];
+            
+            if (particle.timer > DustParticle.prototype.lifeTime) {
+            
+                particle.position = new Vector(
+                    Math.random() * this.vectorfield.cols, 
+                    Math.random() * this.vectorfield.rows
+                );
+                
+                particle.timer = 0;
+            
+            }
+            
+            particle.velocity = this.vectorfield.getVector(particle.position);
+            particle.update(dt);
+            
+            this.vertexArray[i * 3] = particle.position.x;
+            this.vertexArray[i * 3 + 1] = particle.position.y;
+            this.vertexArray[i * 3 + 2] = particle.position.z;
         
         }
 
@@ -60,26 +82,12 @@ Stardust.prototype = {
 
     draw : function(gl) {
         
-        var vertices = [];
-        
-        for (var i = 0; i < this.dustParticles.length; i++) {
-
-            vertices.push(
-                this.dustParticles[i].position.x,
-                this.dustParticles[i].position.y,
-                this.dustParticles[i].position.z
-            );
-
-        }
-        
         gl.bindShader(this.dustShader);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.dustBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         
-        this.dustBuffer.vertexCount = this.dustParticles.length;
-        gl.passVertices(gl.POINTS, this.dustBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
         
-        gl.bindShader(gl.defaultShader);
+        gl.passVertices(gl.POINTS, this.vertexBuffer);
     
     }
 
