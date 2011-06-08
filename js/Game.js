@@ -79,6 +79,7 @@ Game.prototype = {
     
     draw : function(gl) {
         
+        this.controller.drawEntities(gl, this.controller.entropyfiers);
         
         if (this.drawStardust) {
             
@@ -94,9 +95,10 @@ Game.prototype = {
             this.vectorfield.draw(gl);
             
         }
-
+        
         this.controller.draw(gl);
-        this.inputHandler.draw(gl);
+        
+        // this.inputHandler.draw(gl);
         
     },
     

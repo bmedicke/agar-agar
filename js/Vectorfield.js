@@ -103,7 +103,6 @@ Vectorfield.prototype = {
         }
         
         this.staticLookupTable = [];
-
         
         for (var i = 0; i < this.dynamicLookupTable.length; i++) {
             
@@ -163,7 +162,7 @@ Vectorfield.prototype = {
             
             if (dynCellID === statCellID) {
                 
-                this.drawVector(dynCellID, this.staticVectors[statCellID].addSelf(this.dynamicVectors[dynCellID]));
+                this.drawVector(dynCellID, this.staticVectors[statCellID].add(this.dynamicVectors[dynCellID]));
                 i++; j++;
                 
             } else if (dynCellID < statCellID) {
@@ -180,19 +179,17 @@ Vectorfield.prototype = {
         
         }
         
-        while (i < this.dynamicLookupTable.length) {
+        for ( ; i < this.dynamicLookupTable.length; i++) {
         
             var cellID = this.dynamicLookupTable[i];
             this.drawVector(cellID, this.dynamicVectors[cellID]);
-            i++;
         
         }
         
-        while (j < this.staticLookupTable.length) {
+        for ( ; j < this.staticLookupTable.length; j++) {
         
             var cellID = this.staticLookupTable[j];
             this.drawVector(cellID, this.staticVectors[cellID]);
-            j++;
         
         }
         
@@ -308,7 +305,7 @@ Vectorfield.prototype = {
         
         this.dynamicVectors[cellID].addSelf(vector).clampSelf(this.maxForce);
         
-        if(this.dynamicLookupTable.indexOf(cellID) == -1) {
+        if (this.dynamicLookupTable.indexOf(cellID) == -1) {
         
             this.dynamicLookupTable.push(cellID);
         
@@ -318,9 +315,13 @@ Vectorfield.prototype = {
     
     setStaticVector : function(cellID, vector) {
         
-        this.staticVectors[cellID] = (this.staticVectors[cellID] || new Vector()).addSelf(vector);
+        if (!this.staticVectors[cellID].normSquared()) {
         
-        this.staticLookupTable.push(cellID);
+            this.staticLookupTable.push(cellID);
+        
+        }
+        
+        this.staticVectors[cellID].addSelf(vector);
         
     },
     

@@ -90,8 +90,6 @@ Devourer.draw = function(gl, devourers) {
         gl.popMatrix();
     
     }
-    
-    gl.bindShader(gl.defaultShader);
 
 };
 

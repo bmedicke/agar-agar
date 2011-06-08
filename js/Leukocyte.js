@@ -130,8 +130,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.drawElements(gl.POINTS, leukocytes.length, gl.UNSIGNED_SHORT, 0);
-    
-    gl.bindShader(gl.defaultShader);
 
 };
 

@@ -58,12 +58,6 @@ Controller.prototype = {
 
     draw : function(gl) {
 
-        for (var i = this.entropyfiers.length - 1; i >= 0; i--) {
-
-            this.entropyfiers[i].draw(gl);
-
-        }
-
         this.drawEntities(gl, this.cytoplasts);        
 
         if (this.leukocytes.length) {
@@ -80,9 +74,7 @@ Controller.prototype = {
             Devourer.draw(gl, this.devourers); 
             
         }
-        
-        gl.bindShader(gl.defaultShader);
-
+    
     },
 
     drawEntities: function(gl, entities) {
