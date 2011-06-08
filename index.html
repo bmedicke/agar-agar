@@ -329,8 +329,8 @@
     
     varying vec2 pointCoord;
 
-    const vec3 color = vec3(0.0, 0.0, 0.0);
-    const vec3 color2 = vec3(0.9, 0.9, 0.95);
+    const vec3 black = vec3(0.0, 0.0, 0.0);
+    const vec3 white = vec3(1.0, 1.0, 1.0);
     const vec2 mid = vec2(0.5, 0.5);
     
     vec2 rotate( vec2 vector, float angle ) {
@@ -344,22 +344,25 @@
 
     void main(void) {
         
-        gl_FragColor.rgb = color;
-        
         vec2 vector = pointCoord - mid;
-        float angle = length( vector ) * speed * 1.5;
+        float len = length( vector );
+        float angle = len * speed * 1.5;
         
         float alpha = 0.0;
    
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a * 0.3;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.9, angle * 1.1 + 0.2 ) ).a * 0.2;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.95, angle * 1.15 + 0.15 ) ).a * 0.1;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.9, angle * 1.1 + 0.2 ) ).a;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.95, angle * 1.15 + 0.15 ) ).a;
         
-        gl_FragColor.a = alpha;
+        vec4 tentacles = vec4( black, alpha );
         
-        vec4 corpus = vec4( color2, texture2D( corpusTexture, (pointCoord - mid / 2.0 ) * 2.0 ).a * 1.2 );
+        vec4 corpus = texture2D( corpusTexture, vector / 0.75 + mid );
         
-        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.215 ) * 0.8 );
+        float mixFactor = clamp( 6.3 - 18.0 * len, 0.0, 0.6 );
+        
+        gl_FragColor = mix( tentacles, corpus, mixFactor );
+        
+        //gl_FragColor = tentacles * (1.0 - mixFactor) + ( corpus - tentacles * mixFactor );
         
     }
     
