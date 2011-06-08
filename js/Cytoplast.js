@@ -12,10 +12,10 @@ var Cytoplast = function(position) {
     };
     
     this.spikeState = false;
-    this.puke = false;
     this.puking = false;
     
     this.spikeTimer = 0;
+    this.squeezing = false;
     
     this.rotation = 0;
     this.rotateSpeed = Cytoplast.prototype.defaultRotateSpeed;
@@ -41,7 +41,8 @@ Cytoplast.prototype.dockTime = 1000;
 Cytoplast.prototype.corpusTextureSize = 1.1;
 Cytoplast.prototype.spikeTextureSize = 1.9;
 
-Cytoplast.prototype.squeezeTime = 700;
+Cytoplast.prototype.squeezeTime = 350;
+Cytoplast.prototype.inflateTime = 175;
 Cytoplast.prototype.squeezeFactor = 0.8;
 
 Cytoplast.prototype.defaultRotateSpeed = 0.0002;
@@ -187,18 +188,67 @@ Cytoplast.prototype.isFull = function() {
 
 };
 
+Cytoplast.prototype.puke = function(addNewParticles) {
+
+    this.puking = true;    
+    
+    Animator.animate({
+        
+        object: this,
+        duration: Cytoplast.prototype.inflateTime / 2,
+        callback: function() {
+        
+            if(addNewParticles) {
+            
+                game.controller.addParticlesAt(this.dockedParticles.length, this.position, Cytoplast.prototype.entityRadius / 2);
+                
+                this.dockedParticles = [];
+            
+            }
+        
+            game.vectorfield.addForcefield(new Forcefield(
+                this.position.getCopy(),
+                this.entityRadius * 2,
+                Cytoplast.prototype.pukeForce,
+                false,
+                Math.PI,
+                this.position,
+                Cytoplast.prototype.pukeTime
+            ));
+        
+        }
+       
+    });
+    
+    Animator.animate({       
+        
+        object: this,
+        duration: Cytoplast.prototype.inflateTime / 2 + Cytoplast.prototype.pukeTime,
+        callback: function() {
+        
+            this.puking = false;
+        
+        }
+       
+    });
+
+};
+
 Cytoplast.prototype.checkPuke = function() {
 
     if(!this.spikeState) {
     
-        this.puke = true;
         this.puking = true;
+
+        this.squeeze();
         
         Animator.animate({
             object: this,
-            duration: Cytoplast.prototype.pukeTime,
+            duration: Cytoplast.prototype.squeezeTime,
             callback: function() {
-                this.puking = false;
+            
+                this.puke(true);
+            
             }
         });
         
@@ -208,36 +258,60 @@ Cytoplast.prototype.checkPuke = function() {
 
 Cytoplast.prototype.spikify = function() {
 
-    this.spikeState = true;
-    this.mass = Cytoplast.prototype.spikeMass;
-    this.spikeTimer = Cytoplast.prototype.spikeTime;
-    this.rotateSpeed = Cytoplast.prototype.spikeRotateSpeed;
+    this.spikeTextureSize = Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor;
     
     this.squeeze();
     
     Animator.animate({
         object: this,
-        values: {"spikeTimer" : 0},
-        duration: Cytoplast.prototype.spikeTime,
-        callback: Cytoplast.prototype.deSpikify
+        duration: Cytoplast.prototype.squeezeTime,
+        callback: function() {
+        
+            if(!this.spikeState) {
+
+                this.spikeState = true;
+                
+                this.mass = Cytoplast.prototype.spikeMass;
+                this.spikeTimer = Cytoplast.prototype.spikeTime;
+                this.rotateSpeed = Cytoplast.prototype.spikeRotateSpeed;
+                this.puke(false);
+                
+                Animator.animate({
+                    object: this,
+                    values: {"spikeTextureSize" : Cytoplast.prototype.spikeTextureSize},
+                    duration: Cytoplast.prototype.inflateTime,
+                    callback: Cytoplast.prototype.deSpikify
+                });
+            
+            }
+        
+        }
     });
 
 }
 
-Cytoplast.prototype.deSpikify = function() {    
-    
+Cytoplast.prototype.deSpikify = function() {
+
     Animator.animate({
         object: this,
-        values: {"spikeTextureSize" : Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor},
-        duration: Cytoplast.prototype.squeezeTime,
+        values: {"spikeTimer" : 0},
+        duration: Cytoplast.prototype.spikeTime,
         callback: function() {
         
-            this.spikeState = false;
-            this.mass = Cytoplast.prototype.mass;
-            this.dockedParticles = [];
-            this.spikeTimer = 0;
-            this.rotateSpeed = Cytoplast.prototype.defaultRotateSpeed;
-
+            Animator.animate({
+                object: this,
+                values: {"spikeTextureSize" : Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor},
+                duration: Cytoplast.prototype.squeezeTime,
+                callback: function() {
+                
+                    this.spikeState = false;
+                    this.mass = Cytoplast.prototype.mass;
+                    this.dockedParticles = [];
+                    this.rotateSpeed = Cytoplast.prototype.defaultRotateSpeed;
+                
+                }
+            });
+        
         }
     });
     
@@ -245,24 +319,32 @@ Cytoplast.prototype.deSpikify = function() {
 
 Cytoplast.prototype.squeeze = function() {
 
-    this.spikeTextureSize = Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor;
+    if(!this.squeezing) {
 
-    Animator.animate({
-        object: this,
-        values: {"corpusTextureSize" : Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor},
-        duration: Cytoplast.prototype.squeezeTime,
-        callback: Cytoplast.prototype.inflate
-    });
+        this.squeezing = true;
+        
+        Animator.animate({
+            object: this,
+            values: {"corpusTextureSize" : Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor},
+            duration: Cytoplast.prototype.squeezeTime,
+            callback: Cytoplast.prototype.inflate
+        });
 
+    }
+    
 };
 
 Cytoplast.prototype.inflate = function() {
-
+    
     Animator.animate({
         object: this,
-        values: {"corpusTextureSize" : Cytoplast.prototype.corpusTextureSize,
-                 "spikeTextureSize" : Cytoplast.prototype.spikeTextureSize},
-        duration: Cytoplast.prototype.squeezeTime
+        values: {"corpusTextureSize" : Cytoplast.prototype.corpusTextureSize},
+        duration: Cytoplast.prototype.inflateTime,
+        callback: function() {
+        
+            this.squeezing = false;
+        
+        }
     });
 
 };
@@ -282,7 +364,7 @@ Cytoplast.prototype.accelerateParticle = function(particle) {
         easing: "easeOut"
     });
     
-    if(this.isFull() && !this.spikeState) {
+    if(this.isFull() && !this.spikeState && !this.puking) {
     
         this.spikify();
         
