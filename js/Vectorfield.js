@@ -42,6 +42,9 @@ Vectorfield.prototype = {
     minLength : 0.001,
     maxLength : 1.0,
     
+    textureSizeFactor : 1.5,
+    textureSizeOffset : 0.3,
+    
     initSize : function(width, height) {
         
         this.cellSize = Math.sqrt(width * height / this.numberOfCells);
@@ -103,7 +106,6 @@ Vectorfield.prototype = {
         }
         
         this.staticLookupTable = [];
-
         
         for (var i = 0; i < this.dynamicLookupTable.length; i++) {
             
@@ -163,7 +165,7 @@ Vectorfield.prototype = {
             
             if (dynCellID === statCellID) {
                 
-                this.drawVector(dynCellID, this.staticVectors[statCellID].addSelf(this.dynamicVectors[dynCellID]));
+                this.drawVector(dynCellID, this.staticVectors[statCellID].add(this.dynamicVectors[dynCellID]));
                 i++; j++;
                 
             } else if (dynCellID < statCellID) {
@@ -180,19 +182,17 @@ Vectorfield.prototype = {
         
         }
         
-        while (i < this.dynamicLookupTable.length) {
+        for ( ; i < this.dynamicLookupTable.length; i++) {
         
             var cellID = this.dynamicLookupTable[i];
             this.drawVector(cellID, this.dynamicVectors[cellID]);
-            i++;
         
         }
         
-        while (j < this.staticLookupTable.length) {
+        for ( ; j < this.staticLookupTable.length; j++) {
         
             var cellID = this.staticLookupTable[j];
             this.drawVector(cellID, this.staticVectors[cellID]);
-            j++;
         
         }
         
@@ -211,11 +211,11 @@ Vectorfield.prototype = {
     drawVector : function(cellID, vector) {
         
         var i = this.vertexBuffer.vertexCount,
-            l = vector.norm();
+            l = vector.norm() * 0.5 + this.textureSizeOffset;
         
         this.vertexArray[i * 4] = cellID % this.cols + .5;
         this.vertexArray[i * 4 + 1] = Math.floor(cellID / this.cols) + .5;
-        this.vertexArray[i * 4 + 2] = (l < this.maxLength ? l : this.maxLength) * this.cellSize;
+        this.vertexArray[i * 4 + 2] = (l < this.maxLength ? l : this.maxLength) * this.cellSize * this.textureSizeFactor;
         this.vertexArray[i * 4 + 3] = vector.angle();
         
         this.vertexBuffer.vertexCount++;
@@ -308,7 +308,7 @@ Vectorfield.prototype = {
         
         this.dynamicVectors[cellID].addSelf(vector).clampSelf(this.maxForce);
         
-        if(this.dynamicLookupTable.indexOf(cellID) == -1) {
+        if (this.dynamicLookupTable.indexOf(cellID) == -1) {
         
             this.dynamicLookupTable.push(cellID);
         
@@ -318,9 +318,13 @@ Vectorfield.prototype = {
     
     setStaticVector : function(cellID, vector) {
         
-        this.staticVectors[cellID] = (this.staticVectors[cellID] || new Vector()).addSelf(vector);
+        if (!this.staticVectors[cellID].normSquared()) {
         
-        this.staticLookupTable.push(cellID);
+            this.staticLookupTable.push(cellID);
+        
+        }
+        
+        this.staticVectors[cellID].addSelf(vector);
         
     },
     

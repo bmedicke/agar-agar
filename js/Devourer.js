@@ -43,7 +43,7 @@ Devourer.initialize = function(gl) {
     
     var self = this;
     
-    this.tentacleTexture = gl.loadTexture("textures/devourerTentacles2.png", function(gl) {
+    this.tentacleTexture = gl.loadTexture("textures/devourerTentacles.png", function(gl) {
         
         gl.bindShader(self.shader);
         gl.passTexture(self.tentacleTexture, gl.getUniformLocation( self.shader, "tentacleTexture" ));
@@ -90,8 +90,6 @@ Devourer.draw = function(gl, devourers) {
         gl.popMatrix();
     
     }
-    
-    gl.bindShader(gl.defaultShader);
 
 };
 

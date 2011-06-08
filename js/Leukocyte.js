@@ -14,7 +14,7 @@ Leukocyte.prototype.constructor = Entity;
 Leukocyte.prototype.mass = 300000;
 Leukocyte.prototype.moveSpeed = 0.3;
 
-Leukocyte.prototype.entityRadius = .7;
+Leukocyte.prototype.entityRadius = 1.0;
 Leukocyte.prototype.circleResolution = 16;
 
 Leukocyte.prototype.eatTime = 300;
@@ -65,7 +65,7 @@ Leukocyte.initialize = function(gl) {
     
     var self = this;
     
-    this.texture = gl.loadTexture("textures/leukocyte.png", function(gl) {
+    this.texture = gl.loadTexture("textures/leukocyte2.png", function(gl) {
         
         gl.bindShader(self.shader);
         gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
@@ -130,8 +130,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.drawElements(gl.POINTS, leukocytes.length, gl.UNSIGNED_SHORT, 0);
-    
-    gl.bindShader(gl.defaultShader);
 
 };
 

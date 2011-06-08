@@ -79,6 +79,7 @@ Game.prototype = {
     
     draw : function(gl) {
         
+        this.controller.drawEntities(gl, this.controller.entropyfiers);
         
         if (this.drawStardust) {
             
@@ -94,9 +95,10 @@ Game.prototype = {
             this.vectorfield.draw(gl);
             
         }
-
+        
         this.controller.draw(gl);
-        this.inputHandler.draw(gl);
+        
+        // this.inputHandler.draw(gl);
         
     },
     
@@ -154,9 +156,8 @@ Game.prototype = {
         // FIXME: count particles in Cytoplast
         if( this.particleTime > this.particleRate &&
             this.controller.particles.length < Particle.prototype.maxCount) {
-
+            
             this.controller.addParticle();
-            this.controller.addPoints("particleSpawn");
             
             this.particleTime -= this.particleRate;
         

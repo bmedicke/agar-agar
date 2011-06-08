@@ -63,8 +63,6 @@ Particle.draw = function(gl) {
     
     gl.passVertices(gl.POINTS, this.vertexBuffer);
     
-    gl.bindShader(gl.defaultShader);
-    
     this.vertexBuffer.vertexCount = 0;
 
 };

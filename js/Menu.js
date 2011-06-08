@@ -9,6 +9,7 @@ var Menu = {
         $("#instructions").hide();
         $("#versions").hide();
         $("#about").hide();
+        $("#feedback").hide();
         $("#donate").hide();
         $("#loser").hide();
         $("#error").hide();
@@ -123,6 +124,11 @@ var Menu = {
             $("#about").show();
         });
 
+        $("#feed").click(function() { 
+            Menu.hideInfo();
+            $("#feedback").show();
+        });
+
         $("#dona").click(function() { 
             Menu.hideInfo();
             $("#donate").show();
@@ -132,7 +138,15 @@ var Menu = {
             Menu.startNewGame();
         });
         
+        $("#tryagain").click(function() {
+            Menu.startNewGame();
+        });
+        
         $("#overlay").click(function() {
+            Menu.close();
+        });
+        
+        $(".close").click(function () {
             Menu.close();
         });
     },
@@ -143,7 +157,7 @@ var Menu = {
         
         $("#twitterlink").attr( "href", "https://twitter.com/?status=" + 
                                 "I%20just%20scored%20" + points + 
-                                "%20points%20in%20%40AgarAgarGame.%20http%3A%2F%2Fagaragargame.com%2F");
+                                "%20points%20%40AgarAgarGame%20http%3A%2F%2Fagaragargame.com%2F");
     },
     
     startNewGame : function() {

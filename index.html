@@ -34,58 +34,97 @@
         <p id="inst">Instructions</p>
         <p id="vers">Versions</p>
         <p id="abou">About</p>
+        <p id="feed">Feedback</p>
         <p id="dona">Donate</p>
     </div>
 
     <div id="points">
         <span id="pointvalue">0</span><span id="pointlabel">Points</span>
     </div>
-
+    
+    <div id="multiplier" class="rounded">
+        <span id="multiplierpoints">0</span> Points x<span id="multipliervalue">1</span>
+    </div>
+    
     <div class="info rounded" id="newgame">
+        <div class="close">&nbsp;</div>
         <h2>Start a new game?</h2>
         <a href="#" class="rounded" id="startnewgame">YES</a>
     </div>
-
+    
     <div class="info rounded" id="instructions">
+        <div class="close">&nbsp;</div>
         <h2>Instructions</h2>
-        
-        <p>Drag your cursor over the culture medium to create a drift. Move your microorganisms towards each other so they can reproduce. Once you have produced enough microorganisms, move them to the destination cells in order to infiltrate them.</p>
-        
-        <p>However, watch out for leukocytes and ciliated cells which feed upon your organisms.</p>
+        <p>Swipe your cursor holding the mouse button to create a drift. Trackpad users can hold the space bar. Drifts are the only way to control the Agar Agar.</p>
+        <p>Your most important companion is the cell.</p>
+        <p>Protect the cell from the devourers – they absorb everything. </p>
+        <p>To defend your cell against the vicious devourers you have to infect it with germs. Germs appear all over the screen and they tend to build clusters.</p>
+        <p>Be careful Leukocytes will try to eat your germs.</p>
+        <p>Swipe germs into the cell to give it ultimate power. But if the germs are not enough the cell will eject them.</p>
+        <p>If you succeeded, drag the now barbed cell towards your enemies. The game ends when your cell is absorbed by a devourer. Good luck!</p>
+        <p>Sincerely,</p>
+        <p>the Professor!</p>
+        <p>p.s.: Watch out for explosive surprises!</p>
     </div>
-
+    
     <div class="info rounded" id="versions">
+        <div class="close">&nbsp;</div>
         <h2>Versions</h2>
-        
+        <p>Feel free to take a look at earlier versions of Agar Agar if you're interested:</p>
+        <p class="list"><a href="http://agaragargame.com/v0.6" class="rounded button">Agar Agar v0.6</a></p>
+        <p class="list"><a href="http://agaragargame.com/v0.5" class="rounded button">Agar Agar v0.5</a></p>
+        <br />
+        <br />
+        <p>Visit us on <a href="https://github.com/bmedicke/agar-agar" class="rounded button">Github</a>.</p>
+        <br />
         <p><a href="http://agaragargame.com" class="rounded button">Latest Release</a></p>
-        
-        <p>Links to older Versions of Agar Agar</p>
-        <p><a href="http://agaragargame.com/v0.6" class="rounded button">v0.6</a></p>
-        <p><a href="http://agaragargame.com/v0.5" class="rounded button">v0.5</a></p>
     </div>
-
+    
     <div class="info rounded" id="about">
+        <div class="close">&nbsp;</div>
         <h2>About</h2>
         <p>Agar Agar was developed as a semester-project at the University of Applied Sciences Salzburg by:</p>
-        <p class="aufzaehlung">Eberhard Gräther (Gamedesign, Game Development)</p>
-        <p class="aufzaehlung">Thomas Kempf (Gamedesign)</p>
-        <p class="aufzaehlung">Sebastian Kienzl (Gamedesign, Art Direction)</p>
-        <p class="aufzaehlung">Sebastian Köck (Gamedesign, Art Direction)</p>
-        <p class="aufzaehlung">Franz Lanzendorfer (Gamedesign, Game Development)</p>
-        <p class="aufzaehlung">Benjamin Medicke (Gamedesign, Game Development)</p>
+        <p class="list"><a href="http://egraether.com/" class="rounded button">Eberhard Gräther</a> (Gamedesign, Game Development)</p>
+        <p class="list"><a href="http://thomaskempf.com/" class="rounded button">Thomas Kempf</a> (Gamedesign)</p>
+        <p class="list"><a href="http://www.sebastiankienzl.com/" class="rounded button">Sebastian Kienzl</a> (Gamedesign, Art Direction)</p>
+        <p class="list"><a href="http://www.sebastiankoeck.at/" class="rounded button">Sebastian Köck</a> (Gamedesign, Art Direction)</p>
+        <p class="list"><a href="http://joe-z.multimediatechnology.at/" class="rounded button">Franz Lanzendorfer</a> (Gamedesign, Game Development)</p>
+        <p class="list"><a href="http://benjy.multimediatechnology.at/" class="rounded button">Benjamin Medicke</a> (Gamedesign, Game Development)</p>
     </div>
-
+    
+    <div class="info rounded" id="feedback">
+        <div class="close">&nbsp;</div>
+        <h2>Feedback</h2>
+        <p>If you have some suggestions on how to improve the game or just want to tell us, how awesome you think it is, feel free to do so here:</p>
+        <form method="post" action="mailto:agaragargame@gmail.com?subject=Feedback-Form" enctype="text/plain">
+            <input type="text" id="mail" class="input" name="e-mail" value="Your e-mail (if you want us to answer)" onfocus="(function(el){if(el.defaultValue===el.value)el.value='';})(this)" />
+            <textarea class="input" id="textfield" name="comments"></textarea>
+            <input type="submit" class="input_button" value="Send us your feedback">
+        </form>
+    </div>
+    
     <div class="info rounded" id="donate">
+        <div class="close">&nbsp;</div>
         <h2>Donate</h2>
-        <p>If you like our game, please reward the work we put in it with a little donation here:</p>
+        <p>If you like our game, please reward the work we put in it with a little donation here:
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+    ">
+                <input type="image" src="https://www.paypalobjects.com/de_DE/AT/i/btn/btn_donate_LG.gif" name="submit" alt="PayPal">
+                <a  src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+            </form>
+        </p>
     </div>
 
     <div class="info rounded" id="loser">
-        <h2>Your cell is dead! Your Score:</h2>
+        <div class="close">&nbsp;</div>
+        <h2>Your cell is dead!<br />You scored:</h2>
         <h2 id="score">0</h2>
-        <p>Share on: 
-            <a href="#" class="rounded button" id="facebooklink">Facebook</a> or 
-            <a href="https://twitter.com/?status=Check%20out%20%23AgarAgar%21%20http%3A%2F%2Fagaragargame.com%2F" class="rounded button" id="twitterlink">Twitter</a>
+        <a href="#" class="rounded" id="tryagain">START A NEW GAME</a>
+        <p>Or share your score on: 
+            <a href="http://www.facebook.com/pages/AGAR-AGAR/219247098092591" class="rounded button" id="facebooklink">Facebook</a> or 
+            <a href="https://twitter.com/?status=Check%20out%20%40AgarAgarGame%20http%3A%2F%2Fagaragargame.com%2F" class="rounded button" id="twitterlink">Twitter</a>
         </p>
     </div>
     
@@ -264,24 +303,26 @@
 
     void main(void) {
         
-        vec2 point = ( gl_PointCoord - center ) * 2.0;
-            
+        vec2 point = gl_PointCoord - center;
+        
         point = vec2(
             cos( rotation ) * point.x - sin( rotation ) * point.y,
             sin( rotation ) * point.x + cos( rotation ) * point.y
         );
         
-        float stretchFactor = factor * ( cos( atan( point.y, point.x ) ) * 0.5 + 0.5 );
-        float crushFactor = factor * ( sin( atan( point.y, point.x ) ) * 0.5 + 0.5 );
+        float angle = atan( point.y, point.x );
         
-        vec2 stretch = vec2( 1.0, 0.0 ) * stretchFactor * 0.1;
-        vec2 crush = vec2( 0.0, 1.0 ) * crushFactor * 0.1;
+        float stretchFactor = factor * ( cos( angle ) * 0.5 + 0.5 );
+        float crushFactor = factor * ( sin( angle ) * 0.5 + 0.5 );
+        
+        vec2 stretch = vec2( 1.0, 0.0 ) * stretchFactor * 0.05;
+        vec2 crush = vec2( 0.0, 1.0 ) * crushFactor * 0.05;
         
         point -= stretch - crush;
         
-        point *= 1.0 + radius / 4.0 * 
-            sin( 2.0 * atan( point.y, point.x ) + time * 2.0 ) *
-            sin( 9.0 * atan( point.y, point.x ) - time * 4.0 );  
+        point *= 1.0 + radius / 8.0 * 
+            sin( 2.0 * angle + time * 2.0 ) *
+            sin( 9.0 * angle - time * 4.0 );  
         
         // point *= 1.0 + radius / 5.0 * 
         //     sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
@@ -327,8 +368,8 @@
     
     varying vec2 pointCoord;
 
-    const vec3 color = vec3(0.0, 0.0, 0.0);
-    const vec3 color2 = vec3(0.9, 0.9, 0.95);
+    const vec3 black = vec3(0.0, 0.0, 0.0);
+    const vec3 white = vec3(1.0, 1.0, 1.0);
     const vec2 mid = vec2(0.5, 0.5);
     
     vec2 rotate( vec2 vector, float angle ) {
@@ -342,22 +383,25 @@
 
     void main(void) {
         
-        gl_FragColor.rgb = color;
-        
         vec2 vector = pointCoord - mid;
-        float angle = length( vector ) * speed * 1.5;
+        float len = length( vector );
+        float angle = len * speed * 1.5;
         
         float alpha = 0.0;
    
-        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a * 0.3;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.9, angle * 1.1 + 0.2 ) ).a * 0.2;
-        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.95, angle * 1.15 + 0.15 ) ).a * 0.1;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.9, angle * 1.1 + 0.2 ) ).a;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.95, angle * 1.15 + 0.15 ) ).a;
         
-        gl_FragColor.a = alpha;
+        vec4 tentacles = vec4( black, alpha );
         
-        vec4 corpus = vec4( color2, texture2D( corpusTexture, (pointCoord - mid / 2.0 ) * 2.0 ).a * 1.2 );
+        vec4 corpus = texture2D( corpusTexture, vector / 0.75 + mid );
         
-        gl_FragColor = mix( gl_FragColor, corpus, step( length( vector ), 0.215 ) * 0.8 );
+        float mixFactor = clamp( 6.3 - 18.0 * len, 0.0, 0.6 );
+        
+        gl_FragColor = mix( tentacles, corpus, mixFactor );
+        
+        //gl_FragColor = tentacles * (1.0 - mixFactor) + ( corpus - tentacles * mixFactor );
         
     }
     
@@ -448,8 +492,8 @@
             sin( rotation ) * point.x + cos( rotation ) * point.y
         ) + center;
         
-        gl_FragColor.a = texture2D( texture, point ).a;
-        gl_FragColor.rgb = color;
+        gl_FragColor = texture2D( texture, point );
+        //gl_FragColor.rgb = color;
     }
     
 </script>
