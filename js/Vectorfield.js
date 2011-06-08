@@ -42,6 +42,9 @@ Vectorfield.prototype = {
     minLength : 0.001,
     maxLength : 1.0,
     
+    textureSizeFactor : 1.5,
+    textureSizeOffset : 0.3,
+    
     initSize : function(width, height) {
         
         this.cellSize = Math.sqrt(width * height / this.numberOfCells);
@@ -208,11 +211,11 @@ Vectorfield.prototype = {
     drawVector : function(cellID, vector) {
         
         var i = this.vertexBuffer.vertexCount,
-            l = vector.norm();
+            l = vector.norm() * 0.5 + this.textureSizeOffset;
         
         this.vertexArray[i * 4] = cellID % this.cols + .5;
         this.vertexArray[i * 4 + 1] = Math.floor(cellID / this.cols) + .5;
-        this.vertexArray[i * 4 + 2] = (l < this.maxLength ? l : this.maxLength) * this.cellSize;
+        this.vertexArray[i * 4 + 2] = (l < this.maxLength ? l : this.maxLength) * this.cellSize * this.textureSizeFactor;
         this.vertexArray[i * 4 + 3] = vector.angle();
         
         this.vertexBuffer.vertexCount++;

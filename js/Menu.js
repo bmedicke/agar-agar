@@ -9,6 +9,7 @@ var Menu = {
         $("#instructions").hide();
         $("#versions").hide();
         $("#about").hide();
+        $("#feedback").hide();
         $("#donate").hide();
         $("#loser").hide();
         $("#error").hide();
@@ -123,6 +124,11 @@ var Menu = {
             $("#about").show();
         });
 
+        $("#feed").click(function() { 
+            Menu.hideInfo();
+            $("#feedback").show();
+        });
+
         $("#dona").click(function() { 
             Menu.hideInfo();
             $("#donate").show();
@@ -133,6 +139,10 @@ var Menu = {
         });
         
         $("#overlay").click(function() {
+            Menu.close();
+        });
+        
+        $(".close").click(function () {
             Menu.close();
         });
     },

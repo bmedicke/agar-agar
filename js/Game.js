@@ -156,9 +156,8 @@ Game.prototype = {
         // FIXME: count particles in Cytoplast
         if( this.particleTime > this.particleRate &&
             this.controller.particles.length < Particle.prototype.maxCount) {
-
+            
             this.controller.addParticle();
-            this.controller.addPoints("particleSpawn");
             
             this.particleTime -= this.particleRate;
         

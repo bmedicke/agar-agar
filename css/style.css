@@ -134,11 +134,15 @@ body{
     text-align: right;
     font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
     font-size: 13px;
+    line-height: 1.5;
+    
+    position: absolute;
     top: 60px;
     right: 65px;
     width: 102px;
     padding: 7px 10px 7px 0;
-    line-height: 1.5;
+    
+    background-color: #000;
     opacity: 0.4;
     display: none;
     }
@@ -178,14 +182,14 @@ body{
     background-color: #000;
     opacity: 0.4;
     width: 500px;
-    margin: 200px auto 0 auto;
+    margin: 10% auto 0 auto;
     left: 0;
     right: 0;
     padding: 25px 25px 40px 30px;
-    z-index: 2;
     display: none;
+    z-index: 2;
     }
-    
+
 .info h2{
     font-family: TitilliumXBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
     font-size: 28px;
@@ -202,14 +206,34 @@ body{
     margin-bottom: 16px;
     }
 
-.info p.aufzaehlung{
-    margin-bottom: 2px; 
+.info p.list{
+    margin-bottom: 2px;
+    line-height:30px;
+    }
+
+.close{
+    width: 11px;
+    height: 11px;
+    margin-right: 8px;
+    padding: 5px;
+    float: right;
+    cursor: pointer;
+    background-color: #FFF;
+    background-image: url("../images/close_dark.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    }
+
+.close:hover{
+    background-color: #000;
+    background-image: url("../images/close.png");
     }
 
 #about{
     padding-bottom: 53px;
-    }   
-
+    }
 
 a#startnewgame{
     display: block;
@@ -233,7 +257,7 @@ a.button{
     font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
     background-color: #FFF;
     text-decoration: none;
-    padding: 0 5px;
+    padding: 3px 5px 2px 5px;
     }
     
 a.button:hover{
@@ -249,3 +273,39 @@ a.button:hover{
     background: -webkit-gradient(radial, 50% 50%, 200, 50% 50%, 800, from(#FFF), to(rgb(228,231,237)));
     background: -moz-radial-gradient(50% 50%, circle, #fff 200px, rgb(237,241,248) 400px);
 }
+
+.input{
+    display: block;
+    width: 485px;
+    margin-bottom: 8px;
+    border: none;
+    background-color: #fff;
+    color: #000;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    padding: 4px;
+    font-family: TitilliumRegular, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    }
+
+#mail{
+    height: 20px;
+    }
+
+#textfield{
+    height: 100px;
+    }
+    
+.input_button{
+    border: none;
+    background-color: #fff;
+    color: #000;
+    padding: 4px 8px 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+    cursor: pointer;
+    }
+    
+.input_button:hover{
+    background-color: #AAA;
+    }

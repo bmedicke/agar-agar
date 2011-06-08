@@ -74,7 +74,7 @@ Controller.prototype = {
             Devourer.draw(gl, this.devourers); 
             
         }
-    
+
     },
 
     drawEntities: function(gl, entities) {
@@ -564,6 +564,7 @@ Controller.prototype = {
         });
 
         this.particles.push(particle);
+        this.addPoints("particleSpawn");
 
     },
 
