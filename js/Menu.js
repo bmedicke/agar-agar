@@ -143,7 +143,7 @@ var Menu = {
         
         $("#twitterlink").attr( "href", "https://twitter.com/?status=" + 
                                 "I%20just%20scored%20" + points + 
-                                "%20points%20in%20%23AgarAgar.%20http%3A%2F%2Fagaragargame.com%2F");
+                                "%20points%20in%20%40AgarAgarGame.%20http%3A%2F%2Fagaragargame.com%2F");
     },
     
     startNewGame : function() {
