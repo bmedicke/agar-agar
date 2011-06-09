@@ -28,6 +28,7 @@ Cytoplast.prototype.constructor = Entity;
 Cytoplast.prototype.mass = 800000;
 Cytoplast.prototype.spikeMass = 80000;
 Cytoplast.prototype.pukeForce = 25;
+Cytoplast.prototype.defaultAlpha = 0.2;
 
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
@@ -73,17 +74,6 @@ Cytoplast.initialize = function(gl) {
 
 Cytoplast.prototype.update = function(dt) {
 
-    // code for fading in & out a color, when in spike-state. still to decide if we use it or not
-    if(this.spikeState) {
-    
-        this.color.a = Math.cos(this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI * 0.5) * 0.3;
-    
-    } else {
-    
-        this.color.a = 0.0;
-    
-    }
-
     if(this.puking) {
 
         this.force.set(0, 0, 0);
@@ -116,15 +106,15 @@ Cytoplast.prototype.draw = function(gl) {
     
     gl.bindShader(Cytoplast.shader);
     
-    gl.uniform4f(
-        Cytoplast.shader.colorUniformLocation,
-        this.color.r,
-        this.color.g,
-        this.color.b,
-        this.color.a
-    );
-    
     if(this.spikeState) {
+    
+        gl.uniform4f(
+            Cytoplast.shader.colorUniformLocation,
+            this.color.r,
+            this.color.g,
+            this.color.b,
+            this.color.a
+        );
         
         gl.pushMatrix();
         
@@ -139,8 +129,20 @@ Cytoplast.prototype.draw = function(gl) {
         gl.drawQuadTexture();
         
         gl.popMatrix();
+        
+        // this.color.a = Math.cos((this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI * 0.5) * (((Cytoplast.prototype.spikeTime - this.spikeTimer) / Cytoplast.prototype.spikeTime) * 25)) * 0.5 + 0.5;
+        var timeRatio = 1 - (this.spikeTimer / Cytoplast.prototype.spikeTime);
+        this.color.a = Math.cos(timeRatio * Math.PI * 2 * timeRatio * timeRatio * 20) * -0.1 + 0.3;
 
     }
+    
+    gl.uniform4f(
+        Cytoplast.shader.colorUniformLocation,
+        this.color.r,
+        this.color.g,
+        this.color.b,
+        this.color.a
+    );
     
     size = 2 * this.corpusTextureSize * Cytoplast.prototype.entityRadius;
     
@@ -152,12 +154,11 @@ Cytoplast.prototype.draw = function(gl) {
     gl.passTexture(Cytoplast.corpusTexture, Cytoplast.textureUniformLocation);
     gl.drawQuadTexture();
     
+    this.color.a = Cytoplast.prototype.defaultAlpha;
+    
     gl.bindShader(gl.defaultShader);
     
     gl.popMatrix();
-    
-    // gl.setColor(1.0, 0.0, 0.0, 1);
-    // Entity.prototype.draw.call(this, gl);
     
     Particle.drawEnqueue(this.dockedParticles);
 
