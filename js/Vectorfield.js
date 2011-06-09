@@ -44,7 +44,7 @@ Vectorfield.prototype = {
     
     textureSizeFactor : 1.5,
     
-    // we need this, because the arrows wouldn't be visible when the value is below 0.3
+    // arrows wouldn't be visible when the value is below 0.3
     textureSizeOffset : 0.3,
     
     initSize : function(width, height) {

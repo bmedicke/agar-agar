@@ -7,7 +7,7 @@ var Cytoplast = function(position) {
     this.color = {
         r : 0.99,
         g : 0.92,
-        b : 0.08,
+        b : 0.5,
         a : 0
     };
     
@@ -32,7 +32,7 @@ Cytoplast.prototype.defaultAlpha = 0.2;
 
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
-Cytoplast.prototype.maxFill = 5;
+Cytoplast.prototype.maxFill = 15;
 
 Cytoplast.prototype.infectionTime = 3000;
 Cytoplast.prototype.spikeTime = 10000;

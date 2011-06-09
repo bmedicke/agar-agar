@@ -239,8 +239,8 @@ body{
     padding: 5px;
     float: right;
     cursor: pointer;
-    background-color: #FFF;
-    background-image: url("../images/close_dark.png");
+    background-color: #000;
+    background-image: url("../images/close.png");
     background-position: 50% 50%;
     background-repeat: no-repeat;
     -moz-border-radius: 2px;
@@ -248,8 +248,8 @@ body{
     }
 
 .close:hover{
-    background-color: #000;
-    background-image: url("../images/close.png");
+    background-color: #FFF;
+    background-image: url("../images/close_dark.png");
     }
 
 #about{

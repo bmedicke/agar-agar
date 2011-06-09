@@ -22,16 +22,16 @@ Game.prototype = {
     
     particleCount : 20,
     
-    leukoRate : 2500,
+    leukoRate : 5000,
     leukoAmount : 1,
     leukoCap : Leukocyte.prototype.absolutMaxCount,
     
     particleRate : 1500,
     
-    entropyRate : 5000,
+    entropyRate : 15000,
     entropyAmount : 1,
     
-    devourerRate : 15000,
+    devourerRate : 20000,
 
     initialize : function(gl) {
         
@@ -113,8 +113,6 @@ Game.prototype = {
         
         this.controller.devourers.push(new Devourer(midPoint.add(randomPosition)));
         this.controller.cytoplasts.push(new Cytoplast(midPoint.add(randomPosition.mulSelf(-1))));
-        
-        this.controller.addEntropyfiers(2);
         
         this.state = "run";
         

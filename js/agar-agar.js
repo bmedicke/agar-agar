@@ -48,6 +48,8 @@ function run() {
         var t = (new Date()).getTime();
         
         dt = t - time;
+        dt = dt > 30 ? 30 : dt;
+        
         time = t;
         
     }

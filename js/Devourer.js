@@ -50,7 +50,7 @@ Devourer.initialize = function(gl) {
         
     });
     
-    this.corpusTexture = gl.loadTexture("textures/devourerCorpus.png", function(gl) {
+    this.corpusTexture = gl.loadTexture("textures/devourerCorpus2.png", function(gl) {
         
         gl.bindShader(self.shader);
         gl.passTexture(self.corpusTexture, gl.getUniformLocation( self.shader, "corpusTexture" ));

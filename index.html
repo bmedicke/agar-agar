@@ -398,9 +398,9 @@
         
         vec4 corpus = texture2D( corpusTexture, vector / 0.75 + mid );
         
-        float mixFactor = clamp( 6.3 - 18.0 * len, 0.0, 0.6 );
+        float mixFactor = clamp( 6.3 - 18.0 * len, 0.0, 0.95 );
         
-        gl_FragColor = mix( tentacles, corpus, mixFactor );
+        gl_FragColor = tentacles + corpus * mixFactor;
         
         //gl_FragColor = tentacles * (1.0 - mixFactor) + ( corpus - tentacles * mixFactor );
         
