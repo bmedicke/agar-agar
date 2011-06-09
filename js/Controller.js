@@ -427,25 +427,6 @@ Controller.prototype = {
             cytoplast.checkBoundary(this.vectorfield);
 
             cytoplast.update(dt);
-			
-			if(cytoplast.puke) {
-			
-				this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
-			
-				this.vectorfield.addForcefield(new Forcefield(
-					cytoplast.position.getCopy(),
-					cytoplast.entityRadius * 2,
-					Cytoplast.prototype.pukeForce,
-					false,
-					Math.PI,
-					cytoplast.position,
-					Cytoplast.prototype.pukeTime
-				));
-			
-				cytoplast.puke = false;
-				cytoplast.dockedParticles = [];
-			
-			}
 
         }
 
