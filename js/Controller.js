@@ -85,7 +85,7 @@ Controller.prototype = {
 
     drawEntities: function(gl, entities) {
 
-        for (var i = 0; i < entities.length; i++) {
+        for (var i = entities.length - 1; i >= 0; i--) {
 
            entities[i].draw(gl);
 

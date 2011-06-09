@@ -482,7 +482,6 @@
     varying float rotation;
     
     const vec2 center = vec2( 0.5, 0.5 );
-    const vec3 color = vec3( 0.3, 0.3, 0.3 );
     
     void main(void) {
         
@@ -567,8 +566,8 @@
 
     varying vec2 vPosition;
     
-    const vec3 borderColor = vec3(0.9, 0.9, 0.9);
-    const vec3 fillColor = vec3(0.97, 0.97, 0.97);
+    const vec3 borderColor = vec3(0.85, 0.85, 0.85);
+    const vec3 fillColor = vec3(0.95, 0.95, 0.95);
     
     const vec3 whiteColor = vec3(1.0, 1.0, 1.0);
     const vec2 glowCenter = vec2( -0.3, -0.3 );
@@ -583,9 +582,8 @@
 
         float alphaFactor = clamp( 40.0 - 40.0 * len, 0.0, 1.0);
 
-        gl_FragColor.a = max( 0.0, lifeTime ) * alphaFactor;
-
-        float innerRadius = 0.57 + lifeTime / 3.0;
+        // innerRadius from 0.5 to 0.9
+        float innerRadius = clamp( 0.55 + lifeTime / 2.0, 0.5, 0.95);
         
         float mixFactor = cos( ( clamp( len, innerRadius, outerRadius ) - innerRadius ) / ( outerRadius - innerRadius ) * 2.0 * PI) * -0.5 + 0.5;
         
@@ -594,10 +592,10 @@
         vec3 color = mix( fillColor, borderColor, mixFactor );
         
         // glow
-        // color = mix( whiteColor, color, length( vPosition - glowCenter ) * 2.0 );
+        color = mix( whiteColor, color, length( vPosition - glowCenter ) * 2.0 );
         
-        gl_FragColor.rgb = mix( whiteColor, color, lifeTime * 0.5 );
-        gl_FragColor.a = max( 0.0, lifeTime ) * alphaFactor;
+        gl_FragColor.rgb = mix( whiteColor, color, lifeTime );
+        gl_FragColor.a = 0.5;
 
     }
     

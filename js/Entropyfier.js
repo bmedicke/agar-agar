@@ -23,7 +23,7 @@ Entropyfier.initialize = function(gl) {
 
 Entropyfier.prototype = {
     
-    entropyTime : 5000,
+    entropyTime : 8000,
     entropyRadius : 7,
     forceTime : 1000,
     force : 25,

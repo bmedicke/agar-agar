@@ -1,7 +1,8 @@
 var canvas,
     gl,
     game,
-    time;
+    time,
+    oddFrame;
 
 function initialize() {
     
@@ -38,23 +39,37 @@ function run() {
 
     requestAnimationFrame(run, canvas);
     
-    var t = (new Date()).getTime(),
-        dt = t - time;
+    oddFrame = !oddFrame;
+    
+    var dt;
+    
+    if (oddFrame) {
         
-    dt = dt > 30 ? 30 : dt;
-    time = t;
+        var t = (new Date()).getTime();
+        
+        dt = t - time;
+        time = t;
+        
+    }
     
     if (game.state === "init" || game.state === "run") {
         
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-        
-        // Agar Meter
-        // gl.setColor(1, 0, 0, 1);
-        // gl.drawRect(0, 0, 1, 1);
-        
-        game.update(dt);
-        game.draw(gl);
+        if (oddFrame) {
+            
+            game.update(dt);
+            
+        } else {
+            
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+            // Agar Meter
+            // gl.setColor(1, 0, 0, 1);
+            // gl.drawRect(0, 0, 1, 1);
+            
+            game.draw(gl);
+            
+        }
+        
     }
     
 };
@@ -62,6 +77,8 @@ function run() {
 window.onload = function() {
     
     game = new Game();
+    
+    oddFrame = true;
     
     Menu.initialize();
     
