@@ -82,18 +82,29 @@ var Menu = {
         document.getElementById("playpause").onselectstart = function() {return false;};
         document.getElementById("stopmusic").onselectstart = function() {return false;};
         document.getElementById("points").onselectstart = function() {return false;};
+        document.getElementById("multiplier").onselectstart = function() {return false;};
 
-        if (navigator.appVersion.indexOf("Mac")!=-1){
+        if (navigator.appVersion.indexOf("Mac") !== -1){
+        
             document.getElementById("playpause").style.paddingTop = "5px";
             document.getElementById("stopmusic").style.paddingTop = "5px";
+        
         }
-
+        
+        $("#points").mousedown(function(event) {
+            game.inputHandler.onMouseDown(event);
+        });
+        
+        $("#multiplier").mousedown(function(event) {
+            game.inputHandler.onMouseDown(event);
+        });
+        
         $("#playpause").click(function () {
             Menu.toggle();
         });
-
+        
         $("#stopmusic").click(function () {
-
+            
             if(Menu.musicOn){
                 document.getElementById("stopmusic").style.backgroundImage = "url(images/sound_off.png)";
             }
@@ -155,9 +166,36 @@ var Menu = {
         
         $("#pointvalue").text(points);
         
-        $("#twitterlink").attr( "href", "https://twitter.com/?status=" + 
-                                "I%20just%20scored%20" + points + 
-                                "%20points%20%40AgarAgarGame%20http%3A%2F%2Fagaragargame.com%2F");
+    },
+    
+    updateMultiplierPoints : function(points) {
+        
+        $("#multiplierpoints").text(points);
+        
+    },
+    
+    updateMultiplier : function(multiplier) {
+        
+        $("#multipliervalue").text(multiplier);
+        
+        if (multiplier > 1) {
+            
+            $("#multiplier").show();
+            this.updateCooldown(1);
+            
+        } else {
+            
+            $("#multiplier").hide();
+            $("#multiplierpoints").text("0");
+            
+        }
+        
+    },
+    
+    updateCooldown : function(multiplierCooldown) {
+        
+        $("#multipliercooldown").width(multiplierCooldown * 100 + "%");
+        
     },
     
     startNewGame : function() {
@@ -178,6 +216,10 @@ var Menu = {
         this.open();
         $("#loser").show();
         $("#score").text(points);
+        
+        $("#twitterlink").attr( "href", "https://twitter.com/?status=" + 
+                                "I%20just%20scored%20" + points + 
+                                "%20points%20%40AgarAgarGame%20http%3A%2F%2Fagaragargame.com%2F");
         
     },
     

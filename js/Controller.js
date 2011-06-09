@@ -9,8 +9,10 @@ var Controller = function(vectorfield) {
     this.entropyfiers = [];
 
     this.points = 0;
+    this.multiplierPoints = 0;
     this.multiplier = 1;
-	this.multiplierCooldown = 0;
+    this.multiplierCooldown = 1;
+    this.multiplierCooldownAnimation = null;
 
     this.devourerForcefield = new Forcefield(
         new Vector(),
@@ -27,8 +29,8 @@ Controller.prototype = {
     separationFactor : 10,
 
     cohesionFactor : .5,
-	
-	defaultCooldown : 5000,
+    
+    cooldownTime : 30000,
 
     pointValues : {
 
@@ -52,8 +54,12 @@ Controller.prototype = {
 
         this.updateParticles(dt);
         
-        this.checkGameOver();
-        
+        if (this.multiplier > 1) {
+            
+            Menu.updateCooldown(this.multiplierCooldown);
+            
+        }
+
     },
 
     draw : function(gl) {
@@ -241,16 +247,7 @@ Controller.prototype = {
                     if(cytoplast.spikeState) {
 
                         this.addPoints("devourerDeath");
-
-                        this.multiplier++;
-						this.multiplierCooldown = Controller.prototype.defaultCooldown;
-						
-						Animator.animate({
-							object: this,
-							values: {"multiplierCooldown" : 0},
-							duration: Controller.prototype.defaultCooldown,
-							callback: this.resetMultiplier
-						});
+                        this.increaseMultiplier();
 
                         delete this.devourers.splice(i, 1)[0].destroy();
                         i--;
@@ -258,22 +255,9 @@ Controller.prototype = {
                         break;
 
                     } else {
-					
-						this.addParticlesAt(cytoplast.dockedParticles.length, cytoplast.position, cytoplast.entityRadius / 2);
-
-						this.vectorfield.addForcefield(new Forcefield(
-							cytoplast.position.getCopy(),
-							cytoplast.entityRadius,
-							Entropyfier.prototype.force,
-							false,
-							Math.PI,
-							devourer.position,
-							Entropyfier.prototype.forceTime
-						));
-
-						delete this.cytoplasts.splice(j, 1)[0].destroy();
-                        this.resetMultiplier();
-
+                        
+                        game.lose();
+                        
                     }
 
                 }
@@ -485,7 +469,6 @@ Controller.prototype = {
         this.deleteEntities(this.leukocytes);
         this.deleteEntities(this.cytoplasts);
         this.deleteEntities(this.devourers);
-        //this.deleteEntities(this.entropyfiers);
 
         this.particles = [];
         this.cytoplasts = [];
@@ -494,17 +477,11 @@ Controller.prototype = {
         this.entropyfiers = [];
 
         this.points = 0;
-        Menu.updatePoints(0);
-        
+        this.multiplierPoints = 0;
+
         this.resetMultiplier();
 
     },
-	
-	resetMultiplier : function() {
-		
-		this.multiplier = 1;
-	
-	},
     
     deleteEntities : function(entities) {
         
@@ -651,18 +628,55 @@ Controller.prototype = {
 
     addPoints : function(pointKey) {
 
-        this.points += this.multiplier * this.pointValues[pointKey];
-
-        Menu.updatePoints(this.points);
+        if (this.multiplier > 1) {
+            
+            this.multiplierPoints += this.pointValues[pointKey];
+            Menu.updateMultiplierPoints(this.multiplierPoints);
+            
+        } else {
+            
+            this.points += this.pointValues[pointKey];
+            Menu.updatePoints(this.points);
+            
+        }
 
     },
-    
-    checkGameOver : function() {
-                
-        if (this.cytoplasts.length === 0) {
+
+    increaseMultiplier : function() {
         
-            Menu.showLoserScreen(this.points);
-            game.state = "over";
+        this.multiplierCooldown = 1;
+        
+        if (this.multiplierCooldownAnimation) {
+            
+            this.multiplierCooldownAnimation.stop();
+            
+        }
+        
+        this.multiplierCooldownAnimation = Animator.animate({
+            object: this,
+            values: {"multiplierCooldown" : 0},
+            duration: Controller.prototype.cooldownTime,
+            callback: this.resetMultiplier
+        });
+        
+        this.multiplier++;
+        Menu.updateMultiplier(this.multiplier);
+        
+    },
+    
+    resetMultiplier : function() {
+        
+        this.points += this.multiplierPoints * this.multiplier;
+        this.multiplier = 1;
+        this.multiplierPoints = 0;
+        
+        Menu.updatePoints(this.points);
+        Menu.updateMultiplier(this.multiplier);
+        
+        if (this.multiplierCooldownAnimation) {
+            
+            this.multiplierCooldownAnimation.stop();
+            this.multiplierCooldownAnimation = null;
             
         }
         

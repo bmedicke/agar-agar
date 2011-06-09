@@ -179,5 +179,14 @@ Game.prototype = {
         
         }
         
+    },
+    
+    lose : function() {
+        
+        this.controller.resetMultiplier();
+        Menu.showLoserScreen(this.controller.points);
+        
+        game.state = "over";
+        
     }
 };
