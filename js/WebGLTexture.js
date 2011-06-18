@@ -1,48 +1,52 @@
-WebGLRenderingContext.prototype.textureCount = 0;
+var WebGLTexture = function() {
 
-WebGLRenderingContext.prototype.loadTexture = function(imagePath, callback) {
+    this.textureCount = 0;
+
+    this.loadTexture = function(imagePath, callback) {
     
-    var texture = this.createTexture();
-    texture.image = new Image();
+        var texture = this.createTexture();
+        texture.image = new Image();
     
-    texture.ID = this.textureCount++;
+        texture.ID = this.textureCount++;
     
-    var self = this;
+        var self = this;
     
-    texture.image.onload = function () {
+        texture.image.onload = function () {
         
-        self.textureImageLoaded(texture, callback);
+            self.textureImageLoaded(texture, callback);
         
-    }
+        }
     
-    texture.image.src = imagePath;
+        texture.image.src = imagePath;
     
-    return texture;
+        return texture;
     
-};
+    };
 
-WebGLRenderingContext.prototype.textureImageLoaded = function(texture, callback) {
+    this.textureImageLoaded = function(texture, callback) {
     
-    this.activeTexture(this["TEXTURE" + texture.ID]);
-    this.bindTexture( this.TEXTURE_2D, texture );
+        this.activeTexture(this["TEXTURE" + texture.ID]);
+        this.bindTexture( this.TEXTURE_2D, texture );
 
-    this.pixelStorei( this.UNPACK_FLIP_Y_WEBGL, true );
-    this.texImage2D( this.TEXTURE_2D, 0, this.RGBA, this.RGBA, this.UNSIGNED_BYTE, texture.image );    
+        this.pixelStorei( this.UNPACK_FLIP_Y_WEBGL, true );
+        this.texImage2D( this.TEXTURE_2D, 0, this.RGBA, this.RGBA, this.UNSIGNED_BYTE, texture.image );    
     
-    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MAG_FILTER, this.LINEAR_MIPMAP_LINEAR );
-    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MIN_FILTER, this.LINEAR_MIPMAP_LINEAR );	
+        this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MAG_FILTER, this.LINEAR_MIPMAP_LINEAR );
+        this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MIN_FILTER, this.LINEAR_MIPMAP_LINEAR );	
     
-    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_WRAP_S, this.CLAMP_TO_EDGE );
-    this.texParameteri( this.TEXTURE_2D, this.TEXTURE_WRAP_T, this.CLAMP_TO_EDGE );
+        this.texParameteri( this.TEXTURE_2D, this.TEXTURE_WRAP_S, this.CLAMP_TO_EDGE );
+        this.texParameteri( this.TEXTURE_2D, this.TEXTURE_WRAP_T, this.CLAMP_TO_EDGE );
     
-	this.generateMipmap( this.TEXTURE_2D );
+        this.generateMipmap( this.TEXTURE_2D );
 
-    this.bindTexture( this.TEXTURE_2D, null );
+        this.bindTexture( this.TEXTURE_2D, null );
     
-    if (callback) {
+        if (callback) {
         
-        callback(this);
+            callback(this);
     
-    }
+        }
     
+    };
+
 };

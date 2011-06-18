@@ -1,120 +1,124 @@
-WebGLRenderingContext.prototype.loadShader = function(vertexShaderID, fragmentShaderID) {
+var WebGLShader = function() {
+
+    this.loadShader = function(vertexShaderID, fragmentShaderID) {
     
-    var vertexShader = this.loadShaderScript(vertexShaderID),
-        fragmentShader = this.loadShaderScript(fragmentShaderID);
+        var vertexShader = this.loadShaderScript(vertexShaderID),
+            fragmentShader = this.loadShaderScript(fragmentShaderID);
 
-    return this.linkShaderProgramm(vertexShader, fragmentShader);
+        return this.linkShaderProgramm(vertexShader, fragmentShader);
     
-};
+    };
 
-WebGLRenderingContext.prototype.loadShaderScript = function(shaderScriptID) {
+    this.loadShaderScript = function(shaderScriptID) {
     
-    var shaderScript = document.getElementById(shaderScriptID),
-        shader;
+        var shaderScript = document.getElementById(shaderScriptID),
+            shader;
 
-    if (shaderScript.type === "x-shader/x-fragment") {
+        if (shaderScript.type === "x-shader/x-fragment") {
 
-        shader = gl.createShader(gl.FRAGMENT_SHADER);
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
 
-    } else if (shaderScript.type === "x-shader/x-vertex") {
+        } else if (shaderScript.type === "x-shader/x-vertex") {
 
-        shader = gl.createShader(gl.VERTEX_SHADER);
+            shader = gl.createShader(gl.VERTEX_SHADER);
 
-    } else {
+        } else {
 
-        return null;
+            return null;
 
-    }
+        }
 
 
-    gl.shaderSource(shader, shaderScript.text);
-    gl.compileShader(shader);
+        gl.shaderSource(shader, shaderScript.text);
+        gl.compileShader(shader);
 
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 
-        console.log("shader " + gl.getShaderInfoLog(shader));
-        return null;
+            console.log("shader " + gl.getShaderInfoLog(shader));
+            return null;
 
-    }
+        }
 
-    return shader;
+        return shader;
         
-};
+    };
     
-WebGLRenderingContext.prototype.linkShaderProgramm = function(vertexShader, fragmentShader) {
+    this.linkShaderProgramm = function(vertexShader, fragmentShader) {
     
-    var shaderProgram = this.createProgram();
+        var shaderProgram = this.createProgram();
 
-    this.attachShader(shaderProgram, vertexShader);
-    this.attachShader(shaderProgram, fragmentShader);
+        this.attachShader(shaderProgram, vertexShader);
+        this.attachShader(shaderProgram, fragmentShader);
 
-    this.linkProgram(shaderProgram);
+        this.linkProgram(shaderProgram);
 
 
-    if (!this.getProgramParameter(shaderProgram, this.LINK_STATUS)) {
+        if (!this.getProgramParameter(shaderProgram, this.LINK_STATUS)) {
 
-        log("Unable to initialize the shader program.");
+            log("Unable to initialize the shader program.");
 
-    }
+        }
 
-    return shaderProgram;
+        return shaderProgram;
     
-};
+    };
 
-WebGLRenderingContext.prototype.activeShader = null;
+    this.activeShader = null;
 
-WebGLRenderingContext.prototype.bindShader = function(shader) {
+    this.bindShader = function(shader) {
     
-    this.useProgram(shader);
-    this.activeShader = shader;
+        this.useProgram(shader);
+        this.activeShader = shader;
     
-};
+    };
 
-WebGLRenderingContext.prototype.passMatrix = function() {
+    this.passMatrix = function() {
     
-    this.uniformMatrix4fv(
-        this.activeShader.matrixUniformLocation, 
-        false, 
-        new Float32Array(this.matrix.flatten4D())
-    );
+        this.uniformMatrix4fv(
+            this.activeShader.matrixUniformLocation, 
+            false, 
+            new Float32Array(this.matrix.flatten4D())
+        );
 
-};
+    };
 
-WebGLRenderingContext.prototype.passColor = function(color) {
+    this.passColor = function(color) {
     
-    this.uniform4fv(
-        this.activeShader.colorUniformLocation, 
-        new Float32Array(color)
-    );
+        this.uniform4fv(
+            this.activeShader.colorUniformLocation, 
+            new Float32Array(color)
+        );
 
-};
+    };
 
-WebGLRenderingContext.prototype.passVertices = function(drawMode, buffer) {
+    this.passVertices = function(drawMode, buffer) {
     
-    this.bindBuffer(this.ARRAY_BUFFER, buffer);
-    this.vertexAttribPointer(this.activeShader.positionAttribLocation, buffer.itemSize, this.FLOAT, false, 0, 0);
+        this.bindBuffer(this.ARRAY_BUFFER, buffer);
+        this.vertexAttribPointer(this.activeShader.positionAttribLocation, buffer.itemSize, this.FLOAT, false, 0, 0);
     
-    this.drawArrays(drawMode, 0, buffer.vertexCount);
+        this.drawArrays(drawMode, 0, buffer.vertexCount);
     
-};
+    };
 
-WebGLRenderingContext.prototype.passTexture = function(texture, uniformLocation) {
+    this.passTexture = function(texture, uniformLocation) {
     
-    this.activeTexture( this["TEXTURE" + texture.ID] );
-    this.bindTexture( this.TEXTURE_2D, texture );
-    this.uniform1i( uniformLocation, texture.ID );
+        this.activeTexture( this["TEXTURE" + texture.ID] );
+        this.bindTexture( this.TEXTURE_2D, texture );
+        this.uniform1i( uniformLocation, texture.ID );
     
-};
+    };
 
-WebGLRenderingContext.prototype.drawQuadTexture = function() {
+    this.drawQuadTexture = function() {
     
-    this.bindBuffer(this.ARRAY_BUFFER, this.quadVertexBuffer);
-    this.vertexAttribPointer(this.activeShader.positionAttribLocation, this.quadVertexBuffer.itemSize, this.FLOAT, false, 0, 0);
+        this.bindBuffer(this.ARRAY_BUFFER, this.quadVertexBuffer);
+        this.vertexAttribPointer(this.activeShader.positionAttribLocation, this.quadVertexBuffer.itemSize, this.FLOAT, false, 0, 0);
 
-    this.bindBuffer(this.ARRAY_BUFFER, this.quadTextureCoordsBuffer);
-    this.vertexAttribPointer(this.activeShader.textureCoordAttribLocation, this.quadTextureCoordsBuffer.itemSize, this.FLOAT, false, 0, 0);
+        this.bindBuffer(this.ARRAY_BUFFER, this.quadTextureCoordsBuffer);
+        this.vertexAttribPointer(this.activeShader.textureCoordAttribLocation, this.quadTextureCoordsBuffer.itemSize, this.FLOAT, false, 0, 0);
 
-    this.bindBuffer(this.ELEMENT_ARRAY_BUFFER, this.quadIndexBuffer);
-    this.drawElements(this.TRIANGLE_FAN, this.quadIndexBuffer.vertexCount, this.UNSIGNED_SHORT, 0);
+        this.bindBuffer(this.ELEMENT_ARRAY_BUFFER, this.quadIndexBuffer);
+        this.drawElements(this.TRIANGLE_FAN, this.quadIndexBuffer.vertexCount, this.UNSIGNED_SHORT, 0);
     
+    };
+
 };

@@ -15,6 +15,10 @@ function initialize() {
     
     gl = canvas.getContext("experimental-webgl");
     
+    WebGLShader.call(gl);
+    WebGLTexture.call(gl);
+    WebGLUtilities.call(gl);
+    
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
     // gl.enable(gl.DEPTH_TEST);
