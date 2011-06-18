@@ -27,11 +27,7 @@ Stardust.prototype = {
                 Math.random() * this.vectorfield.rows
             );
             
-            this.dustParticles.push(new DustParticle(
-                position, 
-                this.vectorfield.getVector(position),
-                Math.random() * DustParticle.prototype.lifeTime
-            ));
+            this.dustParticles.push(new DustParticle(position));
             
             vertices.push(position.x);
             vertices.push(position.y);
@@ -69,12 +65,12 @@ Stardust.prototype = {
             
             }
             
-            particle.velocity = this.vectorfield.getVector(particle.position);
-            particle.update(dt);
+            particle.timer += dt;
+            particle.position.addSelf(this.vectorfield.getVector(particle.position).divSelf(particle.mass));
             
             this.vertexArray[i * 3] = particle.position.x;
             this.vertexArray[i * 3 + 1] = particle.position.y;
-            this.vertexArray[i * 3 + 2] = particle.position.z;
+            this.vertexArray[i * 3 + 2] = Math.cos(particle.timer / particle.lifeTime * Math.PI * 2) * -0.5 + 0.5;
         
         }
 
