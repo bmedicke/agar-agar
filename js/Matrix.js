@@ -97,89 +97,61 @@ Matrix.prototype = {
         
     },
     
-    transform : function(matrix) {
-        
-        var result = this.mul(matrix);
-        
-        delete matrix.destroy();
-        
-        return result;
-        
-    },
-    
-    transformSelf : function (matrix) {
-        
-        this.mulSelf(matrix);
-        
-        delete matrix.destroy();
-        
-        return this;
-        
-    },
-    
     rotate2D : function(angle) {
         
-        return this.transform(this.getRotate2DMatrix(angle));
+        return this.getCopy().rotate2DSelf(angle);
         
     },
     
     rotate2DSelf : function(angle) {
         
-        return this.transformSelf(this.getRotate2DMatrix(angle));
+        var vector1 = new Vector(Math.cos(angle), Math.sin(angle), 0),
+            vector2 = new Vector(-Math.sin(angle), Math.cos(angle), 0);
         
-    },
-    
-    getRotate2DMatrix : function(angle) {
+        this.a.set(this.a.dot(vector1), this.a.dot(vector2), this.a.z);
+        this.b.set(this.b.dot(vector1), this.b.dot(vector2), this.b.z);
+        this.c.set(this.c.dot(vector1), this.c.dot(vector2), this.c.z);
         
-        return new Matrix(
-            new Vector(Math.cos(angle), -Math.sin(angle), 0),
-            new Vector(Math.sin(angle), Math.cos(angle), 0),
-            new Vector(0, 0, 1)
-        );
+        return this;
         
     },
     
     scale2D : function(x, y) {
         
-        return this.transform(this.getScale2DMatrix(x, y));
+        return this.getCopy().scale2DSelf(x, y);
         
     },
     
     scale2DSelf : function(x, y) {
         
-        return this.transformSelf(this.getScale2DMatrix(x, y));
+        this.a.x *= x;
+        this.a.y *= y;
         
-    },
-    
-    getScale2DMatrix : function(x, y) {
+        this.b.x *= x;
+        this.b.y *= y;
         
-        return new Matrix(
-            new Vector(x, 0, 0),
-            new Vector(0, y, 0),
-            new Vector(0, 0, 1)
-        );
+        this.c.x *= x;
+        this.c.y *= y;
+        
+        return this;
         
     },
     
     translate2D : function(x, y) {
         
-        return this.transform(this.getTranslate2DMatrix(x, y));
+        return this.getCopy().translate2DSelf(x, y);
         
     },
     
     translate2DSelf : function(x, y) {
         
-        return this.transformSelf(this.getTranslate2DMatrix(x, y));
+        var vector = new Vector(x, y, 1);
         
-    },
-    
-    getTranslate2DMatrix : function(x, y) {
+        this.a.z = this.a.dot(vector);
+        this.b.z = this.b.dot(vector);
+        this.c.z = this.c.dot(vector);
         
-        return new Matrix(
-            new Vector(1, 0, x),
-            new Vector(0, 1, y),
-            new Vector(0, 0, 1)
-        );
+        return this;
         
     },
     
