@@ -13,8 +13,6 @@ Matrix.prototype = {
     
     set: function(a, b, c) {
         
-        this.destroy();
-        
         this.a = a;
         this.b = b;
         this.c = c;
@@ -40,16 +38,6 @@ Matrix.prototype = {
             this.b.getCopy(),
             this.c.getCopy()
         );
-        
-    },
-    
-    destroy : function() {
-        
-        delete this.a;
-        delete this.b;
-        delete this.c;
-        
-        return this;
         
     },
     

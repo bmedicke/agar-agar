@@ -411,6 +411,4 @@ Cytoplast.prototype.dockParticle = function(particlePosition) {
         duration: Cytoplast.prototype.infectionTime
     });
     
-    delete target;
-    
 };

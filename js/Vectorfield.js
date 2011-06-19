@@ -251,7 +251,7 @@ Vectorfield.prototype = {
             // if (this.forcefields[i].duration <= 0) {
             if (this.forcefields[i].force < 0.1) {
                 
-                delete this.forcefields.splice(i, 1)[0];
+                this.forcefields.splice(i, 1);
                 i--;
                 
             }

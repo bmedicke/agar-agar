@@ -17,7 +17,6 @@ var WebGLUtilities = function() {
     
         if (this.matrixStack.length) {
         
-            delete this.matrix.destroy();
             this.matrix = this.matrixStack.pop();
         
             this.matrixChanged = true;

@@ -33,8 +33,6 @@ Entity.prototype = {
         
         this.age += dt;
         
-        delete acceleration;
-        
         return positionChange;
         
     },
@@ -43,17 +41,6 @@ Entity.prototype = {
 
         gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
 
-    },
-    
-    destroy : function() {
-        
-        delete this.position;
-        delete this.force;
-        delete this.velocity;
-        delete this.orientation;
-        
-        return this;
-        
     },
     
     applyForce : function(force) {
@@ -80,14 +67,12 @@ Entity.prototype = {
             this.applyForce(vector.normalize().mulSelf(this.moveSpeed));
             
             entity.applyForce(vector.normalize().mulSelf(entity.moveSpeed * -Entity.prototype.repulsionForce));
-
-			delete vector;
-			
-			return true;
-			
+            
+            return true;
+            
         }
-		
-		return false;
+        
+        return false;
 
     },
     

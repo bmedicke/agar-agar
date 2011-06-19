@@ -97,7 +97,7 @@ var Animator = {
             
             if (!this.animations[i].update(dt)) {
                 
-                delete this.animations.splice(i, 1)[0];
+                this.animations.splice(i, 1);
                 
             }
             

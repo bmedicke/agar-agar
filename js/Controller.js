@@ -111,7 +111,7 @@ Controller.prototype = {
                     Entropyfier.prototype.forceTime
                 ));
 
-                delete this.entropyfiers.splice(i, 1)[0];
+                this.entropyfiers.splice(i, 1);
 
             }
 
@@ -140,7 +140,7 @@ Controller.prototype = {
                     
                 leukocyte.eatParticle(particle.position);
                 
-                delete this.particles.splice(j, 1)[0].destroy();
+                this.particles.splice(j, 1);
                 j--;
                 
                 return;
@@ -206,7 +206,7 @@ Controller.prototype = {
                 
                 if (devourer.checkCollision(this.particles[j])) {
                     
-                    delete this.particles.splice(j, 1)[0].destroy();
+                    this.particles.splice(j, 1);
                     j--;
                     
                 }
@@ -217,7 +217,7 @@ Controller.prototype = {
                 
                 if (devourer.checkCollision(this.leukocytes[j])) {
                     
-                    delete this.leukocytes.splice(j, 1)[0].destroy();
+                    this.leukocytes.splice(j, 1);
                     j--;
                     
                     this.addPoints("leukoDeath");
@@ -249,7 +249,7 @@ Controller.prototype = {
                         this.addPoints("devourerDeath");
                         this.increaseMultiplier();
 
-                        delete this.devourers.splice(i, 1)[0].destroy();
+                        this.devourers.splice(i, 1);
                         i--;
 
                         break;
@@ -287,11 +287,7 @@ Controller.prototype = {
 
             particle.update(dt);
 
-            delete particleDistances[i];
-
         }
-
-        delete particleDistances;
 
     },
 
@@ -343,9 +339,6 @@ Controller.prototype = {
 
         particle.applyForce(separationCenter.addSelf(cohesionCenter));
 
-        delete cohesionCenter;
-        delete separationCenter;
-
     },
 
     getParticleDistances : function() {
@@ -381,7 +374,7 @@ Controller.prototype = {
                    !cytoplast.isFull() && !cytoplast.puking) {
 
                     cytoplast.dockParticle(this.particles[j].position);
-                    delete this.particles.splice(j, 1)[0].destroy();
+                    this.particles.splice(j, 1);
 
                     this.addPoints("cytoInfect");
 
@@ -400,7 +393,7 @@ Controller.prototype = {
                 if(cytoplast.collision(this.leukocytes[j]) && cytoplast.spikeState) {
                 
                     this.addPoints("leukoDeath");
-                    delete this.leukocytes.splice(j, 1)[0].destroy();
+                    this.leukocytes.splice(j, 1);
                 
                 }
 
@@ -441,11 +434,6 @@ Controller.prototype = {
 
     reset : function() {
 
-        this.deleteEntities(this.particles);
-        this.deleteEntities(this.leukocytes);
-        this.deleteEntities(this.cytoplasts);
-        this.deleteEntities(this.devourers);
-
         this.particles = [];
         this.cytoplasts = [];
         this.leukocytes = [];
@@ -457,16 +445,6 @@ Controller.prototype = {
 
         this.resetMultiplier();
 
-    },
-    
-    deleteEntities : function(entities) {
-        
-        for (var i = 0; i < entities.length; i++) {
-            
-            delete entities[i].destroy();
-            
-        }
-        
     },
 
     getRandomOutsidePosition : function() {
