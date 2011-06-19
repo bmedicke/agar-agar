@@ -1,10 +1,18 @@
 var Entropyfier = function(position, chargeTime, entityRadius) {
 
     this.position = position;
-    this.timer = 0;
-    this.chargeTime = chargeTime || 0;
     this.entityRadius = entityRadius || 0;
     this.forceRadius = this.entityRadius * 2.0;
+    
+    var self = this;
+    
+    this.timeout = Timer.setTimeout(function() {
+        
+        game.burstEntropyfier(self);
+        
+    }, chargeTime);
+    
+    this.burst = false;
 
 };
 
@@ -28,12 +36,6 @@ Entropyfier.prototype = {
     forceTime : 1000,
     force : 25,
 
-    update : function(dt) {
-
-        this.timer += dt;
-
-    },
-
     draw : function(gl) {
 
         // if (this.timer <= this.chargeTime) {
@@ -49,20 +51,18 @@ Entropyfier.prototype = {
         //     
         // }
         
-        if (this.timer <= this.chargeTime) {
+        gl.fill();
         
-            gl.fill();
+        gl.bindShader(Entropyfier.shader);
         
-            gl.bindShader(Entropyfier.shader);
+        var elapsedPercent = this.timeout.elapsed / this.timeout.duration;
         
-            gl.uniform1f(
-                Entropyfier.shader.lifeTimeUniformLocation, 
-                this.timer / this.chargeTime
-            );
+        gl.uniform1f(
+            Entropyfier.shader.lifeTimeUniformLocation, 
+            elapsedPercent
+        );
         
-            gl.drawCircle(this.position.x, this.position.y, (Math.sqrt(this.timer / this.chargeTime) + 1) * this.entityRadius * 0.5);
-            
-        }
+        gl.drawCircle(this.position.x, this.position.y, (Math.sqrt(elapsedPercent) + 1) * this.entityRadius * 0.5);
     
     }
 

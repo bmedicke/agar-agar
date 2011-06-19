@@ -6,7 +6,6 @@ var Controller = function(vectorfield) {
     this.cytoplasts = [];
     this.leukocytes = [];
     this.devourers = [];
-    this.entropyfiers = [];
 
     this.points = 0;
     this.multiplierPoints = 0;
@@ -43,8 +42,6 @@ Controller.prototype = {
     },
 
     update : function(dt) {
-
-        this.updateEntropyfiers(dt);
 
         this.updateLeukocytes(dt);
 
@@ -88,34 +85,6 @@ Controller.prototype = {
         for (var i = entities.length - 1; i >= 0; i--) {
 
            entities[i].draw(gl);
-
-        }
-
-    },
-
-    updateEntropyfiers : function(dt) {
-
-        for(var i = 0; i < this.entropyfiers.length; i++) {
-
-            var entropyfier = this.entropyfiers[i];
-
-            if (entropyfier.timer > entropyfier.chargeTime) {
-
-                this.vectorfield.addForcefield(new Forcefield(
-                    entropyfier.position,
-                    entropyfier.forceRadius,
-                    Entropyfier.prototype.force,
-                    false,
-                    Math.PI,
-                    null,
-                    Entropyfier.prototype.forceTime
-                ));
-
-                this.entropyfiers.splice(i, 1);
-
-            }
-
-            entropyfier.update(dt);
 
         }
 
@@ -438,7 +407,6 @@ Controller.prototype = {
         this.cytoplasts = [];
         this.leukocytes = [];
         this.devourers = [];
-        this.entropyfiers = [];
 
         this.points = 0;
         this.multiplierPoints = 0;
@@ -546,35 +514,6 @@ Controller.prototype = {
         for(var i = 0; i < amount; i++) {
 
             this.devourers.push(new Devourer(this.getRandomOutsidePosition()));
-
-        }
-
-    },
-
-    addEntropyfiers : function(amount) {
-
-        for (var i = 0; i < amount; i++) {
-
-            var center = new Vector(Math.random() * this.vectorfield.cols,
-                                    Math.random() * this.vectorfield.rows);
-
-            var radius = Entropyfier.prototype.entropyRadius * (Math.random() * .3 + .7);
-            var time = Entropyfier.prototype.entropyTime * (Math.random() * .3 + .7);
-
-            this.entropyfiers.push(new Entropyfier(center.getCopy(), time, radius));
-
-            center.addSelf(new Vector(radius, 0).rotate2DSelf(Math.random() * Math.PI * 2));
-
-            this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.07, radius / 2));
-
-
-            if (Math.random() > .5) {
-
-                center.addSelf(new Vector(radius * 0.5, 0).rotate2DSelf(Math.random() * Math.PI * 2));
-
-                this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.11, radius / 3));
-
-            }
 
         }
 

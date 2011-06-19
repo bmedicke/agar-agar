@@ -16,6 +16,8 @@ var Game = function() {
     this.devourerTime = 0;
     this.entropyTime = 0;
     
+    this.entropyfiers = [];
+    
 };
 
 Game.prototype = {
@@ -56,8 +58,9 @@ Game.prototype = {
     
     update : function(dt) {
         
+        Timer.update(dt);
         Animator.update(dt);
-
+        
         this.vectorfield.update(dt);
         this.controller.applyDevourerVortices(dt);
         this.inputHandler.update(dt);
@@ -79,7 +82,7 @@ Game.prototype = {
     
     draw : function(gl) {
         
-        this.controller.drawEntities(gl, this.controller.entropyfiers);
+        this.drawEntropyfiers(gl);
         
         if (this.drawStardust) {
             
@@ -120,12 +123,15 @@ Game.prototype = {
     
     resetLevel : function() {
         
+        Timer.reset();
         Animator.reset();
         
         this.leukoTime = 0;
         this.particleTime = 0;
         this.devourerTime = 0;
         this.entropyTime = 0;
+        
+        this.entropyfiers = [];
     
         this.controller.reset();
         this.vectorfield.reset();
@@ -163,7 +169,7 @@ Game.prototype = {
         
         if( this.entropyTime > this.entropyRate) {
         
-            this.controller.addEntropyfiers(this.entropyAmount);
+            this.addEntropyfiers(this.entropyAmount);
             
             this.entropyTime -= this.entropyRate;
         
@@ -186,5 +192,70 @@ Game.prototype = {
         
         game.state = "over";
         
+    },
+    
+    drawEntropyfiers : function(gl) {
+        
+        for (var i = 0; i < this.entropyfiers.length; i++) {
+            
+            if (this.entropyfiers[i].burst) {
+                
+                this.entropyfiers.splice(i, 1);
+                i--;
+                
+            } else {
+                
+                this.entropyfiers[i].draw(gl);
+                
+            }
+            
+        }
+        
+    },
+    
+    addEntropyfiers : function(amount) {
+
+        for (var i = 0; i < amount; i++) {
+
+            var center = new Vector(Math.random() * this.vectorfield.cols,
+                                    Math.random() * this.vectorfield.rows);
+
+            var radius = Entropyfier.prototype.entropyRadius * (Math.random() * .3 + .7);
+            var time = Entropyfier.prototype.entropyTime * (Math.random() * .3 + .7);
+
+            this.entropyfiers.push(new Entropyfier(center.getCopy(), time, radius));
+
+            center.addSelf(new Vector(radius, 0).rotate2DSelf(Math.random() * Math.PI * 2));
+
+            this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.07, radius / 2));
+
+
+            if (Math.random() > .5) {
+
+                center.addSelf(new Vector(radius * 0.5, 0).rotate2DSelf(Math.random() * Math.PI * 2));
+
+                this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.11, radius / 3));
+
+            }
+
+        }
+
+    },
+    
+    burstEntropyfier: function(entropyfier) {
+        
+        this.vectorfield.addForcefield(new Forcefield(
+            entropyfier.position,
+            entropyfier.forceRadius,
+            Entropyfier.prototype.force,
+            false,
+            Math.PI,
+            null,
+            Entropyfier.prototype.forceTime
+        ));
+        
+        entropyfier.burst = true;
+        
     }
+
 };
