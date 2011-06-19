@@ -33,7 +33,6 @@ Entropyfier.prototype = {
     
     entropyTime : 8000,
     entropyRadius : 7,
-    forceTime : 1000,
     force : 25,
 
     draw : function(gl) {

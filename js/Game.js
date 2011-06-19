@@ -245,9 +245,7 @@ Game.prototype = {
             entropyfier.forceRadius,
             Entropyfier.prototype.force,
             false,
-            Math.PI,
-            null,
-            Entropyfier.prototype.forceTime
+            Math.PI
         ));
         
         entropyfier.burst = true;

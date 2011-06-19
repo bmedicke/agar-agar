@@ -212,9 +212,7 @@ Cytoplast.prototype.puke = function(addNewParticles) {
                 this.entityRadius * 2,
                 Cytoplast.prototype.pukeForce,
                 false,
-                Math.PI,
-                this.position,
-                Cytoplast.prototype.pukeTime
+                Math.PI
             ));
         
         }

@@ -1,4 +1,4 @@
-var Forcefield = function(position, radius, force, isDynamic, angle, point, duration) {
+var Forcefield = function(position, radius, force, isDynamic, angle, point) {
     
     this.position = position || new Vector();
     this.radius = radius || 0;
@@ -8,7 +8,6 @@ var Forcefield = function(position, radius, force, isDynamic, angle, point, dura
     
     this.angle = angle || 0;
     this.point = point || position;
-    this.duration = duration || 0;
     
 };
 
@@ -246,9 +245,7 @@ Vectorfield.prototype = {
             this.applyForcefield(dt, this.forcefields[i]);
             
             this.forcefields[i].force *= 0.95;
-            this.forcefields[i].duration -= dt;
             
-            // if (this.forcefields[i].duration <= 0) {
             if (this.forcefields[i].force < 0.1) {
                 
                 this.forcefields.splice(i, 1);
