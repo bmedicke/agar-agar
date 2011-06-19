@@ -33,7 +33,7 @@ Vector.prototype = {
         
     },
     
-    getCopy: function() {
+    clone: function() {
         
         return new Vector(
             this.x, 

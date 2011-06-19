@@ -31,12 +31,12 @@ Matrix.prototype = {
         
     },
     
-    getCopy: function() {
+    clone: function() {
         
         return new Matrix(
-            this.a.getCopy(),
-            this.b.getCopy(),
-            this.c.getCopy()
+            this.a.clone(),
+            this.b.clone(),
+            this.c.clone()
         );
         
     },
@@ -87,7 +87,7 @@ Matrix.prototype = {
     
     rotate2D : function(angle) {
         
-        return this.getCopy().rotate2DSelf(angle);
+        return this.clone().rotate2DSelf(angle);
         
     },
     
@@ -106,7 +106,7 @@ Matrix.prototype = {
     
     scale2D : function(x, y) {
         
-        return this.getCopy().scale2DSelf(x, y);
+        return this.clone().scale2DSelf(x, y);
         
     },
     
@@ -127,7 +127,7 @@ Matrix.prototype = {
     
     translate2D : function(x, y) {
         
-        return this.getCopy().translate2DSelf(x, y);
+        return this.clone().translate2DSelf(x, y);
         
     },
     

@@ -7,7 +7,7 @@ var WebGLUtilities = function() {
 
     this.pushMatrix = function() {
     
-        var m = this.matrix.getCopy();
+        var m = this.matrix.clone();
     
         this.matrixStack.push(m);
     

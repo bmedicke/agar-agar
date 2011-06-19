@@ -208,7 +208,7 @@ Cytoplast.prototype.puke = function(addNewParticles) {
             }
         
             game.vectorfield.addForcefield(new Forcefield(
-                this.position.getCopy(),
+                this.position.clone(),
                 this.entityRadius * 2,
                 Cytoplast.prototype.pukeForce,
                 false,
@@ -385,7 +385,7 @@ Cytoplast.prototype.dockParticle = function(particlePosition) {
     
     }
     
-    var particle = new Particle(particlePosition.getCopy()),
+    var particle = new Particle(particlePosition.clone()),
         target = particle.position.sub(this.position);
         
     target.normalizeSelf();

@@ -219,18 +219,18 @@ Game.prototype = {
             var radius = Entropyfier.prototype.entropyRadius * (Math.random() * .3 + .7);
             var time = Entropyfier.prototype.entropyTime * (Math.random() * .3 + .7);
 
-            this.entropyfiers.push(new Entropyfier(center.getCopy(), time, radius));
+            this.entropyfiers.push(new Entropyfier(center.clone(), time, radius));
 
             center.addSelf(new Vector(radius, 0).rotate2DSelf(Math.random() * Math.PI * 2));
 
-            this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.07, radius / 2));
+            this.entropyfiers.push(new Entropyfier(center.clone(), time * 1.07, radius / 2));
 
 
             if (Math.random() > .5) {
 
                 center.addSelf(new Vector(radius * 0.5, 0).rotate2DSelf(Math.random() * Math.PI * 2));
 
-                this.entropyfiers.push(new Entropyfier(center.getCopy(), time * 1.11, radius / 3));
+                this.entropyfiers.push(new Entropyfier(center.clone(), time * 1.11, radius / 3));
 
             }
 
