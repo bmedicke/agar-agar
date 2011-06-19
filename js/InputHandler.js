@@ -1,14 +1,9 @@
 var InputHandler = function(vectorfield) {
     
     this.vectorfield = vectorfield;
-
-    this.state = null;
     
     this.touching = false;
     this.touchStarted = false;
-    
-    this.clickTimeoutID = null;
-    this.clickTime = 250;
     
     this.oldTouchPosition = new Vector();
     this.touchPosition = new Vector();
@@ -97,8 +92,6 @@ InputHandler.prototype = {
         
         this.touchStart();
         
-        this.state = "down";
-        
     },
     
     onMouseMove : function(event) {
@@ -113,8 +106,6 @@ InputHandler.prototype = {
     onMouseUp : function(event) {
         
         this.setMousePosition(event);
-        
-        this.state = "up";
         
         this.touchStop();
         
