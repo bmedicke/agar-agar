@@ -11,10 +11,10 @@ var Game = function() {
     this.drawVectorfield = true;
     this.drawStardust = true;
     
-    this.leukoTime = 0;
-    this.particleTime = 0;
-    this.devourerTime = 0;
-    this.entropyTime = 0;
+    this.leukoInterval = null;
+    this.particleInterval = null;
+    this.devourerInterval = null;
+    this.entropyInterval = null;
     
     this.entropyfiers = [];
     
@@ -74,7 +74,7 @@ Game.prototype = {
         if (this.state === "run") {
             
             this.controller.update(dt);
-            this.updateLevel(dt);
+            // this.updateLevel(dt);
             
         }
         
@@ -117,7 +117,49 @@ Game.prototype = {
         this.controller.devourers.push(new Devourer(midPoint.add(randomPosition)));
         this.controller.cytoplasts.push(new Cytoplast(midPoint.add(randomPosition.mulSelf(-1))));
         
+        this.initIntervals();
+        
         this.state = "run";
+        
+    },
+    
+    initIntervals : function() {
+        
+        this.entropyInterval = Timer.setInterval(function() {
+            
+            game.addEntropyfiers(game.entropyAmount);
+            
+        }, this.entropyRate);
+        
+        
+        this.devourerInterval = Timer.setInterval(function() {
+            
+            game.controller.addDevourers(1);
+            
+        }, this.devourerRate);
+        
+        
+        // FIXME: count particles in Cytoplast
+        this.particleInterval = Timer.setInterval(function() {
+            
+            if (game.controller.particles.length < Particle.prototype.maxCount) {
+            
+                game.controller.addParticle();
+                
+            }
+            
+        }, this.particleRate);
+        
+        
+        this.leukoInterval = Timer.setInterval(function() {
+            
+            if (game.controller.leukocytes.length < game.leukoCap) {
+            
+                game.controller.addLeukocytes(game.leukoAmount);
+                
+            }
+            
+        }, this.leukoRate);
         
     },
     
@@ -126,13 +168,8 @@ Game.prototype = {
         Timer.reset();
         Animator.reset();
         
-        this.leukoTime = 0;
-        this.particleTime = 0;
-        this.devourerTime = 0;
-        this.entropyTime = 0;
-        
         this.entropyfiers = [];
-    
+        
         this.controller.reset();
         this.vectorfield.reset();
         
@@ -141,47 +178,6 @@ Game.prototype = {
     },
     
     updateLevel : function(dt) {
-        
-        this.leukoTime += dt;
-        this.entropyTime += dt;
-        this.devourerTime += dt;
-        this.particleTime += dt;
-    
-        if( this.leukoTime > this.leukoRate &&
-            this.controller.leukocytes.length < this.leukoCap) {
-
-            this.controller.addLeukocytes(this.leukoAmount);
-            
-            this.leukoTime -= this.leukoRate;
-        
-        }
-        
-        
-        // FIXME: count particles in Cytoplast
-        if( this.particleTime > this.particleRate &&
-            this.controller.particles.length < Particle.prototype.maxCount) {
-            
-            this.controller.addParticle();
-            
-            this.particleTime -= this.particleRate;
-        
-        }
-        
-        if( this.entropyTime > this.entropyRate) {
-        
-            this.addEntropyfiers(this.entropyAmount);
-            
-            this.entropyTime -= this.entropyRate;
-        
-        }
-        
-        if( this.devourerTime > this.devourerRate) {
-        
-            this.controller.addDevourers(1);
-            
-            this.devourerTime -= this.devourerRate;
-        
-        }
         
     },
     
