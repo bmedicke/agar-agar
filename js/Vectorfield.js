@@ -50,9 +50,12 @@ Vectorfield.prototype = {
     initSize : function(width, height) {
         
         this.cellSize = Math.sqrt(width * height / this.numberOfCells);
+        
         this.cols = Math.ceil(width / this.cellSize);
         this.rows = Math.ceil(height / this.cellSize);
-
+        
+        this.numberOfCells = this.cols * this.rows;
+        
         this.boundaryOffset = {
             x : this.cols - width / this.cellSize,
             y : this.rows - height / this.cellSize
@@ -68,7 +71,7 @@ Vectorfield.prototype = {
         this.vertexBuffer.itemSize = 4;
         this.vertexBuffer.vertexCount = 0;
 
-        this.vertexArray = new Float32Array(this.cols * this.rows * this.vertexBuffer.itemSize);
+        this.vertexArray = new Float32Array(this.numberOfCells * this.vertexBuffer.itemSize);
 
         this.shader = gl.loadShader("vectorfield-vertex-shader", "vectorfield-fragment-shader");
 
@@ -88,7 +91,7 @@ Vectorfield.prototype = {
 
         });
 
-        for (var i = 0; i < this.rows * this.cols; i++) {
+        for (var i = 0; i < this.numberOfCells; i++) {
         
             this.staticVectors[i] = new Vector();
             this.dynamicVectors[i] = new Vector();

@@ -85,14 +85,14 @@ Leukocyte.initialize = function(gl) {
     
 };
 
-Leukocyte.prototype.update = function(dt) {
-
-    // this.angle += (this.orientation.angle() - this.angle) * 0.05;
-    // this.angle = this.orientation.angle();
-
-    Entity.prototype.update.call(this, dt);
-
-};
+// Leukocyte.prototype.update = function(dt) {
+// 
+//     this.angle += (this.orientation.angle() - this.angle) * 0.05;
+//     this.angle = this.orientation.angle();
+// 
+//     Entity.prototype.update.call(this, dt);
+// 
+// };
 
 Leukocyte.draw = function(gl, leukocytes) {
     

@@ -398,31 +398,26 @@ Controller.prototype = {
             for(var j = 0; j < this.leukocytes.length; j++) {
 
                 if(cytoplast.collision(this.leukocytes[j]) && cytoplast.spikeState) {
-				
-					this.addPoints("leukoDeath");
-					delete this.leukocytes.splice(j, 1)[0].destroy();
-				
-				}
+                
+                    this.addPoints("leukoDeath");
+                    delete this.leukocytes.splice(j, 1)[0].destroy();
+                
+                }
 
             }
-				
-			var forceVector = this.vectorfield.getVector(cytoplast.position);
-			var offset = Cytoplast.prototype.entityRadius;
+            
+            var forceVector = this.vectorfield.getVector(cytoplast.position),
+                offsetVector = new Vector(Cytoplast.prototype.entityRadius);
+            
+            for (var i = 0; i < 6; i++) {
+                
+                forceVector.addSelf(this.vectorfield.getVector(
+                    cytoplast.position.add(offsetVector.rotate2DSelf(Math.PI / 3))
+                ));
+                
+            }
 
-			forceVector.addSelf(this.vectorfield.getVector(
-				new Vector(cytoplast.position.x - offset, cytoplast.position.y))
-			);
-			forceVector.addSelf(this.vectorfield.getVector(
-				new Vector(cytoplast.position.x, cytoplast.position.y + offset))
-			);
-			forceVector.addSelf(this.vectorfield.getVector(
-				new Vector(cytoplast.position.x + offset, cytoplast.position.y))
-			);
-			forceVector.addSelf(this.vectorfield.getVector(
-				new Vector(cytoplast.position.x, cytoplast.position.y - offset))
-			);
-
-			cytoplast.applyForce(forceVector.divSelf(5));
+            cytoplast.applyForce(forceVector.divSelf(7));
 
             cytoplast.checkBoundary(this.vectorfield);
 

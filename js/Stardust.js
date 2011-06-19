@@ -1,3 +1,16 @@
+var DustParticle = function(position) {
+    
+    this.position = position || new Vector();
+    this.timer = Math.random() * DustParticle.prototype.lifeTime;
+    
+    this.mass = Math.random() * DustParticle.prototype.mass + DustParticle.prototype.mass / 2;
+    
+};
+
+DustParticle.prototype.lifeTime = 3000;
+DustParticle.prototype.mass = 10;
+
+
 var Stardust = function(vectorfield) {
     
     this.vectorfield = vectorfield;
@@ -56,7 +69,7 @@ Stardust.prototype = {
             
             if (particle.timer > DustParticle.prototype.lifeTime) {
             
-                particle.position = new Vector(
+                particle.position.set(
                     Math.random() * this.vectorfield.cols, 
                     Math.random() * this.vectorfield.rows
                 );
