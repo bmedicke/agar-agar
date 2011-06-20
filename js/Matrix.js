@@ -53,11 +53,17 @@ Matrix.prototype = {
     
     transposeSelf: function() {
         
-        return this.set(
-            new Vector(this.a.x, this.b.x, this.c.x),
-            new Vector(this.a.y, this.b.y, this.c.y),
-            new Vector(this.a.z, this.b.z, this.c.z)
-        );
+        var vector = new Vector(this.b.y, this.c.x, this.c.y);
+        
+        this.b.x = this.a.y;
+        this.c.x = this.a.z;
+        this.c.y = this.b.z;
+        
+        this.a.y = vector.x;
+        this.a.z = vector.y;
+        this.b.z = vector.z;
+        
+        return this;
         
     },
     

@@ -23,13 +23,11 @@ Vector.prototype = {
     
     copy: function(vector) {
         
-        this.set(
+        return this.set(
             vector.x,
             vector.y,
             vector.z
         );
-        
-        return this;
         
     },
     
@@ -107,7 +105,7 @@ Vector.prototype = {
         
         if (!value) {
             
-            return this;
+            return new Vector();
             
         }
 
@@ -224,18 +222,18 @@ Vector.prototype = {
     },
     
     rotate2D: function(angle) {
-    
-        return new Vector(
-            Math.cos(angle) * this.x - Math.sin(angle) * this.y,
-            Math.sin(angle) * this.x + Math.cos(angle) * this.y,
-            this.z
-        );
+        
+        return this.clone().rotate2DSelf(angle);
         
     },
     
     rotate2DSelf: function(angle) {
         
-        return this.copy(this.rotate2D(angle));
+        return this.set(
+            Math.cos(angle) * this.x - Math.sin(angle) * this.y,
+            Math.sin(angle) * this.x + Math.cos(angle) * this.y,
+            this.z
+        );
         
     }
 };
