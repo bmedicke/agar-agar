@@ -16,19 +16,6 @@ var Entropyfier = function(position, chargeTime, entityRadius) {
 
 };
 
-Entropyfier.initialize = function(gl) {
-    
-    this.shader = gl.loadShader("entropyfier-vertex-shader", "entropyfier-fragment-shader");
-
-    gl.bindShader(this.shader);
-
-    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
-
-    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    this.shader.lifeTimeUniformLocation = gl.getUniformLocation(this.shader, "lifeTime");
-    
-};
-
 Entropyfier.prototype = {
     
     entropyTime : 8000,
@@ -65,4 +52,17 @@ Entropyfier.prototype = {
     
     }
 
+};
+
+Entropyfier.initialize = function(gl) {
+    
+    this.shader = gl.loadShader("entropyfier-vertex-shader", "entropyfier-fragment-shader");
+
+    gl.bindShader(this.shader);
+
+    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
+
+    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    this.shader.lifeTimeUniformLocation = gl.getUniformLocation(this.shader, "lifeTime");
+    
 };

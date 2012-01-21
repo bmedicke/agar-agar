@@ -66,7 +66,7 @@ Entity.prototype = {
 
             this.applyForce(vector.normalize().mulSelf(this.moveSpeed));
             
-            entity.applyForce(vector.normalize().mulSelf(entity.moveSpeed * -Entity.prototype.repulsionForce));
+            entity.applyForce(vector.normalize().mulSelf(entity.moveSpeed * -this.repulsionForce));
             
             return true;
             

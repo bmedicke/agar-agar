@@ -11,18 +11,62 @@ var Leukocyte = function(position) {
 Leukocyte.prototype = new Entity();
 Leukocyte.prototype.constructor = Entity;
 
-Leukocyte.prototype.mass = 300000;
-Leukocyte.prototype.moveSpeed = 0.3;
+extend(Leukocyte.prototype, {
 
-Leukocyte.prototype.entityRadius = 1.0;
-Leukocyte.prototype.circleResolution = 16;
+    mass : 300000,
+    moveSpeed : 0.3,
 
-Leukocyte.prototype.eatTime = 300;
+    entityRadius : 1.0,
+    circleResolution : 16,
 
-Leukocyte.prototype.glowRadius = .7;
+    eatTime : 300,
 
-Leukocyte.prototype.absolutMaxCount = 30;
-Leukocyte.prototype.textureSizeFactor = 2.0;
+    glowRadius : .7,
+
+    absolutMaxCount : 30,
+    textureSizeFactor : 2.0,
+
+    // update : function(dt) {
+    // 
+    //     this.angle += (this.orientation.angle() - this.angle) * 0.05;
+    //     this.angle = this.orientation.angle();
+    // 
+    //     Entity.prototype.update.call(this, dt);
+    // 
+    // },
+
+    eatParticle : function(particlePosition) {
+    
+        this.isActive = false;
+    
+        this.orientation = particlePosition.sub(this.position);
+        this.deadParticle = new Particle(this.orientation);
+    
+        var self = this;
+    
+        Animator.animate({
+            object: this.orientation, 
+            values: {"x" : 0, "y" : 0}, 
+            duration: this.eatTime * 0.5,
+        
+            callback: function() {
+            
+                Animator.animate({
+                    object: self.deadParticle, 
+                    values: {"alpha" : 0.7}, 
+                    duration: this.eatTime * 0.5,
+                    callback: function() {
+                        self.isActive = true;
+                    }
+                });
+            
+            }
+        
+        });
+
+    }
+    
+});
 
 Leukocyte.initialize = function(gl) {
     
@@ -85,15 +129,6 @@ Leukocyte.initialize = function(gl) {
     
 };
 
-// Leukocyte.prototype.update = function(dt) {
-// 
-//     this.angle += (this.orientation.angle() - this.angle) * 0.05;
-//     this.angle = this.orientation.angle();
-// 
-//     Entity.prototype.update.call(this, dt);
-// 
-// };
-
 Leukocyte.draw = function(gl, leukocytes) {
     
     for (var i = 0; i < leukocytes.length; i++) {
@@ -131,35 +166,4 @@ Leukocyte.draw = function(gl, leukocytes) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.drawElements(gl.POINTS, leukocytes.length, gl.UNSIGNED_SHORT, 0);
 
-};
-
-Leukocyte.prototype.eatParticle = function(particlePosition) {
-    
-    this.isActive = false;
-    
-    this.orientation = particlePosition.sub(this.position);
-    this.deadParticle = new Particle(this.orientation);
-    
-    var self = this;
-    
-    Animator.animate({
-        object: this.orientation, 
-        values: {"x" : 0, "y" : 0}, 
-        duration: Leukocyte.prototype.eatTime * 0.5,
-        
-        callback: function() {
-            
-            Animator.animate({
-                object: self.deadParticle, 
-                values: {"alpha" : 0.7}, 
-                duration: Leukocyte.prototype.eatTime * 0.5,
-                callback: function() {
-                    self.isActive = true;
-                }
-            });
-            
-        }
-        
-    });
-    
 };

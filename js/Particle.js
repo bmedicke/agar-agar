@@ -9,17 +9,21 @@ var Particle = function(position, alpha) {
 Particle.prototype = new Entity();
 Particle.prototype.constructor = Entity;
 
-Particle.prototype.mass = 100000;
-Particle.prototype.entityRadius = 0.15;
-Particle.prototype.separationRadius = 0.3;
-Particle.prototype.cohesionRadius = 2;
+extend(Particle.prototype, {
 
-Particle.prototype.count = 0;
-Particle.prototype.maxCount = 150;
+    mass : 100000,
+    entityRadius : 0.15,
+    separationRadius : 0.3,
+    cohesionRadius : 2,
 
-Particle.prototype.absolutMaxCount = 250;
+    count : 0,
+    maxCount : 150,
 
-Particle.prototype.textureSizeFactor = 4;
+    absolutMaxCount : 250,
+
+    textureSizeFactor : 4
+
+});
 
 Particle.initialize = function(gl) {
     
