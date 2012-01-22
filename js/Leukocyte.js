@@ -3,9 +3,8 @@ var Leukocyte = function(position) {
     Entity.call(this, position);
     
     this.isActive = true;
-    this.activeTimer = 0;
-    this.angle = 0;
-    
+    this.angle = ( Math.random() * 2 - 1 ) * Math.PI;
+
 };
 
 Leukocyte.prototype = new Entity();
@@ -17,52 +16,56 @@ extend(Leukocyte.prototype, {
     moveSpeed : 0.3,
 
     entityRadius : 1.0,
-    circleResolution : 16,
 
     eatTime : 300,
-
-    glowRadius : .7,
 
     absolutMaxCount : 30,
     textureSizeFactor : 2.0,
 
-    // update : function(dt) {
-    // 
-    //     this.angle += (this.orientation.angle() - this.angle) * 0.05;
-    //     this.angle = this.orientation.angle();
-    // 
-    //     Entity.prototype.update.call(this, dt);
-    // 
-    // },
+    update : function(dt) {
+    
+        this.angle = checkAngle(this.angle);
+    
+        this.angle += checkAngle(this.orientation.angle() - this.angle) * 0.1;
+    
+        // TODO: remove vector created at normalize
+        this.applyForce(this.orientation.normalize().mulSelf(this.moveSpeed));
+    
+        Entity.prototype.update.call(this, dt);
+    
+    },
 
     eatParticle : function(particlePosition) {
+        
+        var orient = this.orientation;
     
         this.isActive = false;
     
-        this.orientation = particlePosition.sub(this.position);
-        this.deadParticle = new Particle(this.orientation);
+        orient.copy(particlePosition).subSelf(this.position);
+        this.deadParticle = new Particle(particlePosition.copy(orient));
     
-        var self = this;
+        var self = this,
+            tween = new TWEEN.Tween(orient);
     
-        Animator.animate({
-            object: this.orientation, 
-            values: {"x" : 0, "y" : 0}, 
-            duration: this.eatTime * 0.5,
-        
-            callback: function() {
+        tween.to( {x : orient.x * 0.0000001, y : orient.y * 0.0000001}, this.eatTime * 0.5);
+    
+        tween.onComplete( function() {
+    
+            tween = new TWEEN.Tween(self.deadParticle);
+    
+            tween.to( {alpha : 0.7}, self.eatTime * 0.5);
+    
+            tween.onComplete( function() {
+                
+                self.isActive = true;
+                
+            })
             
-                Animator.animate({
-                    object: self.deadParticle, 
-                    values: {"alpha" : 0.7}, 
-                    duration: this.eatTime * 0.5,
-                    callback: function() {
-                        self.isActive = true;
-                    }
-                });
-            
-            }
-        
+            tween.start();
+    
         });
+        
+        tween.start();
 
     }
     
@@ -76,7 +79,7 @@ Leukocyte.initialize = function(gl) {
     this.vertexArray = new Float32Array(Leukocyte.prototype.absolutMaxCount * this.vertexBuffer.itemSize);
     
     this.paramsBuffer = gl.createBuffer();
-    this.paramsBuffer.itemSize = 3;
+    this.paramsBuffer.itemSize = 4;
     
     this.paramsArray = new Float32Array(Leukocyte.prototype.absolutMaxCount * this.paramsBuffer.itemSize);
     
@@ -132,19 +135,27 @@ Leukocyte.initialize = function(gl) {
 
 Leukocyte.draw = function(gl, leukocytes) {
     
+    var vertexArray = this.vertexArray,
+        paramsArray = this.paramsArray;
+    
     for (var i = 0; i < leukocytes.length; i++) {
         
-        this.vertexArray[i * 2] = leukocytes[i].position.x;
-        this.vertexArray[i * 2 + 1] = leukocytes[i].position.y;
+        var leukocyte = leukocytes[i],
+            pos = leukocyte.position,
+            orient = leukocyte.orientation;
         
-        this.paramsArray[i * 3] = leukocytes[i].orientation.norm();
-        this.paramsArray[i * 3 + 1] = leukocytes[i].orientation.angle();;
-        this.paramsArray[i * 3 + 2] = leukocytes[i].age * 0.001;
+        vertexArray[i * 2] = pos.x;
+        vertexArray[i * 2 + 1] = pos.y;
         
-        if (!leukocytes[i].isActive) {
+        paramsArray[i * 4] = orient.norm();
+        paramsArray[i * 4 + 1] = orient.angle();
+        paramsArray[i * 4 + 2] = leukocyte.angle;
+        paramsArray[i * 4 + 3] = leukocyte.age * 0.001;
         
-            leukocytes[i].deadParticle.position = leukocytes[i].position.add(leukocytes[i].orientation);
-            Particle.drawEnqueue([leukocytes[i].deadParticle]);
+        if (!leukocyte.isActive) {
+        
+            leukocyte.deadParticle.position.copy(pos).addSelf(orient);
+            Particle.drawEnqueue([leukocyte.deadParticle]);
         
         }
         
@@ -153,12 +164,12 @@ Leukocyte.draw = function(gl, leukocytes) {
     gl.bindShader(this.shader);
     
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexArray, gl.STATIC_DRAW);
     
     gl.vertexAttribPointer(this.positionAttribLocation, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
     gl.bindBuffer(gl.ARRAY_BUFFER, this.paramsBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, this.paramsArray, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, paramsArray, gl.STATIC_DRAW);
     
     gl.vertexAttribPointer(this.paramsAttribLocation, this.paramsBuffer.itemSize, gl.FLOAT, false, 0, 0);
     

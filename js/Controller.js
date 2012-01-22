@@ -13,6 +13,8 @@ var Controller = function(vectorfield) {
     this.multiplier = 1;
     this.multiplierCooldown = 1;
     this.multiplierCooldownAnimation = null;
+    
+    this.vector = new Vector();
 
 };
 
@@ -77,37 +79,37 @@ Controller.prototype = {
 
     },
 
-    killAndSearch : function(leukocyte) {
+    searchAndKill : function(leukocyte) {
         
-        nearest = new Vector(Infinity, Infinity, 0);
+        var nearest = new Vector(Infinity, Infinity, 0),
+            current = this.vector;
     
         for (var j = 0; j < this.particles.length; j++) {
     
-            var particle = this.particles[j],
-                current = (particle.position.sub(leukocyte.position));
+            var particle = this.particles[j];
+            
+            current.copy(particle.position).subSelf(leukocyte.position);
         
             if (current.normSquared() < nearest.normSquared()) {
         
-                nearest = current;
+                nearest.copy(current);
         
             }
         
             if (leukocyte.checkCollision(particle)) {
-                    
+                
                 leukocyte.eatParticle(particle.position);
                 
                 this.particles.splice(j, 1);
                 j--;
                 
                 return;
-                    
+                
             }
         
         }
-            
-        leukocyte.orientation = nearest;
         
-        leukocyte.applyForce(nearest.normalize().mulSelf(leukocyte.moveSpeed));
+        leukocyte.orientation.copy(nearest);
         
     },
 
@@ -119,7 +121,7 @@ Controller.prototype = {
 
             if (this.particles.length && leukocyte.isActive) {
 
-                this.killAndSearch(leukocyte);
+                this.searchAndKill(leukocyte);
 
             }
 

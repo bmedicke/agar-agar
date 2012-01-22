@@ -294,10 +294,11 @@
     uniform float radius;
 
     attribute vec2 position;
-    attribute vec3 params;
+    attribute vec4 params;
 
     varying float factor;
     varying float rotation;
+    varying float direction;
     varying float time;
     
     const float PI = 3.1415926535;
@@ -312,7 +313,8 @@
         factor = sin( distance / ( radius * 2.0 ) * PI );
         
         rotation = -params.y;
-        time = params.z;
+        direction = -params.z;
+        time = params.w;
         
     }
     
@@ -327,6 +329,7 @@
 
     varying float factor;
     varying float rotation;
+    varying float direction;
     varying float time;
 
     const vec2 center = vec2( 0.5, 0.5 );
@@ -357,6 +360,13 @@
         // point *= 1.0 + radius / 5.0 * 
         //     sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
         //     sin( 6.0 * atan( point.y, point.x ) - time * 5.0 );
+        
+        angle = direction - rotation;
+        
+        point = vec2(
+            cos( angle ) * point.x - sin( angle ) * point.y,
+            sin( angle ) * point.x + cos( angle ) * point.y
+        );
         
         gl_FragColor = texture2D( texture, point + center );
         gl_FragColor.a *= 2.0;
@@ -524,6 +534,7 @@
 <script type="text/javascript" charset="utf-8" src="lib/Tween.js"></script>
 <script type="text/javascript" charset="utf-8" src="lib/Stats.js"></script>
 <script type="text/javascript" charset="utf-8" src="lib/jquery-1.7.1.js"></script>
+<script type="text/javascript" charset="utf-8" src="lib/state-machine.js"></script>
 
 <script type="text/javascript" charset="utf-8" src="js/Menu.js"></script>
 
