@@ -30,7 +30,7 @@ Game.prototype = {
     
     particleRate : 1500,
     
-    entropyRate : 15000,
+    entropyRate : 3000,
     entropyAmount : 1,
     
     devourerRate : 20000,
@@ -64,6 +64,8 @@ Game.prototype = {
         this.vectorfield.update(dt);
         this.controller.applyDevourerVortices(dt);
         this.inputHandler.update(dt);
+        
+        this.updateEntropyfiers(dt);
         
         if (this.drawStardust) {
             
@@ -183,6 +185,16 @@ Game.prototype = {
         
     },
     
+    updateEntropyfiers : function(dt) {
+        
+        for (var i = 0; i < this.entropyfiers.length; i++) {
+            
+            this.entropyfiers[i].update(dt);
+            
+        }
+        
+    },
+    
     drawEntropyfiers : function(gl) {
         
         for (var i = 0; i < this.entropyfiers.length; i++) {
@@ -209,23 +221,23 @@ Game.prototype = {
             var center = new Vector(Math.random() * this.vectorfield.cols,
                                     Math.random() * this.vectorfield.rows);
 
-            var radius = Entropyfier.prototype.entropyRadius * (Math.random() * .3 + .7);
-            var time = Entropyfier.prototype.entropyTime * (Math.random() * .3 + .7);
+            var radius = Entropyfier.prototype.entropyRadius * (Math.random() * .5 + .5),
+                time = Entropyfier.prototype.entropyTime * (Math.random() * .3 + .7);
 
-            this.entropyfiers.push(new Entropyfier(center.clone(), time, radius));
+            this.entropyfiers.unshift(new Entropyfier(center.clone(), time, radius));
 
-            center.addSelf(new Vector(radius, 0).rotate2DSelf(Math.random() * Math.PI * 2));
-
-            this.entropyfiers.push(new Entropyfier(center.clone(), time * 1.07, radius / 2));
-
-
-            if (Math.random() > .5) {
-
-                center.addSelf(new Vector(radius * 0.5, 0).rotate2DSelf(Math.random() * Math.PI * 2));
-
-                this.entropyfiers.push(new Entropyfier(center.clone(), time * 1.11, radius / 3));
-
-            }
+            // center.addSelf(new Vector(1, 0).rotate2DSelf(Math.random() * Math.PI * 2).mulSelf(radius + Math.random()));
+            // 
+            // this.entropyfiers.unshift(new Entropyfier(center.clone(), time * 1.07, Math.random() * radius / 2));
+            // 
+            // 
+            // if (Math.random() > .5) {
+            // 
+            //     center.addSelf(new Vector(1, 0).rotate2DSelf(Math.random() * Math.PI * 2).mulSelf(radius * 0.5 + Math.random()));
+            // 
+            //     this.entropyfiers.unshift(new Entropyfier(center.clone(), time * 1.11, Math.random() * radius / 3));
+            // 
+            // }
 
         }
 

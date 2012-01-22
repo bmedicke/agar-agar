@@ -14,13 +14,38 @@ var Entropyfier = function(position, chargeTime, entityRadius) {
     
     this.burst = false;
 
+    this.forcefield = new Forcefield(
+        position,
+        this.entityRadius,
+        this.force,
+        false,
+        Math.PI
+    );
+
 };
 
 Entropyfier.prototype = {
     
     entropyTime : 8000,
-    entropyRadius : 7,
+    entropyRadius : 5,
+    
     force : 25,
+    lightForce : 2,
+    
+    update : function(dt) {
+
+         var elapsedPercent = this.timeout.elapsed / this.timeout.duration - 0.5;
+         
+         if (elapsedPercent > 0) {
+         
+             this.forcefield.radius = elapsedPercent * 10;
+             this.forcefield.force = elapsedPercent * this.lightForce;
+         
+             game.vectorfield.applyForcefield(dt, this.forcefield);
+
+        }
+
+    },
 
     draw : function(gl) {
 
@@ -41,7 +66,7 @@ Entropyfier.prototype = {
         
         gl.bindShader(Entropyfier.shader);
         
-        var elapsedPercent = this.timeout.elapsed / this.timeout.duration;
+        var elapsedPercent = this.timeout.elapsed / this.timeout.duration * 0.65;
         
         gl.uniform1f(
             Entropyfier.shader.lifeTimeUniformLocation, 
