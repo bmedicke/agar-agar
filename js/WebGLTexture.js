@@ -13,7 +13,13 @@ var WebGLTexture = function() {
     
         texture.image.onload = function () {
         
-            self.textureImageLoaded(texture, callback);
+            self.textureImageLoaded(texture);
+            
+            if (callback) {
+        
+                callback(self);
+    
+            }
         
         }
     
@@ -23,7 +29,7 @@ var WebGLTexture = function() {
     
     };
 
-    this.textureImageLoaded = function(texture, callback) {
+    this.textureImageLoaded = function(texture) {
     
         this.activeTexture(this["TEXTURE" + texture.ID]);
         this.bindTexture( this.TEXTURE_2D, texture );
@@ -40,12 +46,6 @@ var WebGLTexture = function() {
         this.generateMipmap( this.TEXTURE_2D );
 
         this.bindTexture( this.TEXTURE_2D, null );
-    
-        if (callback) {
-        
-            callback(this);
-    
-        }
     
     };
 

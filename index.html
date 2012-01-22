@@ -364,25 +364,6 @@
     
 </script>
 
-<script id="devourer-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
-
-    uniform mat4 matrix;
-
-    attribute vec2 position;
-    attribute vec2 textureCoord;
-    
-    varying vec2 pointCoord;
-
-    void main(void) {
-
-       gl_Position = matrix * vec4(position, 1.0, 1.0);
-       
-       pointCoord = textureCoord;
-
-    }
-    
-</script>
-
 <script id="devourer-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
     precision mediump float;

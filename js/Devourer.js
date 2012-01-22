@@ -28,30 +28,6 @@ extend(Devourer.prototype, {
     textureSizeFactor : 2,
     glowRadius : 4.0,
 
-    draw : function(gl) {
-    
-        gl.pushMatrix();
-        
-            gl.translate(this.position.x, this.position.y);
-        
-            gl.setColor(.5, .5, .7, 1);
-        
-            gl.drawCircle(0, 0, this.entityRadius);
-        
-            gl.rotate(this.rotation);
-        
-            gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
-        
-            gl.rotate(Math.PI * 2 / 3);
-            gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
-        
-            gl.rotate(Math.PI * 2 / 3);
-            gl.drawCircle(this.entityRadius / 3 * 2, 0, this.entityRadius / 4);
-        
-        gl.popMatrix();
-
-    },
-
     update : function(dt) {
     
         Entity.prototype.update.call(this, dt);
@@ -90,18 +66,18 @@ extend(Devourer.prototype, {
 
 Devourer.initialize = function(gl) {
 
-    this.shader = gl.loadShader("devourer-vertex-shader", "devourer-fragment-shader");
+    var shader = gl.loadShader("texture-vertex-shader", "devourer-fragment-shader");
     
-    gl.bindShader(this.shader);
+    gl.bindShader(shader);
     
-    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
-    this.shader.textureCoordAttribLocation = gl.getAttribLocation(this.shader, "textureCoord");
+    shader.positionAttribLocation = gl.getAttribLocation(shader, "position");
+    shader.textureCoordAttribLocation = gl.getAttribLocation(shader, "textureCoord");
     
-    this.shader.speedUniformLocation = gl.getUniformLocation(this.shader, "speed");
-    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    shader.speedUniformLocation = gl.getUniformLocation(shader, "speed");
+    shader.matrixUniformLocation = gl.getUniformLocation(shader, "matrix");
     
-    gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "position"));
-    gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "textureCoord"));
+    gl.enableVertexAttribArray(shader.positionAttribLocation);
+    gl.enableVertexAttribArray(shader.textureCoordAttribLocation);
     
     var self = this;
     
@@ -119,15 +95,11 @@ Devourer.initialize = function(gl) {
         
     });
     
+    this.shader = shader;
+
 };
 
 Devourer.draw = function(gl, devourers) {
-    
-    // for (var i = 0; i < devourers.length; i++) {
-    //     
-    //     devourers[i].draw(gl);
-    //     
-    // }
     
     gl.bindShader(this.shader);
     
@@ -135,14 +107,15 @@ Devourer.draw = function(gl, devourers) {
     
     for (var i = 0; i < devourers.length; i++) {
         
-        gl.pushMatrix();
-        
         gl.uniform1f(
             this.shader.speedUniformLocation, 
             devourers[i].speed
         );
         
+        gl.pushMatrix();
+        
         gl.translate(devourers[i].position.x, devourers[i].position.y);
+        
         gl.scale(size, size);
         gl.rotate(devourers[i].rotation);
         
