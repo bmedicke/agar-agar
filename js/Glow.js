@@ -1,27 +1,11 @@
 var Glow = {
     
     textureSizeFactor : 1.5,
+    color : [0.7, 0.9, 0.7, 1.0],
     
     initialize : function(gl) {
-
-        this.shader = gl.loadShader("glow-vertex-shader", "glow-fragment-shader");
-
-        gl.bindShader(this.shader);
-
-        this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
-        this.shader.textureCoordAttribLocation = gl.getAttribLocation(this.shader, "textureCoord");
-
-        this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-        gl.passMatrix();
-
-        var self = this;
     
-        this.texture = gl.loadTexture("textures/glow.png", function(gl) {
-        
-            gl.bindShader(self.shader);
-            gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
-        
-        });
+        this.texture = gl.loadTexture("textures/glow.png");
         
     },
     
@@ -29,7 +13,9 @@ var Glow = {
 
         var size = glowRadius * 2 * this.textureSizeFactor;
 
-        gl.bindShader(this.shader);
+        gl.bindShader(gl.textureShader);
+        gl.passTexture(this.texture);
+        gl.passColor(this.color);
         
         for (var i = 0; i < entities.length; i++) {
             

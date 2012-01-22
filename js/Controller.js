@@ -62,7 +62,11 @@ Controller.prototype = {
 
     draw : function(gl) {
 
-        this.cytoplast.draw(gl);
+        if (this.cytoplast) {
+
+            this.cytoplast.draw(gl);
+
+        }
 
         if (this.leukocytes.length) {
             

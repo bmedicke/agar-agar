@@ -480,44 +480,6 @@
     
 </script>
 
-<script id="glow-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
-
-    uniform mat4 matrix;
-
-    attribute vec2 position;
-    attribute vec2 textureCoord;
-    
-    varying vec2 pointCoord;
-    
-    void main(void) {
-    
-       gl_Position = matrix * vec4(position, 1.0, 1.0);
-       pointCoord = textureCoord;
-    
-    }
-    
-</script>
-
-<script id="glow-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
-
-    precision mediump float;
-    
-    uniform sampler2D texture;
-    
-    varying vec2 pointCoord;
-    
-    const vec3 color = vec3(0.7, 0.9, 0.7);
-    
-    void main(void) {
-    
-       gl_FragColor.rgb = color;
-       gl_FragColor.a = texture2D( texture, pointCoord ).a * 1.5;
-       //gl_FragColor.a *= step( 0.72, gl_FragColor.a );
-       
-    }
-    
-</script>
-
 <script id="entropyfier-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
     
     uniform mat4 matrix;

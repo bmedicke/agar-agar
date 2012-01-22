@@ -11,7 +11,7 @@ var Cytoplast = function(position) {
     //     a : 0
     // };
     
-    this.color = [0.99, 0.92, 0.5, 0.2];
+    this.color = [0.99, 0.92, 0.5, 0.15];
     
     this.spikeState = false;
     this.puking = false;
