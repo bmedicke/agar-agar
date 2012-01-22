@@ -18,102 +18,72 @@ var Cytoplast = function(position) {
     this.squeezing = false;
     
     this.rotation = 0;
-    this.rotateSpeed = this.defaultRotateSpeed;
+    this.rotateSpeed = Cytoplast.prototype.defaultRotateSpeed;
     
 };
 
 Cytoplast.prototype = new Entity();
 Cytoplast.prototype.constructor = Entity;
 
-extend(Cytoplast.prototype, {
+Cytoplast.prototype.mass = 800000;
+Cytoplast.prototype.spikeMass = 80000;
+Cytoplast.prototype.pukeForce = 25;
+Cytoplast.prototype.defaultAlpha = 0.2;
 
-    mass : 800000,
-    spikeMass : 80000,
-    pukeForce : 25,
-    defaultAlpha : 0.2,
+Cytoplast.prototype.entityRadius = 2;
+Cytoplast.prototype.moveSpeed = 0;
+Cytoplast.prototype.maxFill = 15;
 
-    entityRadius : 2,
-    moveSpeed : 0,
-    maxFill : 15,
+Cytoplast.prototype.infectionTime = 3000;
+Cytoplast.prototype.spikeTime = 10000;
+Cytoplast.prototype.pukeTime = 1000;
+Cytoplast.prototype.dockTime = 1000;
 
-    infectionTime : 3000,
-    spikeTime : 10000,
-    pukeTime : 1000,
-    dockTime : 1000,
+Cytoplast.prototype.corpusTextureSize = 1.1;
+Cytoplast.prototype.spikeTextureSize = 1.9;
 
-    corpusTextureSize : 1.1,
-    spikeTextureSize : 1.9,
+Cytoplast.prototype.squeezeTime = 350;
+Cytoplast.prototype.inflateTime = 175;
+Cytoplast.prototype.squeezeFactor = 0.8;
 
-    squeezeTime : 350,
-    inflateTime : 175,
-    squeezeFactor : 0.8,
+Cytoplast.prototype.defaultRotateSpeed = 0.0002;
+Cytoplast.prototype.spikeRotateSpeed = 0.0006;
 
-    defaultRotateSpeed : 0.0002,
-    spikeRotateSpeed : 0.0006,
+Cytoplast.prototype.update = function(dt) {
 
-    update : function(dt) {
+    if(this.puking) {
 
-        if(this.puking) {
+        this.force.set(0, 0, 0);
 
-            this.force.set(0, 0, 0);
-
-        }
+    }
     
-        var rotateStep = this.rotateSpeed * dt;
+    var rotateStep = this.rotateSpeed * dt;
     
-        this.rotation += rotateStep;
+    this.rotation += rotateStep;
     
-        this.rotateDockedParticles(rotateStep);
+    this.rotateDockedParticles(rotateStep);
     
-        var positionChange = Entity.prototype.update.call(this, dt);
+    var positionChange = Entity.prototype.update.call(this, dt);
     
-        for (var i = 0; i < this.dockedParticles.length; i++) {
+    for (var i = 0; i < this.dockedParticles.length; i++) {
         
-            this.dockedParticles[i].position.addSelf(positionChange);
+        this.dockedParticles[i].position.addSelf(positionChange);
     
-        }
-
-    },
-
-    draw : function(gl) {
-
-        gl.pushMatrix();
+    }
     
-        gl.translate(this.position.x, this.position.y);
-    
-        var size;    
-    
-        gl.bindShader(Cytoplast.shader);
-    
-        if(this.spikeState) {
-    
-            gl.uniform4f(
-                Cytoplast.shader.colorUniformLocation,
-                this.color.r,
-                this.color.g,
-                this.color.b,
-                this.color.a
-            );
-        
-            gl.pushMatrix();
-        
-            size = 2 * this.spikeTextureSize * this.entityRadius;
-        
-            gl.scale(size, size);
-            gl.rotate(this.rotation);
+};
 
-            gl.passMatrix();
+Cytoplast.prototype.draw = function(gl) {
 
-            gl.passTexture(Cytoplast.spikeTexture, Cytoplast.textureUniformLocation);
-            gl.drawQuadTexture();
-        
-            gl.popMatrix();
-        
-            // this.color.a = Math.cos((this.spikeTimer / this.spikeTime * Math.PI * 0.5) * (((this.spikeTime - this.spikeTimer) / this.spikeTime) * 25)) * 0.5 + 0.5;
-            var timeRatio = 1 - (this.spikeTimer / this.spikeTime);
-            this.color.a = Math.cos(timeRatio * Math.PI * 2 * timeRatio * timeRatio * 20) * -0.1 + 0.3;
-
-        }
+    gl.pushMatrix();
+    
+    gl.translate(this.position.x, this.position.y);
+    
+    var size;    
+    
+    gl.bindShader(Cytoplast.shader);
+    
+    if(this.spikeState) {
     
         gl.uniform4f(
             Cytoplast.shader.colorUniformLocation,
@@ -122,275 +92,301 @@ extend(Cytoplast.prototype, {
             this.color.b,
             this.color.a
         );
-    
-        size = 2 * this.corpusTextureSize * this.entityRadius;
-    
+        
+        gl.pushMatrix();
+        
+        size = 2 * this.spikeTextureSize * Cytoplast.prototype.entityRadius;
+        
         gl.scale(size, size);
         gl.rotate(this.rotation);
-    
+
         gl.passMatrix();
-    
-        gl.passTexture(Cytoplast.corpusTexture, Cytoplast.textureUniformLocation);
+
+        gl.passTexture(Cytoplast.spikeTexture, Cytoplast.textureUniformLocation);
         gl.drawQuadTexture();
-    
-        this.color.a = this.defaultAlpha;
-    
-        gl.bindShader(gl.defaultShader);
-    
+        
         gl.popMatrix();
-    
-        Particle.drawEnqueue(this.dockedParticles);
-
-    },
-
-    rotateDockedParticles : function(angle) {
-
-        var targetVector = new Vector(),
-            rotatedTargetVector = new Vector();
-    
-        for(var i = 0; i < this.dockedParticles.length; i++) {
-    
-            targetVector = this.dockedParticles[i].position.sub(this.position);
         
-            rotatedTargetVector = targetVector.rotate2D(angle);
-        
-            rotatedTargetVector.subSelf(targetVector);
-        
-            this.dockedParticles[i].position.addSelf(rotatedTargetVector);
+        // this.color.a = Math.cos((this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI * 0.5) * (((Cytoplast.prototype.spikeTime - this.spikeTimer) / Cytoplast.prototype.spikeTime) * 25)) * 0.5 + 0.5;
+        var timeRatio = 1 - (this.spikeTimer / Cytoplast.prototype.spikeTime);
+        this.color.a = Math.cos(timeRatio * Math.PI * 2 * timeRatio * timeRatio * 20) * -0.1 + 0.3;
+
+    }
     
-        }
-
-    },
-
-    isFull : function() {
-
-        return (this.dockedParticles.length >= this.maxFill);
-
-    },
-
-    puke : function(addNewParticles) {
-
-        this.puking = true;    
+    gl.uniform4f(
+        Cytoplast.shader.colorUniformLocation,
+        this.color.r,
+        this.color.g,
+        this.color.b,
+        this.color.a
+    );
     
-        Animator.animate({
+    size = 2 * this.corpusTextureSize * Cytoplast.prototype.entityRadius;
+    
+    gl.scale(size, size);
+    gl.rotate(this.rotation);
+    
+    gl.passMatrix();
+    
+    gl.passTexture(Cytoplast.corpusTexture, Cytoplast.textureUniformLocation);
+    gl.drawQuadTexture();
+    
+    this.color.a = Cytoplast.prototype.defaultAlpha;
+    
+    gl.bindShader(gl.defaultShader);
+    
+    gl.popMatrix();
+    
+    Particle.drawEnqueue(this.dockedParticles);
+
+};
+
+Cytoplast.prototype.rotateDockedParticles = function(angle) {
+
+    var targetVector = new Vector(),
+        rotatedTargetVector = new Vector();
+    
+    for(var i = 0; i < this.dockedParticles.length; i++) {
+    
+        targetVector = this.dockedParticles[i].position.sub(this.position);
         
-            object: this,
-            duration: this.inflateTime / 2,
-            callback: function() {
+        rotatedTargetVector = targetVector.rotate2D(angle);
         
-                if(addNewParticles) {
+        rotatedTargetVector.subSelf(targetVector);
+        
+        this.dockedParticles[i].position.addSelf(rotatedTargetVector);
+    
+    }
+
+};
+
+Cytoplast.prototype.isFull = function() {
+
+    return (this.dockedParticles.length >= this.maxFill);
+
+};
+
+Cytoplast.prototype.puke = function(addNewParticles) {
+
+    this.puking = true;    
+    
+    Animator.animate({
+        
+        object: this,
+        duration: Cytoplast.prototype.inflateTime / 2,
+        callback: function() {
+        
+            if(addNewParticles) {
             
-                    game.controller.addParticlesAt(this.dockedParticles.length, this.position, this.entityRadius / 2);
+                game.controller.addParticlesAt(this.dockedParticles.length, this.position, Cytoplast.prototype.entityRadius / 2);
                 
-                    this.dockedParticles = [];
+                this.dockedParticles = [];
             
-                }
-        
-                game.vectorfield.addForcefield(new Forcefield(
-                    this.position.clone(),
-                    this.entityRadius * 2,
-                    this.pukeForce,
-                    false,
-                    Math.PI
-                ));
-        
             }
-       
-        });
-    
-        Animator.animate({       
         
-            object: this,
-            duration: this.inflateTime / 2 + this.pukeTime,
-            callback: function() {
-        
-                this.puking = false;
-        
-            }
-       
-        });
-
-    },
-
-    checkPuke : function() {
-
-        if(!this.spikeState) {
-    
-            this.puking = true;
-
-            this.squeeze();
-        
-            Animator.animate({
-                object: this,
-                duration: this.squeezeTime,
-                callback: function() {
-            
-                    this.puke(true);
-            
-                }
-            });
+            game.vectorfield.addForcefield(new Forcefield(
+                this.position.clone(),
+                this.entityRadius * 2,
+                Cytoplast.prototype.pukeForce,
+                false,
+                Math.PI
+            ));
         
         }
-
-    },
-
-    spikify : function() {
-
-        this.spikeTextureSize = this.corpusTextureSize * this.squeezeFactor;
+       
+    });
     
+    Animator.animate({       
+        
+        object: this,
+        duration: Cytoplast.prototype.inflateTime / 2 + Cytoplast.prototype.pukeTime,
+        callback: function() {
+        
+            this.puking = false;
+        
+        }
+       
+    });
+
+};
+
+Cytoplast.prototype.checkPuke = function() {
+
+    if(!this.spikeState) {
+    
+        this.puking = true;
+
         this.squeeze();
-    
+        
         Animator.animate({
             object: this,
-            duration: this.squeezeTime,
+            duration: Cytoplast.prototype.squeezeTime,
             callback: function() {
-        
-                if(!this.spikeState) {
-
-                    this.spikeState = true;
-                
-                    this.mass = this.spikeMass;
-                    this.spikeTimer = this.spikeTime;
-                    this.rotateSpeed = this.spikeRotateSpeed;
-                    this.puke(false);
-                
-                    Animator.animate({
-                        object: this,
-                        values: {"spikeTextureSize" : this.spikeTextureSize},
-                        duration: this.inflateTime,
-                        callback: this.deSpikify
-                    });
             
-                }
-        
+                this.puke(true);
+            
             }
         });
-
-    },
-
-    deSpikify : function() {
-
-        Animator.animate({
-            object: this,
-            values: {"spikeTimer" : 0},
-            duration: this.spikeTime,
-            callback: function() {
         
+    }
+
+}
+
+Cytoplast.prototype.spikify = function() {
+
+    this.spikeTextureSize = Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor;
+    
+    this.squeeze();
+    
+    Animator.animate({
+        object: this,
+        duration: Cytoplast.prototype.squeezeTime,
+        callback: function() {
+        
+            if(!this.spikeState) {
+
+                this.spikeState = true;
+                
+                this.mass = Cytoplast.prototype.spikeMass;
+                this.spikeTimer = Cytoplast.prototype.spikeTime;
+                this.rotateSpeed = Cytoplast.prototype.spikeRotateSpeed;
+                this.puke(false);
+                
                 Animator.animate({
                     object: this,
-                    values: {"spikeTextureSize" : this.corpusTextureSize * this.squeezeFactor},
-                    duration: this.squeezeTime,
-                    callback: function() {
-                
-                        this.spikeState = false;
-                        this.mass = this.mass;
-                        this.dockedParticles = [];
-                        this.rotateSpeed = this.defaultRotateSpeed;
-                
-                    }
+                    values: {"spikeTextureSize" : Cytoplast.prototype.spikeTextureSize},
+                    duration: Cytoplast.prototype.inflateTime,
+                    callback: Cytoplast.prototype.deSpikify
                 });
-        
+            
             }
-        });
-    
-    },
+        
+        }
+    });
 
-    squeeze : function() {
+}
 
-        if(!this.squeezing) {
+Cytoplast.prototype.deSpikify = function() {
 
-            this.squeezing = true;
+    Animator.animate({
+        object: this,
+        values: {"spikeTimer" : 0},
+        duration: Cytoplast.prototype.spikeTime,
+        callback: function() {
         
             Animator.animate({
                 object: this,
-                values: {"corpusTextureSize" : this.corpusTextureSize * this.squeezeFactor},
-                duration: this.squeezeTime,
-                callback: this.inflate
+                values: {"spikeTextureSize" : Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor},
+                duration: Cytoplast.prototype.squeezeTime,
+                callback: function() {
+                
+                    this.spikeState = false;
+                    this.mass = Cytoplast.prototype.mass;
+                    this.dockedParticles = [];
+                    this.rotateSpeed = Cytoplast.prototype.defaultRotateSpeed;
+                
+                }
             });
-
+        
         }
+    });
     
-    },
+}
 
-    inflate : function() {
-    
+Cytoplast.prototype.squeeze = function() {
+
+    if(!this.squeezing) {
+
+        this.squeezing = true;
+        
         Animator.animate({
             object: this,
-            values: {"corpusTextureSize" : this.corpusTextureSize},
-            duration: this.inflateTime,
-            callback: function() {
-        
-                this.squeezing = false;
-        
-            }
-        });
-
-    },
-
-    accelerateParticle : function(particle) {
-
-        var target = new Vector(1, 0, 0);
-    
-        target.rotate2DSelf(Math.random() * Math.PI * 2);
-        target.mulSelf(Math.random() * (this.entityRadius - 2 * particle.entityRadius));
-        target.addSelf(this.position);
-    
-        Animator.animate({
-            object: particle.position, 
-            values: {"x" : target.x, "y" : target.y}, 
-            duration: this.dockTime * 0.5,
-            easing: "easeOut"
-        });
-    
-        if(this.isFull() && !this.spikeState && !this.puking) {
-    
-            this.spikify();
-        
-        }
-
-    },
-
-    dockParticle : function(particlePosition) {
-
-        if(this.dockedParticles.length == 0) {
-        
-            Animator.animate({
-                object: this,
-                duration: this.infectionTime,
-                callback: this.checkPuke
-            });
-    
-        }
-    
-        var particle = new Particle(particlePosition.clone()),
-            target = particle.position.sub(this.position);
-        
-        target.normalizeSelf();
-        target.mulSelf(this.entityRadius);
-        target.addSelf(this.position);
-    
-        this.dockedParticles.push(particle);
-    
-        var self = this;
-    
-        Animator.animate({
-            object: particle.position, 
-            values: {"x" : target.x, "y" : target.y}, 
-            duration: this.dockTime,
-            callback: function() {
-                self.accelerateParticle(particle);
-            }
-        });
-    
-        Animator.animate({
-            object: particle, 
-            values: {"alpha" : 0.3}, 
-            duration: this.infectionTime
+            values: {"corpusTextureSize" : Cytoplast.prototype.corpusTextureSize * Cytoplast.prototype.squeezeFactor},
+            duration: Cytoplast.prototype.squeezeTime,
+            callback: Cytoplast.prototype.inflate
         });
 
     }
     
-});
+};
+
+Cytoplast.prototype.inflate = function() {
+    
+    Animator.animate({
+        object: this,
+        values: {"corpusTextureSize" : Cytoplast.prototype.corpusTextureSize},
+        duration: Cytoplast.prototype.inflateTime,
+        callback: function() {
+        
+            this.squeezing = false;
+        
+        }
+    });
+
+};
+
+Cytoplast.prototype.accelerateParticle = function(particle) {
+
+    var target = new Vector(1, 0, 0);
+    
+    target.rotate2DSelf(Math.random() * Math.PI * 2);
+    target.mulSelf(Math.random() * (this.entityRadius - 2 * particle.entityRadius));
+    target.addSelf(this.position);
+    
+    Animator.animate({
+        object: particle.position, 
+        values: {"x" : target.x, "y" : target.y}, 
+        duration: Cytoplast.prototype.dockTime * 0.5,
+        easing: "easeOut"
+    });
+    
+    if(this.isFull() && !this.spikeState && !this.puking) {
+    
+        this.spikify();
+        
+    }
+
+};
+
+Cytoplast.prototype.dockParticle = function(particlePosition) {
+
+    if(this.dockedParticles.length == 0) {
+        
+        Animator.animate({
+            object: this,
+            duration: Cytoplast.prototype.infectionTime,
+            callback: Cytoplast.prototype.checkPuke
+        });
+    
+    }
+    
+    var particle = new Particle(particlePosition.clone()),
+        target = particle.position.sub(this.position);
+        
+    target.normalizeSelf();
+    target.mulSelf(Cytoplast.prototype.entityRadius);
+    target.addSelf(this.position);
+    
+    this.dockedParticles.push(particle);
+    
+    var self = this;
+    
+    Animator.animate({
+        object: particle.position, 
+        values: {"x" : target.x, "y" : target.y}, 
+        duration: Cytoplast.prototype.dockTime,
+        callback: function() {
+            self.accelerateParticle(particle);
+        }
+    });
+    
+    Animator.animate({
+        object: particle, 
+        values: {"alpha" : 0.3}, 
+        duration: Cytoplast.prototype.infectionTime
+    });
+    
+};
 
 Cytoplast.initialize = function(gl) {
 

@@ -3,9 +3,10 @@ var Controller = function(vectorfield) {
     this.vectorfield = vectorfield;
 
     this.particles = [];
-    this.cytoplasts = [];
     this.leukocytes = [];
     this.devourers = [];
+
+    this.cytoplast = null;
 
     this.points = 0;
     this.multiplierPoints = 0;
@@ -47,7 +48,7 @@ Controller.prototype = {
 
         this.updateDevourers(dt);
 
-        this.updateCytoplasts(dt);
+        this.updateCytoplast(dt);
 
         this.updateParticles(dt);
         
@@ -61,13 +62,13 @@ Controller.prototype = {
 
     draw : function(gl) {
 
-        this.drawEntities(gl, this.cytoplasts);        
+        this.cytoplast.draw(gl);
 
         if (this.leukocytes.length) {
             
             Leukocyte.draw(gl, this.leukocytes);
             
-        }               
+        }
         
         Particle.drawEnqueue(this.particles);
         Particle.draw(gl);
@@ -76,16 +77,6 @@ Controller.prototype = {
             
             Devourer.draw(gl, this.devourers); 
             
-        }
-
-    },
-
-    drawEntities: function(gl, entities) {
-
-        for (var i = entities.length - 1; i >= 0; i--) {
-
-           entities[i].draw(gl);
-
         }
 
     },
@@ -157,9 +148,9 @@ Controller.prototype = {
 
     applyDevourerTarget : function(devourer) {
 
-        if(this.cytoplasts.length > 0) {
+        if(this.cytoplast) {
 
-            devourer.applyForce(this.cytoplasts[0].position.sub(devourer.position).normalizeSelf().mulSelf(devourer.moveSpeed));
+            devourer.applyForce(this.cytoplast.position.sub(devourer.position).normalizeSelf().mulSelf(devourer.moveSpeed));
 
         }
 
@@ -207,13 +198,11 @@ Controller.prototype = {
 
             devourer.update(dt);
 
-            for(var j = 0; j < this.cytoplasts.length; j++) {
+            if (this.cytoplast) {
 
-                var cytoplast = this.cytoplasts[j];
+                if (devourer.checkCollision(this.cytoplast)) {
 
-                if (devourer.checkCollision(cytoplast)) {
-
-                    if(cytoplast.spikeState) {
+                    if(this.cytoplast.spikeState) {
 
                         this.addPoints("devourerDeath");
                         this.increaseMultiplier();
@@ -331,23 +320,24 @@ Controller.prototype = {
 
     },
 
-    updateCytoplasts : function(dt) {
+    updateCytoplast : function(dt) {
 
-        for(var i = 0; i < this.cytoplasts.length; i++) {
+        var cytoplast = this.cytoplast,
+            particles = this.particles;
 
-            var cytoplast = this.cytoplasts[i];
+        if (cytoplast) {
 
-            for(var j = 0; j < this.particles.length; j++) {
+            for( var j = 0; j < particles.length; j++) {
 
-                if(cytoplast.checkCollision(this.particles[j]) &&
+                if (cytoplast.checkCollision(particles[j]) &&
                    !cytoplast.isFull() && !cytoplast.puking) {
 
-                    cytoplast.dockParticle(this.particles[j].position);
-                    this.particles.splice(j, 1);
+                    cytoplast.dockParticle(particles[j].position);
+                    particles.splice(j, 1);
 
                     this.addPoints("cytoInfect");
 
-                    if(cytoplast.isFull()) {
+                    if (cytoplast.isFull()) {
 
                         this.addPoints("cytoFull");
 
@@ -357,9 +347,9 @@ Controller.prototype = {
 
             }
 
-            for(var j = 0; j < this.leukocytes.length; j++) {
+            for (var j = 0; j < this.leukocytes.length; j++) {
 
-                if(cytoplast.collision(this.leukocytes[j]) && cytoplast.spikeState) {
+                if (this.cytoplast.collision(this.leukocytes[j]) && cytoplast.spikeState) {
                 
                     this.addPoints("leukoDeath");
                     this.leukocytes.splice(j, 1);
@@ -404,9 +394,10 @@ Controller.prototype = {
     reset : function() {
 
         this.particles = [];
-        this.cytoplasts = [];
         this.leukocytes = [];
         this.devourers = [];
+
+        this.cytoplast = null;
 
         this.points = 0;
         this.multiplierPoints = 0;
@@ -494,16 +485,6 @@ Controller.prototype = {
         for (var i = 0; i < amount; i++) {
 
             this.leukocytes.push(new Leukocyte(this.getRandomOutsidePosition()));
-
-        }
-
-    },
-
-    addCytoplasts : function(amount) {
-
-        for (var i = 0; i < amount; i++) {
-
-            this.cytoplasts.push(new Cytoplast(this.getRandomOutsidePosition()));
 
         }
 

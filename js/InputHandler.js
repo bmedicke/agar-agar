@@ -80,12 +80,6 @@ InputHandler.prototype = {
         }
     },
     
-    draw : function(gl) {
-        
-        
-        
-    },
-    
     onMouseDown : function(event) {
         
         this.setMousePosition(event);

@@ -74,7 +74,6 @@ Game.prototype = {
         if (this.state === "run") {
             
             this.controller.update(dt);
-            // this.updateLevel(dt);
             
         }
         
@@ -101,8 +100,6 @@ Game.prototype = {
         
         this.controller.draw(gl);
         
-        // this.inputHandler.draw(gl);
-        
     },
     
     initLevel : function() {
@@ -115,7 +112,7 @@ Game.prototype = {
             randomPosition = this.controller.getRandomOutsidePosition().subSelf(midPoint).mulSelf(.5);
         
         this.controller.devourers.push(new Devourer(midPoint.add(randomPosition)));
-        this.controller.cytoplasts.push(new Cytoplast(midPoint.add(randomPosition.mulSelf(-1))));
+        this.controller.cytoplast = new Cytoplast(midPoint.add(randomPosition.mulSelf(-1)));
         
         this.initIntervals();
         
@@ -174,10 +171,6 @@ Game.prototype = {
         this.vectorfield.reset();
         
         this.state = "init";
-        
-    },
-    
-    updateLevel : function(dt) {
         
     },
     
