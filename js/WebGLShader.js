@@ -104,7 +104,7 @@ var WebGLShader = function() {
     
         this.activeTexture( this["TEXTURE" + texture.ID] );
         this.bindTexture( this.TEXTURE_2D, texture );
-        this.uniform1i( uniformLocation, texture.ID );
+        this.uniform1i( uniformLocation || this.activeShader.textureUniformLocation, texture.ID );
     
     };
 

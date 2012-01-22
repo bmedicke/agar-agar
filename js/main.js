@@ -30,7 +30,8 @@ function initialize() {
     gl.noFill();
     gl.enableAlpha();
 
-    gl.setupDefaultShader();    
+    gl.setupDefaultShader();  
+    gl.setupTextureShader();
     gl.initUtilityBuffers();
     
     game.initialize(gl);

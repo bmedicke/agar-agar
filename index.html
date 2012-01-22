@@ -152,9 +152,7 @@
 
 <script id="fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
     
     uniform vec4 color;
     
@@ -164,6 +162,43 @@
        
     }
     
+</script>
+
+<script id="texture-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+
+    attribute vec2 position;
+    attribute vec2 textureCoord;
+
+    varying vec2 pointCoord;
+
+    void main(void) {
+
+       gl_Position = matrix * vec4(position, 1.0, 1.0);
+       
+       pointCoord = textureCoord;
+
+    }
+    
+</script>
+
+<script id="texture-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+    
+    uniform sampler2D texture;
+    uniform vec4 color;
+    
+    varying vec2 pointCoord;
+    
+    void main(void) {
+    
+        vec4 textureColor = texture2D( texture, pointCoord );
+        gl_FragColor = vec4( mix( textureColor.rgb, color.rgb, color.a ), textureColor.a );
+    
+    }
+
 </script>
 
 <script id="stardust-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
@@ -188,9 +223,7 @@
 
 <script id="stardust-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
     
     uniform vec4 color;
     
@@ -230,9 +263,7 @@
 
 <script id="particle-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
     
     uniform sampler2D texture;
     
@@ -289,9 +320,7 @@
 
 <script id="leukocyte-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
 
     uniform sampler2D texture;
     uniform float radius;
@@ -356,9 +385,7 @@
 
 <script id="devourer-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
 
     const float PI = 3.1415926535897932384626433832;
 
@@ -408,49 +435,6 @@
     
 </script>
 
-<script id="cytoplast-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
-
-    uniform mat4 matrix;
-
-    attribute vec2 position;
-    attribute vec2 textureCoord;
-    
-    varying vec2 pointCoord;
-
-    void main(void) {
-
-       gl_Position = matrix * vec4(position, 1.0, 1.0);
-
-       pointCoord = textureCoord;
-
-    }
-    
-</script>
-
-<script id="cytoplast-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
-
-    #ifdef GL_ES
-       precision highp float;
-    #endif
-
-    uniform sampler2D texture;
-	
-	uniform vec4 color;
-
-    varying vec2 pointCoord;
-
-    void main(void) {
-        
-        // gl_FragColor = texture2D( texture, pointCoord );
-
-		vec4 textureColor = texture2D( texture, pointCoord );
-		
-		gl_FragColor = vec4(mix(textureColor.rgb, color.rgb, color.a), textureColor.a);
-   
-    }
-    
-</script>
-
 <script id="vectorfield-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
 
     uniform mat4 matrix;
@@ -473,9 +457,7 @@
 
 <script id="vectorfield-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
     
     uniform sampler2D texture;
     
@@ -518,9 +500,7 @@
 
 <script id="glow-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
     
     uniform sampler2D texture;
     
@@ -558,9 +538,7 @@
 
 <script id="entropyfier-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
 
-    #ifdef GL_ES
-       precision highp float;
-    #endif
+    precision mediump float;
 
     uniform float lifeTime;
 

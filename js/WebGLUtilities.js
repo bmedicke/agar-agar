@@ -239,18 +239,43 @@ var WebGLUtilities = function() {
 
     this.setupDefaultShader = function() {
     
-        this.defaultShader = this.loadShader("vertex-shader", "fragment-shader");
+        var shader = this.loadShader("vertex-shader", "fragment-shader");
     
-        this.bindShader(this.defaultShader);
+        this.bindShader(shader);
     
-        this.defaultShader.colorUniformLocation = this.getUniformLocation(this.defaultShader, "color");
-        this.defaultShader.matrixUniformLocation = this.getUniformLocation(this.defaultShader, "matrix");
+        shader.colorUniformLocation = this.getUniformLocation(shader, "color");
+        shader.matrixUniformLocation = this.getUniformLocation(shader, "matrix");
     
-        var positionAttribLocation = 0;
-        this.enableVertexAttribArray(positionAttribLocation);
+        shader.positionAttribLocation = this.getAttribLocation(shader, "position");
+        this.enableVertexAttribArray(shader.positionAttribLocation);
     
         this.passMatrix();
         this.passColor([0, 0, 0, 1.0]);
+
+        this.defaultShader = shader;
+    
+    };
+
+    this.setupTextureShader = function() {
+    
+        var shader = this.loadShader("texture-vertex-shader", "texture-fragment-shader");
+    
+        this.bindShader(shader);
+    
+        shader.colorUniformLocation = this.getUniformLocation(shader, "color");
+        shader.matrixUniformLocation = this.getUniformLocation(shader, "matrix");
+        shader.textureUniformLocation = this.getUniformLocation(shader, "texture");
+    
+        shader.positionAttribLocation = this.getAttribLocation(shader, "position");
+        this.enableVertexAttribArray(shader.positionAttribLocation);
+        
+        shader.textureCoordAttribLocation = this.getAttribLocation(shader, "textureCoord");
+        this.enableVertexAttribArray(shader.textureCoordAttribLocation);
+    
+        this.passMatrix();
+        this.passColor([0, 0, 0, 0]);
+
+        this.textureShader = shader;
     
     };
 

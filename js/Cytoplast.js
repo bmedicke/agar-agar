@@ -4,12 +4,14 @@ var Cytoplast = function(position) {
     
     this.dockedParticles = [];
     
-    this.color = {
-        r : 0.99,
-        g : 0.92,
-        b : 0.5,
-        a : 0
-    };
+    // this.color = {
+    //     r : 0.99,
+    //     g : 0.92,
+    //     b : 0.5,
+    //     a : 0
+    // };
+    
+    this.color = [0.99, 0.92, 0.5, 0.2];
     
     this.spikeState = false;
     this.puking = false;
@@ -28,7 +30,6 @@ Cytoplast.prototype.constructor = Entity;
 Cytoplast.prototype.mass = 800000;
 Cytoplast.prototype.spikeMass = 80000;
 Cytoplast.prototype.pukeForce = 25;
-Cytoplast.prototype.defaultAlpha = 0.2;
 
 Cytoplast.prototype.entityRadius = 2;
 Cytoplast.prototype.moveSpeed = 0;
@@ -75,70 +76,53 @@ Cytoplast.prototype.update = function(dt) {
 
 Cytoplast.prototype.draw = function(gl) {
 
+    var size;
+    
+    gl.bindShader(gl.textureShader);
+
+    gl.passColor(this.color);
+
     gl.pushMatrix();
     
     gl.translate(this.position.x, this.position.y);
-    
-    var size;    
-    
-    gl.bindShader(Cytoplast.shader);
-    
-    if(this.spikeState) {
-    
-        gl.uniform4f(
-            Cytoplast.shader.colorUniformLocation,
-            this.color.r,
-            this.color.g,
-            this.color.b,
-            this.color.a
-        );
-        
-        gl.pushMatrix();
+    gl.rotate(this.rotation);
+
+    if (this.spikeState) {
         
         size = 2 * this.spikeTextureSize * Cytoplast.prototype.entityRadius;
         
+        gl.pushMatrix();
+        
         gl.scale(size, size);
-        gl.rotate(this.rotation);
-
         gl.passMatrix();
-
-        gl.passTexture(Cytoplast.spikeTexture, Cytoplast.textureUniformLocation);
+        
+        gl.passTexture(Cytoplast.spikeTexture);
         gl.drawQuadTexture();
         
         gl.popMatrix();
         
-        // this.color.a = Math.cos((this.spikeTimer / Cytoplast.prototype.spikeTime * Math.PI * 0.5) * (((Cytoplast.prototype.spikeTime - this.spikeTimer) / Cytoplast.prototype.spikeTime) * 25)) * 0.5 + 0.5;
-        var timeRatio = 1 - (this.spikeTimer / Cytoplast.prototype.spikeTime);
-        this.color.a = Math.cos(timeRatio * Math.PI * 2 * timeRatio * timeRatio * 20) * -0.1 + 0.3;
-
+        var color = this.color.concat(),
+            timeRatio = (1 - (this.spikeTimer / Cytoplast.prototype.spikeTime)) * 5;
+        
+        color[3] = Math.sin(timeRatio * timeRatio * timeRatio) * this.color[3] + this.color[3] / 2;
+        
+        gl.passColor(color);
+    
     }
-    
-    gl.uniform4f(
-        Cytoplast.shader.colorUniformLocation,
-        this.color.r,
-        this.color.g,
-        this.color.b,
-        this.color.a
-    );
-    
+
     size = 2 * this.corpusTextureSize * Cytoplast.prototype.entityRadius;
     
-    gl.scale(size, size);
-    gl.rotate(this.rotation);
+    gl.scale(size, size);   
     
     gl.passMatrix();
     
-    gl.passTexture(Cytoplast.corpusTexture, Cytoplast.textureUniformLocation);
+    gl.passTexture(Cytoplast.corpusTexture);
     gl.drawQuadTexture();
-    
-    this.color.a = Cytoplast.prototype.defaultAlpha;
-    
-    gl.bindShader(gl.defaultShader);
     
     gl.popMatrix();
     
     Particle.drawEnqueue(this.dockedParticles);
-
+    
 };
 
 Cytoplast.prototype.rotateDockedParticles = function(angle) {
@@ -390,22 +374,6 @@ Cytoplast.prototype.dockParticle = function(particlePosition) {
 
 Cytoplast.initialize = function(gl) {
 
-    this.shader = gl.loadShader("cytoplast-vertex-shader", "cytoplast-fragment-shader");
-    
-    gl.bindShader(this.shader);
-    
-    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
-    this.shader.textureCoordAttribLocation = gl.getAttribLocation(this.shader, "textureCoord");
-    
-    this.shader.colorUniformLocation = gl.getUniformLocation(this.shader, "color");
-    this.textureUniformLocation = gl.getUniformLocation(this.shader, "texture");
-    
-    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
-    gl.passMatrix();
-    
-    gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "position"));
-    gl.enableVertexAttribArray(gl.getAttribLocation(this.shader, "textureCoord"));
-    
     this.corpusTexture = gl.loadTexture("textures/cytoplast_corpus.png");
     this.spikeTexture = gl.loadTexture("textures/cytoplast_spikes.png");
 
