@@ -1,14 +1,14 @@
 var DustParticle = function(position) {
     
     this.position = position || new Vector();
-    this.timer = Math.random() * DustParticle.prototype.lifeTime;
     
-    this.mass = Math.random() * DustParticle.prototype.mass + DustParticle.prototype.mass / 2;
+    this.timer = Math.random() * this.lifeTime;
+    this.mass = Math.random() * this.baseMass + this.baseMass / 2;
     
 };
 
 DustParticle.prototype.lifeTime = 3000;
-DustParticle.prototype.mass = 10;
+DustParticle.prototype.baseMass = 10;
 
 
 var Stardust = function(vectorfield) {
@@ -42,21 +42,19 @@ Stardust.prototype = {
             
             this.dustParticles.push(new DustParticle(position));
             
-            vertices.push(position.x);
-            vertices.push(position.y);
-            vertices.push(position.z);
+            vertices.push(position.x, position.y, position.z);
             
         }
         
         this.vertexArray = new Float32Array(vertices);
 
         this.dustShader = gl.loadShader("stardust-vertex-shader", "stardust-fragment-shader");
-        
-        this.dustShader.positionAttribLocation = gl.getAttribLocation(this.dustShader, "position");
-        
+
         gl.bindShader(this.dustShader);
         
+        this.dustShader.positionAttribLocation = gl.getAttribLocation(this.dustShader, "position");
         this.dustShader.matrixUniformLocation = gl.getUniformLocation(this.dustShader, "matrix");
+        
         gl.passMatrix();
     
     },
@@ -67,7 +65,7 @@ Stardust.prototype = {
             
             var particle = this.dustParticles[i];
             
-            if (particle.timer > DustParticle.prototype.lifeTime) {
+            if (particle.timer > particle.lifeTime) {
             
                 particle.position.set(
                     Math.random() * this.vectorfield.cols, 
