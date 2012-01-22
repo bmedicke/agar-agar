@@ -134,20 +134,8 @@ Vectorfield.prototype = {
     
     draw : function(gl) {
         
-        // gl.setColor(0.8, 0.8, 0.8, 1.0);
+        // gl.bindShader(gl.defaultShader);
         // 
-        // for (var i = 1; i < this.cols; i++) {
-        //     
-        //     gl.drawLine(i, 0, i, this.rows);
-        //     
-        // }
-        // 
-        // for (var i = 1; i < this.rows; i++) {
-        //     
-        //     gl.drawLine(0, i, this.cols, i);
-        //     
-        // }
-        
         // gl.setColor(0.5, 1.0, 0.5, 1.0);
         // 
         // this.drawVectors(this.dynamicVectors, this.dynamicLookupTable);

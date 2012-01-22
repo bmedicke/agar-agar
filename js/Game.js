@@ -63,7 +63,7 @@ Game.prototype = {
         TWEEN.update();
         
         this.vectorfield.update(dt);
-        this.controller.applyDevourerVortices(dt);
+        Devourer.applyVortices(dt, this.controller.devourers);
         this.inputHandler.update(dt);
         
         this.updateEntropyfiers(dt);

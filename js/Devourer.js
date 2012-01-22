@@ -90,6 +90,15 @@ Devourer.initialize = function(gl) {
     
     this.shader = shader;
 
+
+    this.forcefield = new Forcefield(
+        null,
+        Devourer.prototype.forceRadius,
+        Devourer.prototype.force,
+        false,
+        0.0
+    );
+
 };
 
 Devourer.draw = function(gl, devourers) {
@@ -117,6 +126,21 @@ Devourer.draw = function(gl, devourers) {
         
         gl.popMatrix();
     
+    }
+
+};
+
+Devourer.applyVortices = function(dt, entities) {
+
+    var forcefield = this.forcefield;
+
+    for (var i = 0; i < entities.length; i++) {
+
+        forcefield.position = forcefield.point = entities[i].position;
+        forcefield.angle = (entities[i].speed + 1) * (entities[i].clockwise ? -0.5 : 0.5);
+
+        game.vectorfield.applyForcefield(dt, forcefield);
+
     }
 
 };

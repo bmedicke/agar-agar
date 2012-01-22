@@ -14,14 +14,6 @@ var Controller = function(vectorfield) {
     this.multiplierCooldown = 1;
     this.multiplierCooldownAnimation = null;
 
-    this.devourerForcefield = new Forcefield(
-        new Vector(),
-        Devourer.prototype.forceRadius,
-        Devourer.prototype.force,
-        false,
-        0.0
-    );
-
 };
 
 Controller.prototype = {
@@ -283,7 +275,7 @@ Controller.prototype = {
         }
 
 
-        if(cohesionCount) {
+        if (cohesionCount) {
 
             cohesionCenter.divSelf(cohesionCount).subSelf(particle.position);
 
@@ -378,18 +370,6 @@ Controller.prototype = {
             cytoplast.checkBoundary(this.vectorfield);
 
             cytoplast.update(dt);
-
-        }
-
-    },
-
-    applyDevourerVortices : function(dt) {
-
-        for (var i = 0; i < this.devourers.length; i++) {
-
-            this.devourerForcefield.position = this.devourerForcefield.point = this.devourers[i].position;
-            this.devourerForcefield.angle = (this.devourers[i].speed + 1) * (this.devourers[i].clockwise ? -0.5 : 0.5);
-            this.vectorfield.applyForcefield(dt, this.devourerForcefield);
 
         }
 
