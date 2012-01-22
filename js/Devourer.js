@@ -6,6 +6,7 @@ var Devourer = function(position) {
     this.speed = 0.0;
     
     this.animateSpeed(true);
+    this.clockwise = Math.random() > 0.5;
     
 };
 
@@ -32,33 +33,25 @@ extend(Devourer.prototype, {
     
         Entity.prototype.update.call(this, dt);
     
-        this.rotation += this.rotateSpeed * dt * this.speed;
+        this.rotation += this.rotateSpeed * dt * (this.clockwise ? 1 : -1);
     
     },
 
     animateSpeed : function(clockwise) {
     
-        var self = this;
-    
-        Animator.animate({
-            object: this, 
-            values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
-            duration: 3000,
-            // easing: "easeIn",
-            callback: function() {
+        var tween = new TWEEN.Tween(this);
+        
+        tween.to( { speed : (clockwise ? -1.0 : 1.0) }, 3000 );
+        
+        tween.onComplete( function() {
             
-                Animator.animate({
-                    object: self, 
-                    values: {"speed" : (clockwise ? -1.0 : 1.0)}, 
-                    duration: 5000,
-                    // easing: "easeOut",
-                    callback: function() {
-                        self.animateSpeed(!clockwise);
-                    }
-                });
+            this.animateSpeed(!clockwise);
             
-            }
         });
+        
+        tween.easing(TWEEN.Easing.Quadratic.EaseInOut);
+        
+        tween.start();
     
     }
 

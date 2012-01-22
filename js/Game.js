@@ -60,6 +60,7 @@ Game.prototype = {
         
         Timer.update(dt);
         Animator.update(dt);
+        TWEEN.update();
         
         this.vectorfield.update(dt);
         this.controller.applyDevourerVortices(dt);
