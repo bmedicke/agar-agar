@@ -48,21 +48,6 @@ Entropyfier.prototype = {
     },
 
     draw : function(gl) {
-
-        // if (this.timer <= this.chargeTime) {
-        //     gl.fill();
-        // 
-        //     gl.setColor(.9, .9, .9, Math.sqrt(this.timer / this.chargeTime));
-        //     gl.drawCircle(this.position.x, this.position.y, Math.sqrt(this.timer / this.chargeTime) * this.entityRadius);
-        // 
-        //     gl.noFill();
-        // 
-        //     gl.setColor(.7, .7, .7, Math.sqrt(this.timer / this.chargeTime));
-        //     gl.drawCircle(this.position.x, this.position.y, Math.sqrt(this.timer / this.chargeTime) * this.entityRadius);
-        //     
-        // }
-        
-        gl.fill();
         
         gl.bindShader(Entropyfier.shader);
         

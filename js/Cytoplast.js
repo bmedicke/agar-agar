@@ -4,13 +4,6 @@ var Cytoplast = function(position) {
     
     this.dockedParticles = [];
     
-    // this.color = {
-    //     r : 0.99,
-    //     g : 0.92,
-    //     b : 0.5,
-    //     a : 0
-    // };
-    
     this.color = [0.99, 0.92, 0.5, 0.15];
     
     this.spikeState = false;

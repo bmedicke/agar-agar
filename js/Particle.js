@@ -33,28 +33,30 @@ Particle.initialize = function(gl) {
     
     this.vertexArray = new Float32Array(Particle.prototype.absolutMaxCount * this.vertexBuffer.itemSize);
 
-    this.shader = gl.loadShader("particle-vertex-shader", "particle-fragment-shader");
+    var shader = gl.loadShader("particle-vertex-shader", "particle-fragment-shader");
     
-    gl.bindShader(this.shader);
+    gl.bindShader(shader);
     
-    this.shader.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
-    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    shader.positionAttribLocation = gl.getAttribLocation(shader, "position");
+    gl.enableVertexAttribArray(shader.positionAttribLocation);
     
+    shader.matrixUniformLocation = gl.getUniformLocation(shader, "matrix");
     gl.passMatrix();
     
-    var self = this;
+    gl.uniform1f(
+        gl.getUniformLocation(shader, "size"), 
+        game.vectorfield.cellSize * 2 * Particle.prototype.textureSizeFactor * Particle.prototype.entityRadius
+    );
     
-    this.texture = gl.loadTexture("textures/particle.png", function(gl) {
+    var texture = gl.loadTexture("textures/particle.png", function(gl) {
         
-        gl.bindShader(self.shader);
-        gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
+        gl.bindShader(shader);
+        gl.passTexture(texture, gl.getUniformLocation(shader, "texture"));
         
     });
     
-    gl.uniform1f(
-        gl.getUniformLocation(this.shader, "size"), 
-        game.vectorfield.cellSize * 2 * Particle.prototype.textureSizeFactor * Particle.prototype.entityRadius
-    );
+    this.shader = shader;
+    this.texture = texture;
     
 };
 
@@ -72,12 +74,6 @@ Particle.draw = function(gl) {
 };
 
 Particle.drawEnqueue = function(particles) {
-    
-    // for (var i = 0; i < particles.length; i++) {
-    //     
-    //     particles[i].draw(gl);
-    //     
-    // }
     
     for (var i = 0; i < particles.length; i++) {
         

@@ -95,37 +95,38 @@ Leukocyte.initialize = function(gl) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexArray), gl.STATIC_DRAW);
 
-    this.shader = gl.loadShader("leukocyte-vertex-shader", "leukocyte-fragment-shader");
+    var shader = gl.loadShader("leukocyte-vertex-shader", "leukocyte-fragment-shader");
     
-    gl.bindShader(this.shader);
+    gl.bindShader(shader);
     
-    gl.uniform1f(
-        gl.getUniformLocation(this.shader, "radius"),
-        Leukocyte.prototype.entityRadius
-    );
-    
-    this.shader.matrixUniformLocation = gl.getUniformLocation(this.shader, "matrix");
+    shader.matrixUniformLocation = gl.getUniformLocation(shader, "matrix");
     gl.passMatrix();
     
-    var self = this;
-    
-    this.texture = gl.loadTexture("textures/leukocyte2.png", function(gl) {
-        
-        gl.bindShader(self.shader);
-        gl.passTexture(self.texture, gl.getUniformLocation( self.shader, "texture" ));
-        
-    });
-    
     gl.uniform1f(
-        gl.getUniformLocation(this.shader, "size"), 
+        gl.getUniformLocation(shader, "size"), 
         game.vectorfield.cellSize * 2 * Leukocyte.prototype.textureSizeFactor * Leukocyte.prototype.entityRadius
     );
     
-    this.positionAttribLocation = gl.getAttribLocation(this.shader, "position");
-    this.paramsAttribLocation = gl.getAttribLocation(this.shader, "params");
+    gl.uniform1f(
+        gl.getUniformLocation(shader, "radius"),
+        Leukocyte.prototype.entityRadius
+    );
+    
+    this.positionAttribLocation = gl.getAttribLocation(shader, "position");
+    this.paramsAttribLocation = gl.getAttribLocation(shader, "params");
     
     gl.enableVertexAttribArray(this.positionAttribLocation);
     gl.enableVertexAttribArray(this.paramsAttribLocation);
+    
+    var texture = gl.loadTexture("textures/leukocyte2.png", function(gl) {
+        
+        gl.bindShader(shader);
+        gl.passTexture(texture, gl.getUniformLocation(shader, "texture"));
+        
+    });
+    
+    this.shader = shader;
+    this.texture = texture;
     
 };
 
@@ -150,8 +151,6 @@ Leukocyte.draw = function(gl, leukocytes) {
     }
     
     gl.bindShader(this.shader);
-    
-    gl.passMatrix();
     
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, this.vertexArray, gl.STATIC_DRAW);

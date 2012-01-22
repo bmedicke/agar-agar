@@ -27,7 +27,7 @@ function initialize() {
     gl.scale(1 / (canvas.width / 2) * cellSize, -1 / (canvas.height / 2) * cellSize);
     
     gl.lineWidth(2.0);
-    gl.noFill();
+    gl.fill();
     gl.enableAlpha();
 
     gl.setupDefaultShader();  
