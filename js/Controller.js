@@ -431,13 +431,12 @@ Controller.prototype = {
             Math.random() * this.vectorfield.cols,
             Math.random() * this.vectorfield.rows,
             0.0
-        ), 0.5)
+        ), 0.0);
         
-        Animator.animate({
-            object: particle,
-            values: {"alpha" : 1.0},
-            duration: 500
-        });
+        var tween = new TWEEN.Tween(particle);
+        
+        tween.to( {alpha : 1.0}, 1000);
+        tween.start();
 
         this.particles.push(particle);
         this.addPoints("particleSpawn");

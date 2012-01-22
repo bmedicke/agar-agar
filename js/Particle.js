@@ -2,7 +2,7 @@ var Particle = function(position, alpha) {
 
     Entity.call(this, position);
     
-    this.alpha = alpha || 1.0;
+    this.alpha = typeof alpha === 'number' ? alpha : 1.0;
 
 };
 

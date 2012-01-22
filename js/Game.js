@@ -24,7 +24,7 @@ Game.prototype = {
     
     particleCount : 20,
     
-    leukoRate : 10000000,
+    leukoRate : 5000,
     leukoAmount : 1,
     leukoCap : Leukocyte.prototype.absolutMaxCount,
     
@@ -117,7 +117,7 @@ Game.prototype = {
         this.controller.devourers.push(new Devourer(midPoint.add(randomPosition)));
         this.controller.cytoplast = new Cytoplast(midPoint.add(randomPosition.mulSelf(-1)));
         
-        game.controller.addLeukocytes(game.leukoAmount);
+        this.controller.addLeukocytes(3);
         
         this.initIntervals();
         
