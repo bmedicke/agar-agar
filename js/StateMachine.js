@@ -36,7 +36,7 @@ StateMachine.prototype = {
     
     init : function( states, transitions ) {
         
-        var i, state, s, transition, t;
+        var i;
         
         states = states ? states instanceof Array ? states : [states] : [];
         transitions = transitions ? transitions instanceof Array ? transitions : [transitions] : [];
@@ -104,7 +104,7 @@ StateMachine.prototype = {
         
         this.currentState.enter.call(this.scope, this);
         
-    }
+    },
     
     hasState : function( name ) {
         

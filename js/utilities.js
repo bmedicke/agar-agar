@@ -29,6 +29,7 @@ function extend(destination, source) {
     }
     
     return destination;
+    
 };
 
 function checkAngle( angle ) {
@@ -44,4 +45,17 @@ function checkAngle( angle ) {
     }
     
     return angle;
-}
+    
+};
+
+function rand( min, max ) {
+    
+    return Math.random() * (max - min) + min;
+    
+};
+
+function randSign() {
+    
+    return Math.random() > 0.5 ? 1 : -1;
+    
+};

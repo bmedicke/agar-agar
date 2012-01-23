@@ -411,6 +411,12 @@ Controller.prototype = {
 
     },
 
+    getRandomInsidePosition : function() {
+
+        return new Vector(this.vectorfield.cols * Math.random(), this.vectorfield.rows * Math.random());
+
+    },
+
     addInitialParticles : function(amount) {
 
         for (var i = 0; i < amount; i++) {
