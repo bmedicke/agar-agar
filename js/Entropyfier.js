@@ -115,7 +115,7 @@ Entropyfier.add = function(amount, entities) {
 
         entities.push(new Entropyfier(center.clone(), time, radius));
         
-        if (Math.random() > 0) {
+        if (Math.random() > 0.3) {
             
             distance = rand(1.5, 2) * radius;
             radius = (distance - radius) * rand(0.8, 0.95);
@@ -126,7 +126,7 @@ Entropyfier.add = function(amount, entities) {
         
             entities.push(new Entropyfier(center.add(offset), time, radius));
             
-            if (Math.random() > 0) {
+            if (Math.random() > 0.3) {
                 
                 radius *= rand(0.8, 0.9);
                 time *= rand(0.9, 1.1);

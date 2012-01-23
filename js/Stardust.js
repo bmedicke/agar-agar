@@ -2,8 +2,8 @@ var DustParticle = function(position) {
     
     this.position = position || new Vector();
     
-    this.timer = Math.random() * this.lifeTime;
-    this.mass = Math.random() * this.baseMass + this.baseMass / 2;
+    this.timer = rand(0, this.lifeTime);
+    this.mass = rand(0.5, 1.5) * this.baseMass;
     
 };
 

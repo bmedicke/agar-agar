@@ -50,6 +50,9 @@ function checkAngle( angle ) {
 
 function rand( min, max ) {
     
+    min = min || 0;
+    max = max || 1;
+    
     return Math.random() * (max - min) + min;
     
 };
@@ -57,5 +60,11 @@ function rand( min, max ) {
 function randSign() {
     
     return Math.random() > 0.5 ? 1 : -1;
+    
+};
+
+function randBool() {
+    
+    return Math.random() > 0.5;
     
 };

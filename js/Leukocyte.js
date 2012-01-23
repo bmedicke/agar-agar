@@ -3,7 +3,7 @@ var Leukocyte = function(position) {
     Entity.call(this, position);
     
     this.isActive = true;
-    this.angle = ( Math.random() * 2 - 1 ) * Math.PI;
+    this.angle = rand(-1, 1) * Math.PI;
 
 };
 

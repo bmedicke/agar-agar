@@ -395,7 +395,7 @@ Controller.prototype = {
     getRandomOutsidePosition : function() {
 
         var midPoint = new Vector(this.vectorfield.cols / 2, this.vectorfield.rows / 2, 0),
-            radiusVector = midPoint.rotate2D(Math.random() * Math.PI * 2);
+            radiusVector = midPoint.rotate2D(rand(0, Math.PI * 2));
 
         if (Math.abs(radiusVector.y) > midPoint.y) {
 
@@ -456,7 +456,7 @@ Controller.prototype = {
 
         for (var i = 0; i < amount; i++) {
 
-            offset.rotate2DSelf(Math.random() * Math.PI * 2);
+            offset.rotate2DSelf(rand(0, Math.PI * 2));
             var particle = new Particle(position.add(offset), 0.5);
             
             Animator.animate({

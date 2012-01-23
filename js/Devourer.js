@@ -6,7 +6,7 @@ var Devourer = function(position) {
     this.speed = 0.0;
     
     this.animateSpeed(true);
-    this.clockwise = Math.random() > 0.5;
+    this.clockwise = randBool();
     
 };
 
