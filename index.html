@@ -312,7 +312,7 @@
         float distance = clamp( params.x, 0.0, radius * 2.0 );
         factor = sin( distance / ( radius * 2.0 ) * PI );
         
-        rotation = -params.y;
+        rotation = params.y;
         direction = -params.z;
         time = params.w;
         
@@ -338,38 +338,31 @@
         
         vec2 point = gl_PointCoord - center;
         
-        point = vec2(
-            cos( rotation ) * point.x - sin( rotation ) * point.y,
-            sin( rotation ) * point.x + cos( rotation ) * point.y
-        );
-        
         float angle = atan( point.y, point.x );
         
-        float stretchFactor = factor * ( cos( angle ) * 0.5 + 0.5 );
-        float crushFactor = factor * ( sin( angle ) * 0.5 + 0.5 );
+        float stretchFactor = factor * ( cos( angle - rotation ) );
+        float crushFactor = factor * ( sin( angle - rotation ) );
         
-        vec2 stretch = vec2( 1.0, 0.0 ) * stretchFactor * 0.05;
-        vec2 crush = vec2( 0.0, 1.0 ) * crushFactor * 0.05;
+        vec2 stretch = vec2( cos( rotation ), sin( rotation ) ) * stretchFactor * 0.05;
+        vec2 crush = vec2( -sin( rotation ), cos( rotation ) ) * crushFactor * 0.05;
         
         point -= stretch - crush;
         
         point *= 1.0 + radius / 8.0 * 
             sin( 2.0 * angle + time * 2.0 ) *
-            sin( 9.0 * angle - time * 4.0 );  
+            sin( 9.0 * angle - time * 4.0 );
         
         // point *= 1.0 + radius / 5.0 * 
         //     sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
         //     sin( 6.0 * atan( point.y, point.x ) - time * 5.0 );
         
-        angle = direction - rotation;
-        
         point = vec2(
-            cos( angle ) * point.x - sin( angle ) * point.y,
-            sin( angle ) * point.x + cos( angle ) * point.y
+            cos( direction ) * point.x - sin( direction ) * point.y,
+            sin( direction ) * point.x + cos( direction ) * point.y
         );
         
         gl_FragColor = texture2D( texture, point + center );
-        gl_FragColor.a *= 2.0;
+        // gl_FragColor.a *= 2.0;
     }
     
 </script>

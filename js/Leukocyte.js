@@ -17,8 +17,6 @@ extend(Leukocyte.prototype, {
 
     entityRadius : 1.0,
 
-    eatTime : 300,
-
     absolutMaxCount : 30,
     textureSizeFactor : 2.0,
 
@@ -47,13 +45,13 @@ extend(Leukocyte.prototype, {
         var self = this,
             tween = new TWEEN.Tween(orient);
     
-        tween.to( {x : orient.x * 0.0000001, y : orient.y * 0.0000001}, this.eatTime * 0.5);
+        tween.to( {x : orient.x * 0.0000001, y : orient.y * 0.0000001}, 150);
     
         tween.onComplete( function() {
     
             tween = new TWEEN.Tween(self.deadParticle);
     
-            tween.to( {alpha : 0.7}, self.eatTime * 0.5);
+            tween.to( {alpha : 0}, 500);
     
             tween.onComplete( function() {
                 
