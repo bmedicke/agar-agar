@@ -3,6 +3,8 @@ var Particle = function(position, alpha) {
     Entity.call(this, position);
     
     this.alpha = typeof alpha === 'number' ? alpha : 1.0;
+    
+    this.index = Particle.prototype.count++;
 
 };
 
@@ -21,7 +23,30 @@ extend(Particle.prototype, {
 
     absolutMaxCount : 250,
 
-    textureSizeFactor : 4
+    textureSizeFactor : 4,
+    count : 0,
+
+    checkSwarm : function( indices ) {
+
+        var i;
+
+        indices = indices || [];
+
+        if (indices.indexOf(this.index) === -1) {
+
+            indices.push( this.index );
+
+            for (i = 0; i < this.neighbors.length; i++) {
+
+                this.neighbors[i].checkSwarm( indices );
+
+            }
+
+        }
+
+        return indices.length;
+
+    }
 
 });
 

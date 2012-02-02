@@ -228,9 +228,10 @@ Controller.prototype = {
     updateParticles : function(dt) {
 
         var particleDistances = this.getParticleDistances(),
-            particleCount = this.particles.length;
+            particleCount = this.particles.length,
+            i, neighborCount, maxNeighborCount = 0, swarmParticle;
 
-        for (var i = 0; i < particleCount; i++) {
+        for (i = 0; i < particleCount; i++) {
 
             var particle = this.particles[i];
 
@@ -238,13 +239,28 @@ Controller.prototype = {
                 this.vectorfield.getVector(particle.position)
             );
 
-            this.applySwarmBehaviour(particleDistances[i], particle, particleCount);
+            neighborCount = this.applySwarmBehaviour(particleDistances[i], particle, particleCount);
 
             particle.checkBoundary(this.vectorfield);
 
             particle.update(dt);
 
+            if (neighborCount > maxNeighborCount) {
+
+                maxNeighborCount = neighborCount;
+                swarmParticle = particle;
+
+            }
+
         }
+
+        if (swarmParticle) {
+
+            Interface.swarmSize = swarmParticle.checkSwarm();
+            Interface.swarmParticle = swarmParticle;
+
+        }
+
 
     },
 
@@ -254,6 +270,8 @@ Controller.prototype = {
             separationCount = 0,
             cohesionCenter = new Vector(),
             cohesionCount = 0;
+
+        particle.neighbors = [];
 
         for (var j = 0; j < particleCount; j++) {
 
@@ -272,6 +290,8 @@ Controller.prototype = {
 
                 cohesionCenter.addSelf(this.particles[j].position);
                 cohesionCount++;
+
+                particle.neighbors.push( this.particles[j] );
 
             }
 
@@ -295,6 +315,8 @@ Controller.prototype = {
         }
 
         particle.applyForce(separationCenter.addSelf(cohesionCenter));
+
+        return particle.neighbors.length;
 
     },
 
