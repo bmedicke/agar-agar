@@ -41,10 +41,9 @@ Entropyfier.prototype = {
             
         } else if (elapsedPercent > 0.7) {
         
-             this.forcefield.force = (elapsedPercent - 0.7) * this.lightForce;
+            this.forcefield.force = (elapsedPercent - 0.7) * this.lightForce;
         
-             game.vectorfield.applyForcefield(dt, this.forcefield);
-
+            game.vectorfield.applyForcefield(dt, this.forcefield);
         }
         
         return true;

@@ -42,6 +42,9 @@ var Menu = {
 
             game.state = "run";
             this.hideInfo();
+			
+			soundManager.pauseAll();
+			soundManager.resume("bgSound");
         }
         else{
             document.getElementById("playpause").style.backgroundImage = "url(images/play.png)";
@@ -51,6 +54,8 @@ var Menu = {
             $("#overlay").fadeTo("slow", 0.7);
 
             game.state = "pause";
+			
+			soundManager.resumeAll();
         }
 
         this.menuOpen = !this.menuOpen;
@@ -106,9 +111,13 @@ var Menu = {
         $("#stopmusic").click(function () {
             
             if(Menu.musicOn){
+				soundManager.mute();
+				
                 document.getElementById("stopmusic").style.backgroundImage = "url(images/sound_off.png)";
             }
             else{
+				soundManager.unmute();
+				
                 document.getElementById("stopmusic").style.backgroundImage = "url(images/sound_on.png)";
             }
 

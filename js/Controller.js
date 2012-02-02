@@ -164,6 +164,7 @@ Controller.prototype = {
                 
                 if (devourer.checkCollision(this.particles[j])) {
                     
+					Devourer.leukoKillSound.play();
                     this.particles.splice(j, 1);
                     j--;
                     
