@@ -103,6 +103,8 @@ Game.prototype = {
         
         this.controller.draw(gl);
         
+        Interface.draw(gl);
+        
     },
     
     initLevel : function() {
