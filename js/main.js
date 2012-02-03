@@ -97,6 +97,41 @@ window.onload = function() {
         return;
         
     }
+	
+	// disable debug mode after development/testing..
+	soundManager.debugMode = false;
+	
+	// Sound Manager 2
+	soundManager.onready(function(){
+
+		var bgSound = soundManager.createSound({
+			id: 'bgSound',
+			url: 'sounds/background.ogg'
+		});
+		
+		Leukocyte.eatSound = soundManager.createSound({
+			id: 'leukocyte_eatSound',
+			url: 'sounds/leukocyte_eat.ogg',
+			volume: 25
+		});
+		
+		Devourer.leukoKillSound = soundManager.createSound({
+			id: 'leukocyte_dead',
+			url: 'sounds/leukocyte_dead.ogg',
+			volume: 50
+		});
+		  
+		function loopSound(sound) {
+			sound.play({
+				onfinish: function() {
+					loopSound(sound);
+				}
+			});
+		}
+
+		loopSound(bgSound);
+
+	});
     
     initialize();
     

@@ -4,6 +4,8 @@ var Leukocyte = function(position) {
     
     this.isActive = true;
     this.angle = rand(-1, 1) * Math.PI;
+	
+	
 
 };
 
@@ -64,6 +66,8 @@ extend(Leukocyte.prototype, {
         });
         
         tween.start();
+		
+		Leukocyte.eatSound.play();
 
     }
     
