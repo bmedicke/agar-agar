@@ -93,7 +93,7 @@ Controller.prototype = {
             
             } else {
             
-                leukocyte.eatParticle( nearest.copy(this.cytoplast.position) );
+                leukocyte.eatParticle( nearest.copy(this.cytoplast.position), 500, 0.0 );
             
             }
             
@@ -115,7 +115,7 @@ Controller.prototype = {
         
             if (leukocyte.checkCollision(particle)) {
                 
-                leukocyte.eatParticle(particle.position);
+                leukocyte.eatParticle(particle.position, 150);
                 
                 this.particles.splice(j, 1);
                 particle.alive = false;

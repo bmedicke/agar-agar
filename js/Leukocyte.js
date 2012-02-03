@@ -35,19 +35,24 @@ extend(Leukocyte.prototype, {
     
     },
 
-    eatParticle : function(particlePosition) {
+    eatParticle : function(particlePosition, duration, alpha) {
         
         var orient = this.orientation;
     
         this.isActive = false;
+        alpha = typeof alpha === 'number' ? alpha : 1.0;
     
         orient.copy(particlePosition).subSelf(this.position);
-        this.deadParticle = new Particle(particlePosition.copy(orient));
+        this.deadParticle = new Particle(particlePosition.copy(orient), alpha);
     
         var self = this,
-            tween = new TWEEN.Tween(orient);
+            tween = new TWEEN.Tween(orient),
+            tween2 = new TWEEN.Tween(this.deadParticle);
+        
+        tween2.to( {alpha : 1.0}, duration);
+        tween2.start();
     
-        tween.to( {x : orient.x * 0.0000001, y : orient.y * 0.0000001}, 150);
+        tween.to( {x : orient.x * 0.0000001, y : orient.y * 0.0000001}, duration);
     
         tween.onComplete( function() {
     
