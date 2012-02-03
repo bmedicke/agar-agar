@@ -1,4 +1,4 @@
-var AlertSign = function( pos, arrowAngle ) {
+var AlertSign = function( pos, duration, arrowAngle ) {
     
     this.pos = pos;
     
@@ -25,7 +25,7 @@ var AlertSign = function( pos, arrowAngle ) {
     tweenIn.to( {size : 1}, 500 );
     
     tweenOut.to( {size : 0}, 500 );
-    tweenOut.delay( 5000 );
+    tweenOut.delay( duration );
     
     tweenIn.easing( TWEEN.Easing.Back.EaseOut );
     tweenOut.easing( TWEEN.Easing.Back.EaseIn );
@@ -143,9 +143,9 @@ var Interface = {
         
     },
     
-    addAlertSign : function( pos, arrowAngle ) {
+    addAlertSign : function( pos, duration, arrowAngle ) {
         
-        var alertSign = new AlertSign( pos, arrowAngle )
+        var alertSign = new AlertSign( pos, duration, arrowAngle )
         
         this.alertSigns.push( alertSign );
         
@@ -163,7 +163,7 @@ var Interface = {
                 
                 this.swarmParticle = swarmParticle;
                 
-                this.swarmSign = this.addAlertSign( swarmParticle.position );
+                this.swarmSign = this.addAlertSign( swarmParticle.position, 2000 );
                 
                 this.swarmTimeout = Timer.setTimeout( function() {
                     

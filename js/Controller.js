@@ -538,7 +538,8 @@ Controller.prototype = {
             ));
 
             // Interface.addAlertSign( 
-            //     this.getRectPositionForAngle( 2, 2, width - 4.5, height - 4.5, angle ), 
+            //     this.getRectPositionForAngle( 2, 2, width - 4.5, height - 4.5, angle ),
+            //     3000,
             //     angle
             // );
 
@@ -560,7 +561,8 @@ Controller.prototype = {
             ));
 
             Interface.addAlertSign( 
-                this.getRectPositionForAngle( 2, 2, width - 4.5, height - 4.5, angle ), 
+                this.getRectPositionForAngle( 2, 2, width - 4.5, height - 4.5, angle ),
+                5000,
                 angle
             );
 
