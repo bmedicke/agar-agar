@@ -183,6 +183,8 @@ Controller.prototype = {
                 
                 if (devourer.checkCollision(this.particles[j])) {
                     
+                    devourer.eatEntity( 0.03 );
+                    
                     Devourer.leukoKillSound.play();
                     this.particles[j].alive = false;
                     this.particles.splice(j, 1);
@@ -195,6 +197,8 @@ Controller.prototype = {
             for (var j = 0; j < this.leukocytes.length; j++) {
                 
                 if (devourer.checkCollision(this.leukocytes[j])) {
+                    
+                    devourer.eatEntity( 0.15 );
                     
                     this.leukocytes.splice(j, 1);
                     j--;

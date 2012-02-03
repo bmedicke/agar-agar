@@ -32,6 +32,18 @@ function extend(destination, source) {
     
 };
 
+function clamp( x, a, b ) {
+
+    return x ? x < a ? a : x > b ? b : x : a;
+
+};
+
+function map( x, a1, a2, b1, b2 ) {
+
+    return ( x  - a1 ) * ( b2 - b1 ) / ( a2 - a1 ) + b1;
+
+};
+
 function checkAngle( angle ) {
     
     if ( angle > Math.PI ) {

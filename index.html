@@ -395,6 +395,7 @@
     uniform sampler2D tentacleTexture;
     
     uniform float speed;
+    uniform float size;
     
     varying vec2 pointCoord;
 
@@ -425,9 +426,9 @@
         
         vec4 tentacles = vec4( black, alpha );
         
-        vec4 corpus = texture2D( corpusTexture, vector / 0.75 + mid );
+        vec4 corpus = texture2D( corpusTexture, vector * 1.33 / size + mid );
         
-        float mixFactor = clamp( 6.3 - 18.0 * len, 0.0, 0.95 );
+        float mixFactor = clamp( 6.3 - 18.0 * len / size, 0.0, 0.95 );
         
         gl_FragColor = tentacles + corpus * mixFactor;
         
