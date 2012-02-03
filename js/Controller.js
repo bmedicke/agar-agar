@@ -81,8 +81,25 @@ Controller.prototype = {
 
     searchAndKill : function(leukocyte) {
         
-        var nearest = new Vector(Infinity, Infinity, 0),
-            current = this.vector;
+        var nearest = this.cytoplast.position.clone().subSelf(leukocyte.position),
+            current = this.vector.copy( nearest );
+
+        if (this.cytoplast.checkCollision( leukocyte )) {
+            
+            if (this.cytoplast.spikeState) {
+            
+                this.addPoints("leukoDeath");
+                this.leukocytes.splice(j, 1);
+            
+            } else {
+            
+                leukocyte.eatParticle( nearest.copy(this.cytoplast.position) );
+            
+            }
+            
+            return;
+        
+        }
     
         for (var j = 0; j < this.particles.length; j++) {
     
@@ -120,12 +137,13 @@ Controller.prototype = {
 
             var leukocyte = this.leukocytes[i];
 
-            if (this.particles.length && leukocyte.isActive) {
+            if (leukocyte.isActive) {
 
                 this.searchAndKill(leukocyte);
 
             }
 
+            this.cytoplast.collision( leukocyte );
 
             for (var j = 0; j < i; j++) {
 
@@ -362,17 +380,6 @@ Controller.prototype = {
 
                     }
 
-                }
-
-            }
-
-            for (var j = 0; j < this.leukocytes.length; j++) {
-
-                if (this.cytoplast.collision(this.leukocytes[j]) && cytoplast.spikeState) {
-                
-                    this.addPoints("leukoDeath");
-                    this.leukocytes.splice(j, 1);
-                
                 }
 
             }
