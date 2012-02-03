@@ -180,13 +180,25 @@ var Interface = {
     hideSwarm : function() {
         
         this.swarmParticle = null;
-        this.swarmSign.remove( true );
+        
+        if ( this.swarmSign ) {
+        
+            this.swarmSign.remove( true );
+        
+        }
         
         if ( this.swarmTimeout ) {
             
             this.swarmTimeout.stop();
             
         }
+        
+    },
+    
+    reset : function() {
+        
+        this.hideSwarm();
+        this.alertSigns = [];
         
     }
     

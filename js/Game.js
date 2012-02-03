@@ -217,6 +217,9 @@ Game.prototype = {
         Timer.reset();
         Animator.reset();
         
+        Interface.reset();
+        TWEEN.removeAll();
+        
         this.entropyfiers = [];
         
         this.controller.reset();
