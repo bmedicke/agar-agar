@@ -53,8 +53,28 @@ Game.prototype = {
         this.inputHandler.initialize();
         this.stardust.initialize(gl);
         
-        gl.bindShader(gl.defaultShader);
+        this.initBackground(gl);
     
+    },
+    
+    initBackground : function(gl) {
+        
+        gl.bindShader(gl.defaultShader);
+        
+        this.backgroundTexture = gl.loadTexture("textures/background.png");
+        
+        this.backgroundScale = [2, 2];
+        
+        if (canvas.width > canvas.height) {
+            
+            this.backgroundScale[1] *= canvas.width / canvas.height;
+            
+        } else {
+            
+            this.backgroundScale[0] *= canvas.height / canvas.width;
+            
+        }
+        
     },
     
     update : function(dt) {
@@ -87,6 +107,8 @@ Game.prototype = {
         
         Entropyfier.draw(gl, this.entropyfiers);
         
+        this.drawBackground(gl);
+        
         if (this.drawStardust) {
             
             this.stardust.draw(gl);
@@ -105,6 +127,28 @@ Game.prototype = {
         this.controller.draw(gl);
         
         Interface.draw(gl);
+        
+    },
+    
+    drawBackground : function(gl) {
+        
+        var scale = this.backgroundScale;
+        
+        gl.bindShader(gl.textureShader);
+        
+        gl.pushMatrix();
+        
+        gl.matrix.identity();
+        gl.scale( scale[0], scale[1] );
+    
+        gl.passMatrix();
+    
+        gl.passColor([0.0, 0.0, 0.0, 0.0]);
+    
+        gl.passTexture(this.backgroundTexture);
+        gl.drawQuadTexture();
+    
+        gl.popMatrix();
         
     },
     

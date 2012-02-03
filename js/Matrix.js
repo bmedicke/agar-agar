@@ -41,6 +41,16 @@ Matrix.prototype = {
         
     },
     
+    identity: function() {
+        
+        this.a.set(1, 0, 0);
+        this.b.set(0, 1, 0);
+        this.c.set(0, 0, 1);
+        
+        return this;
+        
+    },
+    
     transpose: function() {
         
         return new Matrix(
