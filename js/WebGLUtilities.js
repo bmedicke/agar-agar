@@ -100,7 +100,7 @@ var WebGLUtilities = function() {
     
         this.translate(x, y);
         this.scale(width, height);
-
+    
     
         this.updateMatrix();
 

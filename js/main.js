@@ -38,7 +38,54 @@ function initialize() {
     
     time = (new Date()).getTime();
     
+    initSound();
+    
 };
+
+function initSound() {
+    
+    Leukocyte.eatSound = {play : function() {}};
+    Devourer.leukoKillSound = {play : function() {}};
+    
+    // disable debug mode after development/testing..
+    soundManager.debugMode = false;
+    
+    // Sound Manager 2
+    soundManager.onready(function(){
+        
+        var bgSound = soundManager.createSound({
+            id: 'bgSound',
+            url: 'sounds/background.ogg',
+            volume: 10
+        });
+        
+        Leukocyte.eatSound = soundManager.createSound({
+            id: 'leukocyte_eatSound',
+            url: 'sounds/leukocyte_eat.ogg',
+            volume: 25
+        });
+        
+        Devourer.leukoKillSound = soundManager.createSound({
+            id: 'leukocyte_dead',
+            url: 'sounds/leukocyte_dead.ogg',
+            volume: 50
+        });
+          
+        function loopSound(sound) {
+            sound.play({
+                onfinish: function() {
+                    loopSound(sound);
+                }
+            });
+        }
+
+        loopSound(bgSound);
+        
+        // Menu.toggleSound();
+
+    });
+    
+}
 
 function run() {
 
@@ -68,11 +115,6 @@ function run() {
         } else {
             
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-            // Agar Meter
-            // gl.setColor(1, 0, 0, 1);
-            // gl.drawRect(0, 0, 1, 1);
-            
             game.draw(gl);
             
         }
@@ -97,41 +139,6 @@ window.onload = function() {
         return;
         
     }
-	
-	// disable debug mode after development/testing..
-	soundManager.debugMode = false;
-	
-	// Sound Manager 2
-	soundManager.onready(function(){
-
-		var bgSound = soundManager.createSound({
-			id: 'bgSound',
-			url: 'sounds/background.ogg'
-		});
-		
-		Leukocyte.eatSound = soundManager.createSound({
-			id: 'leukocyte_eatSound',
-			url: 'sounds/leukocyte_eat.ogg',
-			volume: 25
-		});
-		
-		Devourer.leukoKillSound = soundManager.createSound({
-			id: 'leukocyte_dead',
-			url: 'sounds/leukocyte_dead.ogg',
-			volume: 50
-		});
-		  
-		function loopSound(sound) {
-			sound.play({
-				onfinish: function() {
-					loopSound(sound);
-				}
-			});
-		}
-
-		loopSound(bgSound);
-
-	});
     
     initialize();
     

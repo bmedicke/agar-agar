@@ -108,22 +108,8 @@ var Menu = {
             Menu.toggle();
         });
         
-        $("#stopmusic").click(function () {
-            
-            if(Menu.musicOn){
-				soundManager.mute();
-				
-                document.getElementById("stopmusic").style.backgroundImage = "url(images/sound_off.png)";
-            }
-            else{
-				soundManager.unmute();
-				
-                document.getElementById("stopmusic").style.backgroundImage = "url(images/sound_on.png)";
-            }
-
-            Menu.musicOn = !Menu.musicOn;
-        });  
-
+        $("#stopmusic").click( this.toggleSound );  
+        
         $("#newg").click(function() { 
             Menu.hideInfo();
             $("#newgame").show();
@@ -238,5 +224,23 @@ var Menu = {
         this.open();
         $("#error").show();
         
+    },
+    
+    toggleSound : function () {
+            
+        if (Menu.musicOn){
+            
+            soundManager.mute();
+            $("#stopmusic").css("background-image", "url(images/sound_off.png)");
+            
+        } else{
+            
+            soundManager.unmute();
+            $("#stopmusic").css("background-image", "url(images/sound_on.png)");
+            
+        }
+
+        Menu.musicOn = !Menu.musicOn;
+
     }
 };
