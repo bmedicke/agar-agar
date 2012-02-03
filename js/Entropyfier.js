@@ -13,6 +13,8 @@ var Entropyfier = function(position, time, radius) {
         false,
         Math.PI
     );
+    
+    this.wobbleOffset = rand(0, 2 * Math.PI);
 
 };
 
@@ -89,14 +91,16 @@ Entropyfier.draw = function(gl, entities) {
     for (var i = entities.length - 1; i >= 0; i--) {
         
         var entity = entities[i],
-            elapsedPercent = entity.elapsed / entity.time * 0.65;
+            elapsedPercent = entity.elapsed / entity.time * 0.65,
+            radius = entity.radius,
+            offset = entity.wobbleOffset;
         
         gl.uniform1f(Entropyfier.shader.lifeTimeUniformLocation, elapsedPercent);
         
         gl.drawCircle(
-            entity.position.x, 
-            entity.position.y, 
-            (Math.sqrt(elapsedPercent) + 1) * entity.radius * 0.5
+            entity.position.x + Math.sin( offset + elapsedPercent * 5 ) * radius * 0.2, 
+            entity.position.y + Math.cos( offset + elapsedPercent * 5 ) * radius * 0.2,
+            (Math.sqrt(elapsedPercent) + 1) * radius * 0.5
         );
     
     }
@@ -118,8 +122,8 @@ Entropyfier.add = function(amount, entities) {
         
         if (Math.random() > 0.3) {
             
-            distance = rand(1.5, 2) * radius;
-            radius = (distance - radius) * rand(0.8, 0.95);
+            distance = rand(1.4, 1.6) * radius;
+            radius = (distance - radius) * rand(0.85, 0.95);
             time *= rand(0.9, 1.1);
             angle = rand(0, 2 * Math.PI);
         
@@ -131,7 +135,7 @@ Entropyfier.add = function(amount, entities) {
                 
                 radius *= rand(0.8, 0.9);
                 time *= rand(0.9, 1.1);
-                angle += rand( 0.2, 0.5) * Math.PI * randSign();
+                angle = rand( 0.2, 0.5) * Math.PI * randSign();
                 
                 offset.rotate2DSelf(angle).mulSelf(rand(0.9, 1.1));
                 
