@@ -101,6 +101,7 @@ Controller.prototype = {
                 leukocyte.eatParticle(particle.position);
                 
                 this.particles.splice(j, 1);
+                particle.alive = false;
                 j--;
                 
                 return;
@@ -164,7 +165,8 @@ Controller.prototype = {
                 
                 if (devourer.checkCollision(this.particles[j])) {
                     
-					Devourer.leukoKillSound.play();
+                    Devourer.leukoKillSound.play();
+                    this.particles[j].alive = false;
                     this.particles.splice(j, 1);
                     j--;
                     
@@ -254,12 +256,7 @@ Controller.prototype = {
 
         }
 
-        if (swarmParticle) {
-
-            Interface.swarmSize = swarmParticle.checkSwarm();
-            Interface.swarmParticle = swarmParticle;
-
-        }
+        Interface.showSwarm( swarmParticle );
 
 
     },
@@ -354,6 +351,7 @@ Controller.prototype = {
                    !cytoplast.isFull() && !cytoplast.puking) {
 
                     cytoplast.dockParticle(particles[j].position);
+                    particles[j].alive = false;
                     particles.splice(j, 1);
 
                     this.addPoints("cytoInfect");

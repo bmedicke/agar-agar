@@ -30,15 +30,13 @@ var AlertSign = function( pos, arrowAngle ) {
     tweenIn.easing( TWEEN.Easing.Back.EaseOut );
     tweenOut.easing( TWEEN.Easing.Back.EaseIn );
     
-    tweenOut.onComplete( function() {
-
-        Interface.alertSigns.splice( Interface.alertSigns.indexOf( this ), 1 );
-
-    });
-
     tweenIn.chain( tweenOut );
+    tweenOut.onComplete( this.remove );
     
     tweenIn.start();
+    
+    this.tweenIn = tweenIn;
+    this.tweenOut = tweenOut;
     
 };
 
@@ -76,6 +74,19 @@ extend( AlertSign.prototype, {
     
         gl.popMatrix();
     
+    },
+    
+    remove : function( deleteTweens ) {
+        
+        if ( deleteTweens ) {
+            
+            this.tweenIn.stop();
+            this.tweenOut.stop();
+        
+        }
+        
+        Interface.alertSigns.splice( Interface.alertSigns.indexOf( this ), 1 );
+        
     }
     
 });
@@ -83,7 +94,8 @@ extend( AlertSign.prototype, {
 var Interface = {
 
     swarmParticle : null,
-    swarmSize : 0,
+    swarmTimeout : null,
+    swarmSign : null,
     
     alertTextureSize : 1.5,
     arrowTextureSize : 0.7,
@@ -112,13 +124,20 @@ var Interface = {
         
         if (this.swarmParticle) {
             
-            gl.bindShader(gl.defaultShader);
+            if (this.swarmParticle.alive) {
             
-            gl.setColor(0.5, 0.5, 1.0, 0.5);
+                gl.bindShader(gl.defaultShader);
             
-            gl.drawCircle(this.swarmParticle.position.x, this.swarmParticle.position.y, this.swarmSize / 2);
+                gl.setColor(0.5, 0.5, 1.0, 0.5);
+                gl.noFill();
+                gl.drawCircle(this.swarmParticle.position.x, this.swarmParticle.position.y, 2);
+                gl.fill();
             
-            this.swarmParticle = null;
+            } else {
+                
+                this.hideSwarm();
+                
+            }
             
         }
         
@@ -126,7 +145,48 @@ var Interface = {
     
     addAlertSign : function( pos, arrowAngle ) {
         
-        this.alertSigns.push( new AlertSign( pos, arrowAngle ) );
+        var alertSign = new AlertSign( pos, arrowAngle )
+        
+        this.alertSigns.push( alertSign );
+        
+        return alertSign;
+        
+    },
+    
+    showSwarm : function( swarmParticle ) {
+    
+        if ( !this.swarmParticle && swarmParticle ) {
+            
+            var swarmSize = swarmParticle.checkSwarm();
+            
+            if ( swarmSize >= Cytoplast.prototype.maxFill ) {
+                
+                this.swarmParticle = swarmParticle;
+                
+                this.swarmSign = this.addAlertSign( swarmParticle.position );
+                
+                this.swarmTimeout = Timer.setTimeout( function() {
+                    
+                    Interface.swarmParticle = null;
+                    
+                }, 10000);
+                
+            }
+            
+        }
+    
+    },
+    
+    hideSwarm : function() {
+        
+        this.swarmParticle = null;
+        this.swarmSign.remove( true );
+        
+        if ( this.swarmTimeout ) {
+            
+            this.swarmTimeout.stop();
+            
+        }
         
     }
     

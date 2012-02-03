@@ -5,6 +5,8 @@ var Particle = function(position, alpha) {
     this.alpha = typeof alpha === 'number' ? alpha : 1.0;
     
     this.index = Particle.prototype.count++;
+    
+    this.alive = true;
 
 };
 

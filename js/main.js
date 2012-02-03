@@ -81,7 +81,7 @@ function initSound() {
 
         loopSound(bgSound);
         
-        // Menu.toggleSound();
+        Menu.toggleSound();
 
     });
     
