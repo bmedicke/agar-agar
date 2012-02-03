@@ -466,7 +466,44 @@ Controller.prototype = {
 
     getRandomInsidePosition : function() {
 
-        return new Vector(this.vectorfield.cols * Math.random(), this.vectorfield.rows * Math.random());
+        var pos = new Vector(),
+            entropyRadius = Entropyfier.prototype.entropyRadius,
+            devourerRadius = Devourer.prototype.forceRadius;
+        
+        do {
+            
+            var minDistance = Infinity;
+            
+            pos.x = rand( entropyRadius, this.vectorfield.cols - entropyRadius);
+            pos.y = rand( entropyRadius, this.vectorfield.rows - entropyRadius);
+            
+            for (var i = 0; i < this.devourers.length; i++ ) {
+                
+                var dist = this.devourers[i].position.sub(pos).norm();
+                
+                if (dist < minDistance) {
+                    
+                    minDistance = dist;
+                    
+                }
+                
+            }
+            
+            for (var i = 0; i < game.entropyfiers.length; i++ ) {
+                
+                var dist = game.entropyfiers[i].position.sub(pos).norm();
+                
+                if (dist < minDistance) {
+                    
+                    minDistance = dist;
+                    
+                }
+                
+            }
+            
+        } while ( minDistance < devourerRadius + entropyRadius );
+
+        return pos;
 
     },
 
