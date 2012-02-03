@@ -61,7 +61,7 @@ Game.prototype = {
         
         Timer.update(dt);
         Animator.update(dt);
-        TWEEN.update();
+        TWEEN.update( dt );
         
         this.vectorfield.update(dt);
         Devourer.applyVortices(dt, this.controller.devourers);
