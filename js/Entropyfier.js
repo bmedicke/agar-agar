@@ -115,6 +115,8 @@ Entropyfier.add = function(amount, entities) {
 
         entities.push(new Entropyfier(center.clone(), time, radius));
         
+        Interface.addAlertSign( center.clone() );
+        
         if (Math.random() > 0.3) {
             
             distance = rand(1.5, 2) * radius;

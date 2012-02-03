@@ -433,6 +433,38 @@ Controller.prototype = {
 
     },
 
+    getRectPositionForAngle : function( x, y, width, height, angle ) {
+
+        var midPoint = new Vector( width / 2, height / 2, 0 ),
+            radiusVector = new Vector( 1, 0, 0 ).rotate2D( angle ),
+            scaleX = Math.abs( midPoint.x / radiusVector.x ),
+            scaleY = Math.abs( midPoint.y / radiusVector.y );
+        
+        if ( !scaleX || scaleX === Infinity ) {
+            
+            radiusVector.mulSelf( scaleY );
+            
+        } else if ( !scaleY || scaleY === Infinity ) {
+            
+            radiusVector.mulSelf( scaleX );
+
+        } else if ( Math.abs( 1 - scaleX ) < Math.abs( 1 - scaleY ) ) {
+
+            radiusVector.mulSelf( scaleX );
+
+        } else {
+
+            radiusVector.mulSelf( scaleY );
+
+        }
+
+        midPoint.x += x;
+        midPoint.y += y;
+
+        return midPoint.addSelf( radiusVector );
+
+    },
+
     getRandomInsidePosition : function() {
 
         return new Vector(this.vectorfield.cols * Math.random(), this.vectorfield.rows * Math.random());
@@ -495,19 +527,43 @@ Controller.prototype = {
 
     addLeukocytes : function(amount) {
 
+        var width = this.vectorfield.cols,
+            height = this.vectorfield.rows;
+
         for (var i = 0; i < amount; i++) {
 
-            this.leukocytes.push(new Leukocyte(this.getRandomOutsidePosition()));
+            var angle = rand( 0, Math.PI * 2 );
+
+            this.leukocytes.push( new Leukocyte( 
+                this.getRectPositionForAngle( -2, -2, width + 4, height + 4, angle )
+            ));
+
+            // Interface.addAlertSign( 
+            //     this.getRectPositionForAngle( 2, 2, width - 4.5, height - 4.5, angle ), 
+            //     angle
+            // );
 
         }
 
     },
 
     addDevourers : function(amount) {
+        
+        var width = this.vectorfield.cols,
+            height = this.vectorfield.rows;
 
-        for(var i = 0; i < amount; i++) {
+        for (var i = 0; i < amount; i++) {
 
-            this.devourers.push(new Devourer(this.getRandomOutsidePosition()));
+            var angle = rand( 0, Math.PI * 2 );
+
+            this.devourers.push( new Devourer( 
+                this.getRectPositionForAngle( -10, -10, width + 20, height + 20, angle )
+            ));
+
+            Interface.addAlertSign( 
+                this.getRectPositionForAngle( 2, 2, width - 4.5, height - 4.5, angle ), 
+                angle
+            );
 
         }
 

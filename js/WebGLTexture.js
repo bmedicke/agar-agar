@@ -34,7 +34,7 @@ var WebGLTexture = function() {
         this.activeTexture(this["TEXTURE" + texture.ID]);
         this.bindTexture( this.TEXTURE_2D, texture );
 
-        this.pixelStorei( this.UNPACK_FLIP_Y_WEBGL, true );
+        // this.pixelStorei( this.UNPACK_FLIP_Y_WEBGL, true );
         this.texImage2D( this.TEXTURE_2D, 0, this.RGBA, this.RGBA, this.UNSIGNED_BYTE, texture.image );    
     
         this.texParameteri( this.TEXTURE_2D, this.TEXTURE_MAG_FILTER, this.LINEAR_MIPMAP_LINEAR );

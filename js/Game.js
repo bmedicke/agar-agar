@@ -45,6 +45,7 @@ Game.prototype = {
         
         Entropyfier.initialize(gl);
         Glow.initialize(gl);
+        Interface.initialize(gl);
         
         this.initLevel();
         

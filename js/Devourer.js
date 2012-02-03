@@ -1,4 +1,4 @@
-var Devourer = function(position) {
+var Devourer = function( position ) {
 
     Entity.call(this, position);
     
