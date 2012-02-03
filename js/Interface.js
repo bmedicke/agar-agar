@@ -25,7 +25,7 @@ var AlertSign = function( pos, arrowAngle ) {
     tweenIn.to( {size : 1}, 500 );
     
     tweenOut.to( {size : 0}, 500 );
-    tweenOut.delay( 3000 );
+    tweenOut.delay( 5000 );
     
     tweenIn.easing( TWEEN.Easing.Back.EaseOut );
     tweenOut.easing( TWEEN.Easing.Back.EaseIn );

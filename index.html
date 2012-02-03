@@ -38,13 +38,28 @@
         <p id="dona">Donate</p>
     </div>
 
-    <div id="points">
-        <span id="pointvalue">0</span><span id="pointlabel">Points</span>
-    </div>
     
-    <div id="multiplier" class="rounded">
-        <span id="multiplierpoints">0</span> Points x<span id="multipliervalue">1</span>
-        <div id="multipliercooldown" class="rounded"></div>
+    <div id="points">
+        
+        <div>
+            <span id="pointvalue">0</span>
+            <span id="pointlabel">Points</span>
+        </div>
+    
+        <div id="multiplier">
+            
+            <div id="multiplierarrow">&nbsp;</div>
+            
+            <div id="multipliercooldown" class="rounded">&nbsp;</div>
+            <div id="multiplierbar" class="rounded"></div>
+            
+            <div id="multipliertext">
+                <span id="multiplierpoints">1006622</span>
+                <span id="multipliervalue">x3</span>
+            </div>
+        
+        </div>
+    
     </div>
     
     <div class="info rounded" id="newgame">
@@ -98,7 +113,7 @@
         <h2>Feedback</h2>
         <p>If you have some suggestions on how to improve the game or just want to tell us, how awesome you think it is, feel free to do so here:</p>
         <form method="post" action="mailto:agaragargame@gmail.com?subject=Feedback-Form" enctype="text/plain">
-            <input type="text" id="mail" class="input" name="e-mail" value="Your e-mail (if you want us to answer)" onfocus="(function(el){if(el.defaultValue===el.value)el.value='';})(this)" />
+            <input type="text" id="mail" class="input" name="e-mail" value="Your e-mail (if you want us to answer)" onFocus="(function(el){if(el.defaultValue===el.value)el.value='';})(this)" />
             <textarea class="input" id="textfield" name="comments"></textarea>
             <input type="submit" class="input_button" value="Send us your feedback">
         </form>
@@ -525,9 +540,13 @@
 
 <script type="text/javascript" charset="utf-8" src="lib/requestAnimationFrame.js"></script>
 <script type="text/javascript" charset="utf-8" src="lib/Tween.js"></script>
-<script type="text/javascript" src="lib/soundmanager2/soundmanager2.js"></script><!-- sound -->
+
 <script type="text/javascript" charset="utf-8" src="lib/Stats.js"></script>
 <script type="text/javascript" charset="utf-8" src="lib/jquery-1.7.1.js"></script>
+
+<!-- Sound Manager Init -->
+<script type="text/javascript" charset="utf-8" src="lib/soundmanager2/soundmanager2.js"></script>
+<script type="text/javascript"> soundManager.url = 'lib/soundmanager2/swf/'; </script>
 
 <script type="text/javascript" charset="utf-8" src="js/Menu.js"></script>
 
@@ -559,8 +578,6 @@
 <script type="text/javascript" charset="utf-8" src="js/Controller.js"></script>
 
 <script type="text/javascript" charset="utf-8" src="js/Game.js"></script>
-<!-- Sound Manager Init -->
-<script type="text/javascript"> soundManager.url = 'lib/soundmanager2/swf/'; </script>
 <script type="text/javascript" charset="utf-8" src="js/main.js"></script>
 
 </body>

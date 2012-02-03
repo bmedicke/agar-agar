@@ -86,8 +86,8 @@ var Menu = {
 
         document.getElementById("playpause").onselectstart = function() {return false;};
         document.getElementById("stopmusic").onselectstart = function() {return false;};
-        document.getElementById("points").onselectstart = function() {return false;};
-        document.getElementById("multiplier").onselectstart = function() {return false;};
+        // document.getElementById("points").onselectstart = function() {return false;};
+        // document.getElementById("multiplier").onselectstart = function() {return false;};
 
         if (navigator.appVersion.indexOf("Mac") !== -1){
         
@@ -169,6 +169,7 @@ var Menu = {
         $(".close").click(function () {
             Menu.close();
         });
+        
     },
     
     updatePoints : function(points) {
@@ -185,7 +186,7 @@ var Menu = {
     
     updateMultiplier : function(multiplier) {
         
-        $("#multipliervalue").text(multiplier);
+        $("#multipliervalue").text('x' + multiplier);
         
         if (multiplier > 1) {
             

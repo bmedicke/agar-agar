@@ -155,39 +155,78 @@ body{
     }
 
 #points {
-    position: absolute;
-    left: 30px;
-    top: 30px;
-    z-index: 2;
-    opacity: 0.4;
-    color: #000;
-    cursor: default;
-    }
+	position: absolute;
+	text-align: left;
+	left: 29px;
+	top: 30px;
+	z-index: 100;
+	color: #000;
+	font-size: 16px;
+	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	}
 
-#points span{
-    margin-left: 6px;
-    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-    }
-    
+#points > div {
+	float : left;
+}
+
+#pointvalue, #pointlabel{
+	opacity: 0.2;
+	}
+
+#pointvalue {
+	margin-right: 6px;
+}
+
 #multiplier{
-    background-color:#000;
-    opacity: 0.4;
-    width: 230px;
-    margin: 20px auto 0px;
-    padding-top: 6px;
-    font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
-    text-align: center;
-    color:#fff;
-    font-size:26px;
-    cursor: default;
-    display: none;
-    }
-    
-#multipliercooldown {
-    background-color:#AA0;
-    height: 10px;
-    width: 100%;
-    }
+	font-family: TitilliumBold, "Lucida Sans Unicode", "Lucida Grande", Verdana, Geneva, sans-serif;
+	margin-left: 4px;
+	}
+
+#multiplier > div {
+	position: relative;
+	height: 16px;
+}
+
+#multiplierbar, #multipliercooldown, #multiplierarrow {
+	background-color:#777;
+	opacity: .3;
+}
+
+#multiplierbar{
+	padding: 4px 6px;
+	z-index: 101;
+	top: -52px;
+	left: 11px;
+	font-size: 16px;
+	}
+
+#multipliercooldown{
+	padding: 4px 0;
+	background-color:#777;
+	z-index: 99;
+	top: -28px;
+	left: 11px;
+	width: 50%;
+	}
+
+#multiplierarrow {
+	padding: 4px 6px;
+	top: 2px;
+	background: url("../images/arrow_left.png") top left no-repeat;
+	opacity: .8;
+}
+
+#multipliertext {
+	padding: 4px 6px;
+	z-index: 102;
+	color: #fff;
+	top: -76px;
+	left: 11px;
+}
+
+#multipliervalue {
+	font-size:14px;
+	}
 
 .rounded{
     -moz-border-radius: 5px;
