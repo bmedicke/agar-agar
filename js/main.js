@@ -78,11 +78,11 @@ function initSound() {
                 }
             });
         }
-
+        
         loopSound(bgSound);
         
         Menu.toggleSound();
-
+        
     });
     
 }

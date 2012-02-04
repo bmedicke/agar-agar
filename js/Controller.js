@@ -28,7 +28,6 @@ Controller.prototype = {
 
     pointValues : {
 
-        particleSpawn : 1,
         cytoInfect : 10,
         leukoDeath : 50,
         cytoFull : 250,
@@ -93,7 +92,7 @@ Controller.prototype = {
             
             } else {
             
-                leukocyte.eatParticle( nearest.copy(this.cytoplast.position), 500, 0.0 );
+                leukocyte.eatParticle( nearest.copy(this.cytoplast.position), 300, 0.0 );
             
             }
             
@@ -183,7 +182,7 @@ Controller.prototype = {
                 
                 if (devourer.checkCollision(this.particles[j])) {
                     
-                    devourer.eatEntity( 0.03 );
+                    devourer.grow( 0.03 );
                     
                     Devourer.leukoKillSound.play();
                     this.particles[j].alive = false;
@@ -198,7 +197,7 @@ Controller.prototype = {
                 
                 if (devourer.checkCollision(this.leukocytes[j])) {
                     
-                    devourer.eatEntity( 0.15 );
+                    devourer.grow( 0.15 );
                     
                     this.leukocytes.splice(j, 1);
                     j--;
@@ -522,11 +521,10 @@ Controller.prototype = {
 
         for (var i = 0; i < amount; i++) {
 
-            this.particles.push(new Particle(
-                new Vector(Math.random() * this.vectorfield.cols,
-                           Math.random() * this.vectorfield.rows),
-                1.0)
-            );
+            this.particles.push( new Particle( new Vector(
+                Math.random() * this.vectorfield.cols,
+                Math.random() * this.vectorfield.rows
+            )));
 
         }
 
@@ -534,39 +532,21 @@ Controller.prototype = {
     
     addParticle : function() {
         
-        var particle = new Particle(new Vector(
+        this.particles.push( new Particle( new Vector(
             Math.random() * this.vectorfield.cols,
-            Math.random() * this.vectorfield.rows,
-            0.0
-        ), 0.0);
-        
-        var tween = new TWEEN.Tween(particle);
-        
-        tween.to( {alpha : 1.0}, 1000);
-        tween.start();
-
-        this.particles.push(particle);
-        this.addPoints("particleSpawn");
+            Math.random() * this.vectorfield.rows
+        )).fadeIn( 1000 ) );
 
     },
 
     addParticlesAt : function(amount, position, radius) {
 
-        var offset = new Vector(position.x + radius, position.y, 0);
-        offset.subSelf(position);
+        var offset = new Vector(radius, 0, 0);
 
         for (var i = 0; i < amount; i++) {
 
-            offset.rotate2DSelf(rand(0, Math.PI * 2));
-            var particle = new Particle(position.add(offset), 0.5);
-            
-            Animator.animate({
-                object: particle,
-                values: {"alpha" : 1.0},
-                duration: 500
-            });
-
-            this.particles.push(particle);
+            offset.rotate2DSelf( rand(0, Math.PI * 2) );
+            this.particles.push( new Particle( position.add(offset) ).fadeIn( 500 ) );
 
         }
 
@@ -584,12 +564,6 @@ Controller.prototype = {
             this.leukocytes.push( new Leukocyte( 
                 this.getRectPositionForAngle( -2, -2, width + 4, height + 4, angle )
             ));
-
-            // Interface.addAlertSign( 
-            //     this.getRectPositionForAngle( 2, 2, width - 4.5, height - 4.5, angle ),
-            //     3000,
-            //     angle
-            // );
 
         }
 

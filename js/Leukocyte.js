@@ -40,21 +40,22 @@ extend(Leukocyte.prototype, {
         var orient = this.orientation;
     
         this.isActive = false;
-        alpha = typeof alpha === 'number' ? alpha : 1.0;
     
         orient.copy(particlePosition).subSelf(this.position);
-        this.deadParticle = new Particle(particlePosition.copy(orient), alpha);
-    
+        this.deadParticle = new Particle( particlePosition.copy(orient) )
+        
+        if ( typeof alpha === 'number' && alpha !== 1.0 ) {
+            
+            this.deadParticle.fadeIn( duration );
+            
+        }
+        
         var self = this,
             tweenPos = new TWEEN.Tween( orient ),
-            tweenAlphaIn = new TWEEN.Tween( this.deadParticle ),
             tweenAlphaOut = new TWEEN.Tween( this.deadParticle );
         
         tweenPos.to( {x : orient.x * 0.0000001, y : orient.y * 0.0000001}, duration );
-        tweenPos.start();
-        
-        tweenAlphaIn.to( {alpha : 1.0}, duration);
-        tweenAlphaIn.chain( tweenAlphaOut );
+        tweenPos.chain( tweenAlphaOut );
         
         tweenAlphaOut.to( {alpha : 0}, 500);
         tweenAlphaOut.onComplete( function() {
@@ -63,9 +64,9 @@ extend(Leukocyte.prototype, {
             
         });
         
-        tweenAlphaIn.start();
-		
-		Leukocyte.eatSound.play();
+        tweenPos.start();
+        
+        Leukocyte.eatSound.play();
 
     }
     

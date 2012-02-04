@@ -1,12 +1,11 @@
-var Particle = function(position, alpha) {
+var Particle = function( position ) {
 
     Entity.call(this, position);
     
-    this.alpha = typeof alpha === 'number' ? alpha : 1.0;
+    this.alpha = 1.0;
+    this.alive = true;
     
     this.index = Particle.prototype.count++;
-    
-    this.alive = true;
 
 };
 
@@ -27,6 +26,19 @@ extend(Particle.prototype, {
 
     textureSizeFactor : 4,
     count : 0,
+
+    fadeIn : function( duration ) {
+        
+        this.alpha = 0.0;
+        
+        var tween = new TWEEN.Tween(this);
+        
+        tween.to( {alpha : 1.0}, duration);
+        tween.start();
+        
+        return this;
+        
+    },
 
     checkSwarm : function( indices ) {
 

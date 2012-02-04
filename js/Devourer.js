@@ -68,7 +68,7 @@ extend(Devourer.prototype, {
     
     },
     
-    eatEntity : function( percent ) {
+    grow : function( percent ) {
         
         var growth = clamp( this.growth + percent, 0, 1);
         
