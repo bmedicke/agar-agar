@@ -16,8 +16,9 @@ extend(Particle.prototype, {
 
     mass : 100000,
     entityRadius : 0.15,
-    separationRadius : 0.3,
-    cohesionRadius : 2,
+	
+    separationFactor : 10,
+    cohesionFactor : .5,
 
     count : 0,
     maxCount : 150,
@@ -97,6 +98,83 @@ Particle.initialize = function(gl) {
     this.shader = shader;
     this.texture = texture;
     
+};
+
+Particle.getParticleDistances = function(particles) {
+
+	var distances = [];
+
+	for (var i = 0; i < particles.length; i++) {
+
+		distances[i] = [];
+		var particle = particles[i];
+
+		for (var j = 0; j < i; j++) {
+
+			distances[i][j] = distances[j][i] = (particle.position.sub(particles[j].position)).normSquared();
+
+		}
+
+	}
+
+	return distances;
+
+};
+
+Particle.applySwarmBehaviour = function(distances, particles, particle, particleCount, separationRadius, cohesionRadius) {
+
+	var separationCenter = new Vector(),
+		separationCount = 0,
+		cohesionCenter = new Vector(),
+		cohesionCount = 0;
+
+	particle.neighbors = [];
+
+	for (var j = 0; j < particleCount; j++) {
+
+		if (typeof distances[j] === 'undefined') {
+
+			continue;
+
+		}
+
+		if (distances[j] < separationRadius * separationRadius) {
+
+			separationCenter.addSelf( particles[j].position );
+			separationCount++;
+
+		} else if (distances[j] < cohesionRadius * cohesionRadius) {
+
+			cohesionCenter.addSelf( particles[j].position );
+			cohesionCount++;
+
+			particle.neighbors.push( particles[j] );
+
+		}
+
+	}
+
+
+	if (cohesionCount) {
+
+		cohesionCenter.divSelf(cohesionCount).subSelf(particle.position);
+
+		cohesionCenter.mulSelf((1 / cohesionRadius * cohesionCenter.norm()) * particle.cohesionFactor);
+
+	}
+
+	if (separationCount) {
+
+		separationCenter.divSelf(separationCount).subSelf(particle.position);
+
+		separationCenter.mulSelf((1 / separationRadius * separationCenter.norm() - 1) * particle.separationFactor);
+
+	}
+
+	particle.applyForce(separationCenter.addSelf(cohesionCenter));
+
+	return particle.neighbors.length;
+
 };
 
 Particle.draw = function(gl) {

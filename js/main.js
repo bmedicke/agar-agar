@@ -44,11 +44,9 @@ function initialize() {
 
 function initSound() {
     
+	// shame on you ebsi!:
     Leukocyte.eatSound = {play : function() {}};
     Devourer.leukoKillSound = {play : function() {}};
-    
-    // disable debug mode after development/testing..
-    soundManager.debugMode = false;
     
     // Sound Manager 2
     soundManager.onready(function(){

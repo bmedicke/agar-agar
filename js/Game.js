@@ -23,12 +23,11 @@ var Game = function() {
 Game.prototype = {
     
     particleCount : 20,
+	particleRate : 1500,
     
     leukoRate : 5000,
     leukoAmount : 1,
     leukoCap : Leukocyte.prototype.absolutMaxCount,
-    
-    particleRate : 1500,
     
     entropyRate : 6000,
     entropyAmount : 1,
@@ -41,7 +40,6 @@ Game.prototype = {
         Leukocyte.initialize(gl);
         
         Devourer.initialize(gl);
-        Cytoplast.initialize(gl);
         
         Entropyfier.initialize(gl);
         Glow.initialize(gl);
