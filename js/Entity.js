@@ -11,6 +11,8 @@ var Entity = function(position) {
 Entity.prototype = {
     
     mass : 1,
+	
+	moveSpeed : 0,
     
     entityRadius : 0.1,
     

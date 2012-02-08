@@ -20,9 +20,9 @@ var Controller = function(vectorfield) {
 
 Controller.prototype = {
 
-    separationFactor : 10,
-
-    cohesionFactor : .5,
+	separationRadius : 0.3,
+	
+	cohesionRadius : 2,
     
     cooldownTime : 30000,
 
@@ -250,7 +250,7 @@ Controller.prototype = {
 
     updateParticles : function(dt) {
 
-        var particleDistances = this.getParticleDistances(),
+        var particleDistances = Particle.getParticleDistances(this.particles),
             particleCount = this.particles.length,
             i, neighborCount, maxNeighborCount = 0, swarmParticle;
 
@@ -262,7 +262,14 @@ Controller.prototype = {
                 this.vectorfield.getVector(particle.position)
             );
 
-            neighborCount = this.applySwarmBehaviour(particleDistances[i], particle, particleCount);
+            neighborCount = Particle.applySwarmBehaviour(
+				particleDistances[i],
+				this.particles,
+				particle,
+				particleCount,
+				this.separationRadius,
+				this.cohesionRadius
+			);
 
             particle.checkBoundary(this.vectorfield);
 
@@ -278,85 +285,7 @@ Controller.prototype = {
         }
 
         Interface.showSwarm( swarmParticle );
-
-
-    },
-
-    applySwarmBehaviour : function(distances, particle, particleCount) {
-
-        var separationCenter = new Vector(),
-            separationCount = 0,
-            cohesionCenter = new Vector(),
-            cohesionCount = 0;
-
-        particle.neighbors = [];
-
-        for (var j = 0; j < particleCount; j++) {
-
-            if (typeof distances[j] === 'undefined') {
-
-                continue;
-
-            }
-
-            if (distances[j] < particle.separationRadius * particle.separationRadius) {
-
-                separationCenter.addSelf(this.particles[j].position);
-                separationCount++;
-
-            } else if (distances[j] < particle.cohesionRadius * particle.cohesionRadius) {
-
-                cohesionCenter.addSelf(this.particles[j].position);
-                cohesionCount++;
-
-                particle.neighbors.push( this.particles[j] );
-
-            }
-
-        }
-
-
-        if (cohesionCount) {
-
-            cohesionCenter.divSelf(cohesionCount).subSelf(particle.position);
-
-            cohesionCenter.mulSelf((1 / particle.cohesionRadius * cohesionCenter.norm()) * this.cohesionFactor);
-
-        }
-
-        if (separationCount) {
-
-            separationCenter.divSelf(separationCount).subSelf(particle.position);
-
-            separationCenter.mulSelf((1 / particle.separationRadius * separationCenter.norm() - 1) * this.separationFactor);
-
-        }
-
-        particle.applyForce(separationCenter.addSelf(cohesionCenter));
-
-        return particle.neighbors.length;
-
-    },
-
-    getParticleDistances : function() {
-
-        var distances = [];
-
-        for (var i = 0; i < this.particles.length; i++) {
-
-            distances[i] = [];
-            var particle = this.particles[i];
-
-            for (var j = 0; j < i; j++) {
-
-                distances[i][j] = distances[j][i] = (particle.position.sub(this.particles[j].position)).normSquared();
-
-            }
-
-        }
-
-        return distances;
-
+		
     },
 
     updateCytoplast : function(dt) {
@@ -368,22 +297,22 @@ Controller.prototype = {
 
             for( var j = 0; j < particles.length; j++) {
 
-                if (cytoplast.checkCollision(particles[j]) &&
-                   !cytoplast.isFull() && !cytoplast.puking) {
+                // if (cytoplast.checkCollision(particles[j]) &&
+                   // !cytoplast.isFull() && !cytoplast.puking) {
 
-                    cytoplast.dockParticle(particles[j].position);
-                    particles[j].alive = false;
-                    particles.splice(j, 1);
+                    // cytoplast.dockParticle(particles[j].position);
+                    // particles[j].alive = false;
+                    // particles.splice(j, 1);
 
-                    this.addPoints("cytoInfect");
+                    // this.addPoints("cytoInfect");
 
-                    if (cytoplast.isFull()) {
+                    // if (cytoplast.isFull()) {
 
-                        this.addPoints("cytoFull");
+                        // this.addPoints("cytoFull");
 
-                    }
+                    // }
 
-                }
+                // }
 
             }
             
