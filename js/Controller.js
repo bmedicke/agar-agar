@@ -85,14 +85,15 @@ Controller.prototype = {
 
         if (this.cytoplast.checkCollision( leukocyte )) {
             
-            if (this.cytoplast.spikeState) {
+            if (this.cytoplast.fsm.hasState("contaminated")) {
             
                 this.addPoints("leukoDeath");
                 this.leukocytes.splice(j, 1);
             
-            } else {
-            
-                leukocyte.eatParticle( nearest.copy(this.cytoplast.position), 300, 0.0 );
+            } else if (this.cytoplast.gutParticles.length > 0) {
+
+				leukocyte.eatParticle( nearest.copy(this.cytoplast.position), 300, 0.0 );
+				this.cytoplast.loseParticle(300);
             
             }
             

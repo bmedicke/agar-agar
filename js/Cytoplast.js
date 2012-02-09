@@ -20,8 +20,14 @@ extend( Cytoplast.prototype, {
 	mass : 300000,
 	
     moveSpeed : 0.3,
-
-    entityRadius : 2,
+	
+	defaultEntityRadius : 2,
+	
+	entityRadius : 2,
+	
+	minEntityRadius : 1,
+	
+	maxEntityRadius : 3,
 	
 	gutParticleCount : 30,
 	
@@ -38,7 +44,7 @@ extend( Cytoplast.prototype, {
     initialize : function() {
 
         this.fsm.init([
-            { name : 'healthy', draw : this.drawHealthy, update : function(fsm) { console.log("update healthy"); } },
+            { name : 'healthy', draw : this.drawHealthy, update : this.updateHealthy },
             { name : 'incubated',   draw : this.drawIncubated,   exit : function(fsm) { console.log("exit incubated"); } },
             { name : 'contaminated',  draw : this.drawContaminated,  enter : function(fsm) { console.log("enter contaminated"); } }
         ],[
@@ -102,7 +108,7 @@ extend( Cytoplast.prototype, {
 			
 			this.gutParticles.push(
 				new Particle(
-					new Vector(rand(0, this.entityRadius / 2), 0, 0).rotate2DSelf(rand(0, 360)).addSelf(this.position)
+					new Vector(rand(0, this.defaultEntityRadius / 2), 0, 0).rotate2DSelf(rand(0, 360)).addSelf(this.position)
 				)
 			);
 		
@@ -155,6 +161,31 @@ extend( Cytoplast.prototype, {
 			this.approachCenter(particle, this.pushForce);
 		
 		}
+	
+	},
+	
+	loseParticle : function(delay) {
+	
+		var self = this;
+		Timer.setTimeout( function() {
+		
+			self.gutParticles.pop();
+		
+		}, delay);
+		
+		tweenRadius = new TWEEN.Tween(this);
+		tweenRadius.delay(delay);
+		
+		tweenRadius.to( {entityRadius : clamp(
+		
+			self.entityRadius - (self.defaultEntityRadius / self.gutParticleCount),
+			self.minEntityRadius,
+			self.maxEntityRadius)
+			
+		}, 1000 );
+		
+		tweenRadius.easing(TWEEN.Easing.Back.EaseIn);
+		tweenRadius.start();
 	
 	}
     
