@@ -39,6 +39,7 @@ extend( Cytoplast.prototype, {
 	pushForce : 10,
 	
 	pukeForce : 25,
+	pukeTime: 1250,
 	
 	separationRadius : 0.5,
 	cohesionRadius : 2,
@@ -47,6 +48,7 @@ extend( Cytoplast.prototype, {
 	maxFill : 60,
 	
 	spikeFill : 10,
+	spikeTime : 10000,
 	
 	incubationTime : 5000,
 	
@@ -58,13 +60,15 @@ extend( Cytoplast.prototype, {
     initialize : function() {
 
         this.fsm.init([
-            { name : 'healthy', enter : this.enterHealthy },
-            { name : 'fertilized', enter : this.enterFertilized },
-			{ name : 'puking', enter : this.enterPuking },
-            { name : 'spikified', enter : this.enterSpikified, draw : this.drawSpikified, exit : this.exitSpikified }
+            { name : 'healthy', enter : this.enterHealthy , update : this.updateHealthy },
+            { name : 'fertilized', enter : this.enterFertilized, update : this.updateHealthy },
+			{ name : 'puking', enter : this.enterPuking, update : this.collideWithParticles },
+            { name : 'spikified', enter : this.enterSpikified, update : this.updateSpikified, draw : this.drawSpikified, exit : this.exitSpikified }
         ],[
-            { name : "spikify", from : 'fertilized', to : 'spikified' },
-            { name : "cure", from : 'fertilized', to : 'puking', callback : this.onCure }
+            { name : "fertilize", from : 'healthy', to : 'fertilized' },
+			{ name : "spikify", from : 'fertilized', to : 'spikified' },
+            { name : "puke", from : 'fertilized', to : 'puking' },
+			{ name : "recover", from : '*', to : 'healthy' }
         ]);
         
         this.fsm.changeState( 'healthy' );
@@ -84,6 +88,23 @@ extend( Cytoplast.prototype, {
 		console.log("enter spikified");
 		
 		this.mass /= 5;
+		
+		game.controller.addPoints("cytoFull");
+		
+		for(var i = 0; i < this.dockedParticles.length; i++) {
+		
+			this.dockedParticles[i].alpha = this.gutParticleAlpha;
+			this.gutParticles.push(this.dockedParticles[i]);
+		
+		}
+		
+		this.dockedParticles = [];
+		
+		Timer.setTimeout(function() {
+		
+			fsm.recover();
+		
+		}, this.spikeTime);
 	
 	},
 	
@@ -94,16 +115,119 @@ extend( Cytoplast.prototype, {
 	},
     
     update : function(dt) {
-        
+		
+		this.fsm.update(dt);
+		
+		this.collideWithLeukocytes();
+
+		this.checkBoundary(game.vectorfield);
+
 		var positionChange = Entity.prototype.update.call(this, dt);
 		
 		this.updateGutParticles(dt, positionChange);
 		
 		this.updateDockedParticles(dt, positionChange);
-		
-        this.fsm.update(dt);
         
     },
+	
+	updateHealthy : function(dt) {
+	
+		this.updateMovement(dt);
+		
+		this.collectParticles(dt);
+	
+	},
+	
+	updateSpikified : function(dt) {
+	
+		this.updateMovement(dt);
+		
+		this.collideWithParticles(dt);
+	
+	},
+	
+	updateMovement : function(dt) {
+	
+		var forceVector = game.vectorfield.getVector(this.position),
+			offsetVector = new Vector(this.entityRadius);
+		
+		for (var i = 0; i < 6; i++) {
+			
+			forceVector.addSelf(game.vectorfield.getVector(
+				this.position.add(offsetVector.rotate2DSelf(Math.PI / 3))
+			));
+			
+		}
+
+		this.applyForce(forceVector.divSelf(7));
+	
+	},
+	
+	collideWithParticles : function(dt) {
+	
+		var fieldParticles = game.controller.particles;
+		
+		for( var j = 0; j < fieldParticles.length; j++) {
+
+			this.collision(fieldParticles[j]);
+
+		}
+	
+	},
+	
+	collideWithLeukocytes : function() {
+	
+		var leukocytes = game.controller.leukocytes;
+		
+		for(var i = 0; i < leukocytes.length; i++) {
+		
+			if (this.checkCollision( leukocytes[i] )) {
+            
+				if (this.fsm.hasState('spikified')) {
+				
+					game.controller.addPoints("leukoDeath");
+					leukocytes.splice(i, 1);
+				
+				} else if (this.gutParticles.length > 0 && leukocytes[i].isActive) {
+
+					leukocytes[i].eatParticle( this.loseParticle(), 300, this.gutParticleAlpha );
+				
+				}
+			
+			}
+		
+		}
+	
+	},
+	
+	collectParticles : function(dt) {
+	
+		fieldParticles = game.controller.particles;
+		
+		for( var j = 0; j < fieldParticles.length; j++) {
+
+			if (this.checkCollision(fieldParticles[j])) {
+
+				this.fsm.fertilize();
+				
+				this.dockedParticles.push(new Particle(fieldParticles[j].position));
+				
+				if(this.dockedParticles.length >= this.spikeFill) {
+				
+					this.fsm.spikify();
+				
+				}
+				
+				game.controller.addPoints("cytoInfect");
+				
+				fieldParticles[j].alive = false;
+				fieldParticles.splice(j, 1);
+
+			}
+
+		}
+	
+	},
     
     draw : function(gl) {
 	
@@ -257,46 +381,21 @@ extend( Cytoplast.prototype, {
 	
 	},
 	
-	dockParticle : function(position) {
-	
-		if(!this.fsm.hasState('spikified')) {
-		
-			if(this.fsm.hasState('healthy')) {
-			
-				this.fsm.changeState('fertilized');
-			
-			}
-			
-			this.dockedParticles.push(new Particle(position));
-			
-			if(this.dockedParticles.length >= this.spikeFill) {
-			
-				this.fsm.changeState('spikified');
-			
-			}
-		
-			return true;
-		}
-		
-		return false;
-	
-	},
-	
-	enterFertilized : function() {
+	enterFertilized : function(fsm) {
 	
 		log("entered fertilized");
 	
 		var self = this;
 		
-		setTimeout( function() {
+		Timer.setTimeout( function() {
 		
-			self.dockedParticles.length >= this.spikeFill ? self.fsm.spikify() : self.fsm.cure();
+			self.dockedParticles.length >= self.spikeFill ? self.fsm.spikify() : self.fsm.puke();
 		
 		}, this.incubationTime);
 	
 	},
 	
-	enterPuking : function() {
+	enterPuking : function(fsm) {
 	
 		game.controller.particles = game.controller.particles.concat(this.dockedParticles);
 		
@@ -309,6 +408,26 @@ extend( Cytoplast.prototype, {
 			false,
 			Math.PI
 		));
+		
+		// var tweenSizeOut = new TWEEN.Tween( this ),
+		
+		// tweenSize.to( { entityRadius : this.entityRadius }, 500 );
+		
+		// tweenSize.easing(TWEEN.Easing.Back.EaseIn);
+        
+        // tweenAlphaOut.onComplete( function() {
+            
+            // self.isActive = true;
+            
+        // });
+        
+        // tweenSize.start();
+		
+		Timer.setTimeout(function() {
+		
+			fsm.recover();
+		
+		}, this.pukeTime);
 	
 	}
     

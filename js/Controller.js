@@ -36,12 +36,12 @@ Controller.prototype = {
     },
 
     update : function(dt) {
-
-        this.updateLeukocytes(dt);
-
+	
         this.updateDevourers(dt);
 
         this.updateCytoplast(dt);
+		
+		this.updateLeukocytes(dt);
 
         this.updateParticles(dt);
         
@@ -82,23 +82,6 @@ Controller.prototype = {
         
         var nearest = this.cytoplast.position.clone().subSelf(leukocyte.position),
             current = this.vector.copy( nearest );
-
-        if (this.cytoplast.checkCollision( leukocyte )) {
-            
-            if (this.cytoplast.fsm.hasState('spikified')) {
-            
-                this.addPoints("leukoDeath");
-                this.leukocytes.splice(j, 1);
-            
-            } else if (this.cytoplast.gutParticles.length > 0) {
-
-				leukocyte.eatParticle( this.cytoplast.loseParticle(), 300, this.cytoplast.gutParticleAlpha );
-            
-            }
-            
-            return;
-        
-        }
     
         for (var j = 0; j < this.particles.length; j++) {
     
@@ -289,52 +272,8 @@ Controller.prototype = {
     },
 
     updateCytoplast : function(dt) {
-
-        var cytoplast = this.cytoplast,
-            particles = this.particles;
-
-        if (cytoplast) {
-
-            for( var j = 0; j < particles.length; j++) {
-
-                if (cytoplast.checkCollision(particles[j])) {
-
-                    if(cytoplast.dockParticle(particles[j].position)) {
-					
-						this.addPoints("cytoInfect");
-					
-					}
-                    particles[j].alive = false;
-                    particles.splice(j, 1);
-
-                    // if (cytoplast.isFull()) {
-
-                        // this.addPoints("cytoFull");
-
-                    // }
-
-                }
-
-            }
-            
-            var forceVector = this.vectorfield.getVector(cytoplast.position),
-                offsetVector = new Vector(Cytoplast.prototype.entityRadius);
-            
-            for (var i = 0; i < 6; i++) {
-                
-                forceVector.addSelf(this.vectorfield.getVector(
-                    cytoplast.position.add(offsetVector.rotate2DSelf(Math.PI / 3))
-                ));
-                
-            }
-
-            cytoplast.applyForce(forceVector.divSelf(7));
-
-            cytoplast.checkBoundary(this.vectorfield);
-
-            cytoplast.update(dt);
-
-        }
+	
+		this.cytoplast.update(dt);
 
     },
 
