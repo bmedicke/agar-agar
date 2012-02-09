@@ -85,15 +85,14 @@ Controller.prototype = {
 
         if (this.cytoplast.checkCollision( leukocyte )) {
             
-            if (this.cytoplast.fsm.hasState("contaminated")) {
+            if (this.cytoplast.fsm.hasState('spikified')) {
             
                 this.addPoints("leukoDeath");
                 this.leukocytes.splice(j, 1);
             
             } else if (this.cytoplast.gutParticles.length > 0) {
 
-				leukocyte.eatParticle( nearest.copy(this.cytoplast.position), 300, 0.0 );
-				this.cytoplast.loseParticle(300);
+				leukocyte.eatParticle( this.cytoplast.loseParticle(), 300, this.cytoplast.gutParticleAlpha );
             
             }
             
@@ -225,7 +224,7 @@ Controller.prototype = {
 
                 if (devourer.checkCollision(this.cytoplast)) {
 
-                    if(this.cytoplast.spikeState) {
+                    if(this.cytoplast.fsm.hasState('spikified')) {
 
                         this.addPoints("devourerDeath");
                         this.increaseMultiplier();
@@ -298,14 +297,15 @@ Controller.prototype = {
 
             for( var j = 0; j < particles.length; j++) {
 
-                // if (cytoplast.checkCollision(particles[j]) &&
-                   // !cytoplast.isFull() && !cytoplast.puking) {
+                if (cytoplast.checkCollision(particles[j])) {
 
-                    // cytoplast.dockParticle(particles[j].position);
-                    // particles[j].alive = false;
-                    // particles.splice(j, 1);
-
-                    // this.addPoints("cytoInfect");
+                    if(cytoplast.dockParticle(particles[j].position)) {
+					
+						this.addPoints("cytoInfect");
+					
+					}
+                    particles[j].alive = false;
+                    particles.splice(j, 1);
 
                     // if (cytoplast.isFull()) {
 
@@ -313,7 +313,7 @@ Controller.prototype = {
 
                     // }
 
-                // }
+                }
 
             }
             

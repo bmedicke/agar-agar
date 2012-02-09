@@ -159,7 +159,7 @@ var Interface = {
             
             var swarmSize = swarmParticle.checkSwarm();
             
-            if ( swarmSize >= Cytoplast.prototype.maxFill ) {
+            if ( swarmSize >= Cytoplast.prototype.spikeFill ) {
                 
                 this.swarmParticle = swarmParticle;
                 

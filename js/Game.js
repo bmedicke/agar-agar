@@ -39,6 +39,7 @@ Game.prototype = {
         Particle.initialize(gl);
         Leukocyte.initialize(gl);
         
+		Cytoplast.initialize(gl);
         Devourer.initialize(gl);
         
         Entropyfier.initialize(gl);

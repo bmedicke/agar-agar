@@ -18,6 +18,7 @@ var Transition = function( params ) {
     this.name = params.name || 'none';
     this.from = params.from || 'none';
     this.to = params.to || 'none';
+	this.callback = params.callback || function( fsm ) {};
     
 };
 
@@ -84,7 +85,7 @@ StateMachine.prototype = {
             if ( self.currentState.name !== transition.to &&
                 ( self.currentState.name === transition.from || transition.from === '*' ) ) {
                 
-                self.changeState( transition.to );
+                self.changeState( transition.to, transition.callback );
                 
                 return true;
                 
@@ -96,10 +97,16 @@ StateMachine.prototype = {
         
     },
     
-    changeState : function( name ) {
+    changeState : function( name, callback ) {
         
         this.currentState.exit.call(this.scope, this);
         
+		if(callback) {
+		
+			callback.call(this.scope, this);
+			
+		}
+		
         this.currentState = this.states[name];
         
         this.currentState.enter.call(this.scope, this);
@@ -128,7 +135,7 @@ var Blob = {
             { name : 'red',   draw : this.drawRed,   exit : function(fsm) { console.log("exit red"); } },
             { name : 'blue',  draw : this.drawBlue,  enter : function(fsm) { console.log("enter blue"); } }
         ],[
-            { name : "heat", from : 'green', to: 'red' },
+            { name : "heat", from : 'green', to: 'red', callback : function(fsm) { console.log("heat-transition"); } },
             { name : "cool", from : 'red', to: 'blue' },
             { name : "grow", from : '*', to: 'green' }
         ]);

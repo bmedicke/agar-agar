@@ -8,7 +8,13 @@ var Cytoplast = function(position) {
 	
 	this.gutParticles = [];
 	
+	this.dockedParticles = [];
+	
 	this.createGutParticles();
+	
+	this.growth = 0.5;
+	
+	this.growthTween = null;
 
 };
 
@@ -21,47 +27,79 @@ extend( Cytoplast.prototype, {
 	
     moveSpeed : 0.3,
 	
-	defaultEntityRadius : 2,
+	minRadius : 1,
+	maxRadius : 3,
 	
 	entityRadius : 2,
 	
-	minEntityRadius : 1,
-	
-	maxEntityRadius : 3,
-	
 	gutParticleCount : 30,
-	
-	separationRadius : 0.5,
-	
-	cohesionRadius : 2,
-	
-	particleSpeed : 0.05,
+	gutParticleSpeed : 0.05,
+	gutParticleAlpha : 0.3,
 	
 	pushForce : 10,
 	
-	maxFill : 15,
+	pukeForce : 25,
+	
+	separationRadius : 0.5,
+	cohesionRadius : 2,
+	
+	minFill : 1,
+	maxFill : 60,
+	
+	spikeFill : 10,
+	
+	incubationTime : 5000,
+	
+	color : [0.99, 0.92, 0.5, 0.15],
+	
+	corpusTextureSize : 1.1,
+	spikeTextureSize : 1.9,
 	
     initialize : function() {
 
         this.fsm.init([
-            { name : 'healthy', draw : this.drawHealthy, update : this.updateHealthy },
-            { name : 'incubated',   draw : this.drawIncubated,   exit : function(fsm) { console.log("exit incubated"); } },
-            { name : 'contaminated',  draw : this.drawContaminated,  enter : function(fsm) { console.log("enter contaminated"); } }
+            { name : 'healthy', enter : this.enterHealthy },
+            { name : 'fertilized', enter : this.enterFertilized },
+			{ name : 'puking', enter : this.enterPuking },
+            { name : 'spikified', enter : this.enterSpikified, draw : this.drawSpikified, exit : this.exitSpikified }
         ],[
-            { name : "attack", from : 'healthy', to: 'incubated' },
-            { name : "outbreak", from : 'incubated', to: 'contaminated' },
-            { name : "cure", from : '*', to: 'healthy' }
+            { name : "spikify", from : 'fertilized', to : 'spikified' },
+            { name : "cure", from : 'fertilized', to : 'puking', callback : this.onCure }
         ]);
         
         this.fsm.changeState( 'healthy' );
         
     },
+	
+	enterHealthy : function(fsm) {
+	
+		console.log("enter healthy");
+		
+		this.dockedParticles = [];
+	
+	},
+	
+	enterSpikified : function(fsm) {
+	
+		console.log("enter spikified");
+		
+		this.mass /= 5;
+	
+	},
+	
+	exitSpikified : function(fsm) {
+	
+		this.mass *= 5;
+	
+	},
     
     update : function(dt) {
         
 		var positionChange = Entity.prototype.update.call(this, dt);
 		
 		this.updateGutParticles(dt, positionChange);
+		
+		this.updateDockedParticles(dt, positionChange);
 		
         this.fsm.update(dt);
         
@@ -70,36 +108,40 @@ extend( Cytoplast.prototype, {
     draw : function(gl) {
 	
 		Particle.drawEnqueue(this.gutParticles);
+		Particle.drawEnqueue(this.dockedParticles);
         
-		gl.bindShader(gl.defaultShader);
-		gl.noFill();
-		gl.drawCircle(this.position.x, this.position.y, this.entityRadius);
-        // this.fsm.draw(gl);
+		this.fsm.draw(gl);
+		
+		this.drawTexture(gl, this.corpusTextureSize, Cytoplast.corpusTexture);
         
     },
-    
-    drawHealthy : function(fsm, gl) {
-                        
-        // gl.bindShader(gl.defaultShader);
-        // gl.setColor(0, 1, 0, 0.7);
-        
-		// Entity.prototype.draw.call(this, gl);
-    },
+	
+	drawTexture : function(gl, textureSize, texture) {
+		
+		var size = 2 * textureSize * this.entityRadius;
+		
+		gl.bindShader(gl.textureShader);
 
-    drawIncubated : function(fsm, gl) {
-                        
-        // gl.bindShader(gl.defaultShader);
-        // gl.setColor(1, 0, 0, 1);
-        
-        // Entity.prototype.draw.call(this, gl);
-    },
+		gl.passColor(this.color);
+
+		gl.pushMatrix();
+		
+		gl.translate(this.position.x, this.position.y);
+		
+		gl.scale(size, size);   
+		gl.passMatrix();
+		
+		gl.passTexture(texture);
+		gl.drawQuadTexture();
+		
+		gl.popMatrix();
+	
+	},
     
-    drawContaminated : function(fsm, gl) {
+    drawSpikified : function(fsm, gl) {
                         
-        // gl.bindShader(gl.defaultShader);
-        // gl.setColor(0, 0, 1, 0.5);
-        
-        // Entity.prototype.draw.call(this, gl);
+        this.drawTexture(gl, this.spikeTextureSize, Cytoplast.spikeTexture);
+		
     },
 	
 	createGutParticles : function() {
@@ -108,15 +150,48 @@ extend( Cytoplast.prototype, {
 			
 			this.gutParticles.push(
 				new Particle(
-					new Vector(rand(0, this.defaultEntityRadius / 2), 0, 0).rotate2DSelf(rand(0, 360)).addSelf(this.position)
+					new Vector(rand(0, this.entityRadius / 2), 0, 0).rotate2DSelf(rand(0, 360)).addSelf(this.position)
 				)
 			);
+			
+			this.gutParticles[i].alpha = this.gutParticleAlpha;
 		
 		}
 	
 	},
 	
-	// TODO: DRY -> Controller.js has similar function for particles
+	updateSize : function() {
+	
+		if(this.growthTween) {
+		
+			this.growthTween.stop();
+		
+		}
+		
+		var growth = clamp( this.gutParticles.length / this.maxFill, 0, 1);
+		
+		this.growthTween = new TWEEN.Tween( this );
+        
+		this.growthTween.easing(TWEEN.Easing.Back.EaseIn);
+		
+        this.growthTween.to( {'growth' : growth}, 1000 );
+        
+        this.growthTween.onUpdate( function() {
+            
+            this.entityRadius = map( this.growth, 0, 1, this.minRadius, this.maxRadius );
+            
+        });
+        
+        this.growthTween.onComplete( function() {
+            
+            this.growthTween = null;
+            
+        });
+        
+        this.growthTween.start();
+	
+	},
+	
 	updateGutParticles : function(dt, positionChange) {
 	
 		var particleDistances = Particle.getParticleDistances(this.gutParticles),
@@ -137,7 +212,7 @@ extend( Cytoplast.prototype, {
 				this.cohesionRadius
 			);
 			
-			this.approachCenter(particle, this.particleSpeed);
+			this.approachCenter(particle, this.gutParticleSpeed);
 			
 			this.checkDistance(particle);
 
@@ -145,6 +220,16 @@ extend( Cytoplast.prototype, {
 		
 		}
 		
+	},
+	
+	updateDockedParticles : function(dt, positionChange) {
+	
+		for(var i = 0; i < this.dockedParticles.length; i++) {
+		
+			this.dockedParticles[i].position.addSelf(positionChange);
+		
+		}
+	
 	},
 	
 	approachCenter : function(particle, force) {
@@ -164,29 +249,74 @@ extend( Cytoplast.prototype, {
 	
 	},
 	
-	loseParticle : function(delay) {
+	loseParticle : function() {
+		
+		this.updateSize();
+		
+		return this.gutParticles.splice(rand(0, this.gutParticles.length), 1)[0].position;
+	
+	},
+	
+	dockParticle : function(position) {
+	
+		if(!this.fsm.hasState('spikified')) {
+		
+			if(this.fsm.hasState('healthy')) {
+			
+				this.fsm.changeState('fertilized');
+			
+			}
+			
+			this.dockedParticles.push(new Particle(position));
+			
+			if(this.dockedParticles.length >= this.spikeFill) {
+			
+				this.fsm.changeState('spikified');
+			
+			}
+		
+			return true;
+		}
+		
+		return false;
+	
+	},
+	
+	enterFertilized : function() {
+	
+		log("entered fertilized");
 	
 		var self = this;
-		Timer.setTimeout( function() {
 		
-			self.gutParticles.pop();
+		setTimeout( function() {
 		
-		}, delay);
+			self.dockedParticles.length >= this.spikeFill ? self.fsm.spikify() : self.fsm.cure();
 		
-		tweenRadius = new TWEEN.Tween(this);
-		tweenRadius.delay(delay);
+		}, this.incubationTime);
+	
+	},
+	
+	enterPuking : function() {
+	
+		game.controller.particles = game.controller.particles.concat(this.dockedParticles);
 		
-		tweenRadius.to( {entityRadius : clamp(
+		this.dockedParticles = [];
 		
-			self.entityRadius - (self.defaultEntityRadius / self.gutParticleCount),
-			self.minEntityRadius,
-			self.maxEntityRadius)
-			
-		}, 1000 );
-		
-		tweenRadius.easing(TWEEN.Easing.Back.EaseIn);
-		tweenRadius.start();
+		game.vectorfield.addForcefield(new Forcefield(
+			this.position.clone(),
+			this.entityRadius * 2,
+			this.pukeForce,
+			false,
+			Math.PI
+		));
 	
 	}
     
 });
+
+Cytoplast.initialize = function(gl) {
+
+    this.corpusTexture = gl.loadTexture("textures/cytoplast_corpus.png");
+    this.spikeTexture = gl.loadTexture("textures/cytoplast_spikes.png");
+
+};
