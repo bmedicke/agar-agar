@@ -401,27 +401,30 @@ extend( Cytoplast.prototype, {
 		
 		this.dockedParticles = [];
 		
-		game.vectorfield.addForcefield(new Forcefield(
-			this.position.clone(),
-			this.entityRadius * 2,
-			this.pukeForce,
-			false,
-			Math.PI
-		));
+		var repulsionForcefield = new Forcefield(
+				this.position.clone(),
+				this.entityRadius * 2,
+				this.pukeForce,
+				false,
+				Math.PI
+			),
+			tweenShrink = new TWEEN.Tween( this ),
+			tweenRepulse = new TWEEN.Tween( this );
+			
+		tweenShrink.to({ entityRadius : this.entityRadius * 0.85 }, 350);
+		tweenRepulse.to({ entityRadius : this.entityRadius }, 150);
 		
-		// var tweenSizeOut = new TWEEN.Tween( this ),
+		tweenShrink.chain(tweenRepulse);
 		
-		// tweenSize.to( { entityRadius : this.entityRadius }, 500 );
+		tweenRepulse.easing(TWEEN.Easing.Bounce.EaseOut);
 		
-		// tweenSize.easing(TWEEN.Easing.Back.EaseIn);
-        
-        // tweenAlphaOut.onComplete( function() {
-            
-            // self.isActive = true;
-            
-        // });
-        
-        // tweenSize.start();
+		tweenShrink.onComplete( function() {
+		
+			game.vectorfield.addForcefield(repulsionForcefield);
+		
+		});
+			
+		tweenShrink.start();
 		
 		Timer.setTimeout(function() {
 		
