@@ -411,7 +411,7 @@ extend( Cytoplast.prototype, {
 			tweenShrink = new TWEEN.Tween( this ),
 			tweenRepulse = new TWEEN.Tween( this );
 			
-		tweenShrink.to({ entityRadius : this.entityRadius * 0.85 }, 350);
+		tweenShrink.to({ entityRadius : this.entityRadius * 0.85 }, 300);
 		tweenRepulse.to({ entityRadius : this.entityRadius }, 150);
 		
 		tweenShrink.chain(tweenRepulse);
