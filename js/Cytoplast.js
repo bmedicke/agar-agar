@@ -17,6 +17,12 @@ var Cytoplast = function(position) {
 	this.spikeSize = this.corpusTextureSize;
 	
 	this.growthTween = null;
+	
+	this.attractionPoint = new Vector(1, 0);
+	
+	this.rotation = 0;
+	
+	this.updateSize();
 
 };
 
@@ -35,7 +41,7 @@ extend( Cytoplast.prototype, {
 	entityRadius : 2,
 	
 	gutParticleCount : 30,
-	gutParticleSpeed : 0.05,
+	gutParticleSpeed : 0.2,
 	gutParticleAlpha : 0.3,
 	
 	pushForce : 10,
@@ -142,11 +148,15 @@ extend( Cytoplast.prototype, {
 		
 		this.fsm.update(dt);
 		
+		this.rotation -= 0.025;
+		
 		this.collideWithLeukocytes();
 
 		this.checkBoundary(game.vectorfield);
 
 		var positionChange = Entity.prototype.update.call(this, dt);
+		
+		this.attractionPoint.rotate2DSelf(0.05);
 		
 		this.updateGutParticles(dt, positionChange);
 		
@@ -257,7 +267,7 @@ extend( Cytoplast.prototype, {
 	
 		Particle.drawEnqueue(this.gutParticles);
 		Particle.drawEnqueue(this.dockedParticles);
-        
+		
 		this.fsm.draw(gl);
 		
 		this.drawTexture(gl, this.corpusTextureSize, Cytoplast.corpusTexture);
@@ -275,6 +285,8 @@ extend( Cytoplast.prototype, {
 		gl.pushMatrix();
 		
 		gl.translate(this.position.x, this.position.y);
+		
+		gl.rotate(this.rotation);
 		
 		gl.scale(size, size);   
 		gl.passMatrix();
@@ -327,6 +339,8 @@ extend( Cytoplast.prototype, {
         this.growthTween.onUpdate( function() {
             
             this.entityRadius = map( this.growth, 0, 1, this.minRadius, this.maxRadius );
+			
+			this.attractionPoint.normalizeSelf().mulSelf(this.entityRadius * 0.5);
             
         });
         
@@ -343,7 +357,8 @@ extend( Cytoplast.prototype, {
 	updateGutParticles : function(dt, positionChange) {
 	
 		var particleDistances = Particle.getParticleDistances(this.gutParticles),
-            particleCount = this.gutParticles.length;
+            particleCount = this.gutParticles.length,
+			attractionPoint = this.attractionPoint.add(this.position);
 	
 		for(var i = 0; i < particleCount; i++) {
 		
@@ -360,7 +375,9 @@ extend( Cytoplast.prototype, {
 				this.cohesionRadius
 			);
 			
-			this.approachCenter(particle, this.gutParticleSpeed);
+			// approach point
+			var toAttractionPoint = attractionPoint.sub(particle.position).normalizeSelf();
+			particle.applyForce(toAttractionPoint.mulSelf(this.gutParticleSpeed));
 			
 			this.checkDistance(particle);
 
@@ -380,18 +397,12 @@ extend( Cytoplast.prototype, {
 	
 	},
 	
-	approachCenter : function(particle, force) {
-
-		var toCenter = this.position.sub(particle.position).normalizeSelf();
-		particle.applyForce(toCenter.mulSelf(force));
-	
-	},
-	
 	checkDistance : function(particle) {
 	
 		if(particle.position.sub(this.position).norm() >= this.entityRadius - particle.entityRadius) {
 		
-			this.approachCenter(particle, this.pushForce);
+			var toCenter = this.position.sub(particle.position).normalizeSelf();
+			particle.applyForce(toCenter.mulSelf(this.pushForce));
 		
 		}
 	
