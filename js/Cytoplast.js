@@ -14,6 +14,8 @@ var Cytoplast = function(position) {
 	
 	this.growth = 0.5;
 	
+	this.spikeSize = this.corpusTextureSize;
+	
 	this.growthTween = null;
 
 };
@@ -100,11 +102,33 @@ extend( Cytoplast.prototype, {
 		
 		this.dockedParticles = [];
 		
-		Timer.setTimeout(function() {
+		this.updateSize();
+		
+		
+		var spikeOutTween = new TWEEN.Tween( this );
+		
+		spikeOutTween.easing(TWEEN.Easing.Back.EaseIn);
+		
+		spikeOutTween.delay(this.spikeTime - 1000 * 2);
+		
+        spikeOutTween.to( {'spikeSize' : this.corpusTextureSize}, 1000 );
+		
+		spikeOutTween.onComplete(function() {
 		
 			fsm.recover();
 		
-		}, this.spikeTime);
+		});
+		
+		
+		var spikeInTween = new TWEEN.Tween( this );
+		
+		spikeInTween.easing(TWEEN.Easing.Back.EaseOut);
+		
+        spikeInTween.to( {'spikeSize' : this.spikeTextureSize}, 1000 );
+        
+		spikeInTween.chain(spikeOutTween);
+		
+		spikeInTween.start();
 	
 	},
 	
@@ -264,7 +288,7 @@ extend( Cytoplast.prototype, {
     
     drawSpikified : function(fsm, gl) {
                         
-        this.drawTexture(gl, this.spikeTextureSize, Cytoplast.spikeTexture);
+        this.drawTexture(gl, this.spikeSize, Cytoplast.spikeTexture);
 		
     },
 	
@@ -298,7 +322,7 @@ extend( Cytoplast.prototype, {
         
 		this.growthTween.easing(TWEEN.Easing.Back.EaseIn);
 		
-        this.growthTween.to( {'growth' : growth}, 1000 );
+        this.growthTween.to( {'growth' : growth}, 500 );
         
         this.growthTween.onUpdate( function() {
             
