@@ -1,0 +1,588 @@
+<!doctype html>
+
+<html lang=en>
+
+<head>
+    <meta charset=utf-8>
+    <title>AGAR AGAR</title>
+    <meta name="description" content="control the flow">
+    
+    <meta name="author" content="Eberhard Gräther">
+    <meta name="author" content="Thomas Kempf">
+    <meta name="author" content="Sebastian Kienzl">
+    <meta name="author" content="Sebastian Köck">
+    <meta name="author" content="Franz Lanzendorfer">
+    <meta name="author" content="Benjamin Medicke">
+    
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+</head>
+<body>
+    <div id="background"></div>
+    <canvas id="canvas">Your browser does not support &lt;canvas&gt;.</canvas>
+    <div id="overlay"></div>
+
+    <div class="rounded item" id="playpause" style="padding-top: 2px; background-image:url(images/pause.png);background-position: 96px 50%;background-repeat:no-repeat;" >
+        AGAR AGAR
+    </div>
+    
+    <div class="rounded item" id="stopmusic" style="padding-top: 2px; background-image:url(images/sound_on.png);background-position: 50% 50%;background-repeat:no-repeat;" >
+        &nbsp;
+    </div>
+
+    <div class="rounded item" id="menu">
+        <p id="newg">New Game</p>
+        <p id="inst">Instructions</p>
+        <!-- <p id="vers">Versions</p> -->
+        <p id="abou">About</p>
+        <p id="feed">Feedback</p>
+        <p id="dona">Donate</p>
+    </div>
+
+    
+    <div id="points">
+        
+        <div>
+            <span id="pointvalue">0</span>
+            <span id="pointlabel">Points</span>
+        </div>
+    
+        <div id="multiplier">
+            
+            <div id="multiplierarrow">&nbsp;</div>
+            
+            <div id="multipliercooldown" class="rounded">&nbsp;</div>
+            <div id="multiplierbar" class="rounded"></div>
+            
+            <div id="multipliertext">
+                <span id="multiplierpoints">1006622</span>
+                <span id="multipliervalue">x3</span>
+            </div>
+        
+        </div>
+    
+    </div>
+    
+    <div class="info rounded" id="newgame">
+        <div class="close">&nbsp;</div>
+        <h2>Start a new game?</h2>
+        <a href="#" class="rounded" id="startnewgame">YES</a>
+    </div>
+    
+    <div class="info rounded" id="instructions">
+        <div class="close">&nbsp;</div>
+        <h2>Instructions</h2>
+        <p>Swipe your cursor holding the mouse button to create a drift. Trackpad users can hold the space bar. Drifts are the only way to control the Agar Agar.</p>
+        <p>Your most important companion is the cell.</p>
+        <p>Protect the cell from the devourers – they absorb everything. </p>
+        <p>To defend your cell against the vicious devourers you have to infect it with germs. Germs appear all over the screen and they tend to build clusters.</p>
+        <p>Be careful Leukocytes will try to eat your germs.</p>
+        <p>Swipe germs into the cell to give it ultimate power. But if the germs are not enough the cell will eject them.</p>
+        <p>If you succeeded, drag the now barbed cell towards your enemies. The game ends when your cell is absorbed by a devourer. Good luck!</p>
+        <p>Sincerely,</p>
+        <p>the Professor!</p>
+        <p>p.s.: Watch out for explosive surprises!</p>
+    </div>
+    
+    <div class="info rounded" id="versions">
+        <div class="close">&nbsp;</div>
+        <h2>Versions</h2>
+        <p>Feel free to take a look at earlier versions of Agar Agar if you're interested:</p>
+        <p class="list"><a href="http://agaragargame.com/v0.6" class="rounded button">Agar Agar v0.6</a></p>
+        <p class="list"><a href="http://agaragargame.com/v0.5" class="rounded button">Agar Agar v0.5</a></p>
+        <br />
+        <br />
+        <p>Visit us on <a href="https://github.com/bmedicke/agar-agar" class="rounded button">Github</a>.</p>
+        <br />
+        <p><a href="http://agaragargame.com" class="rounded button">Latest Release</a></p>
+    </div>
+    
+    <div class="info rounded" id="about">
+        <div class="close">&nbsp;</div>
+        <h2>About</h2>
+        <p>Agar Agar was developed as a semester-project at the University of Applied Sciences Salzburg by:</p>
+        <p class="list"><a href="http://egraether.com/" class="rounded button">Eberhard Gräther</a> (Gamedesign, Game Development)</p>
+        <p class="list"><a href="http://thomaskempf.com/" class="rounded button">Thomas Kempf</a> (Gamedesign)</p>
+        <p class="list"><a href="http://www.sebastiankienzl.com/" class="rounded button">Sebastian Kienzl</a> (Gamedesign, Art Direction)</p>
+        <p class="list"><a href="http://www.sebastiankoeck.at/" class="rounded button">Sebastian Köck</a> (Gamedesign, Art Direction)</p>
+        <p class="list"><a href="http://joe-z.multimediatechnology.at/" class="rounded button">Franz Lanzendorfer</a> (Gamedesign, Game Development)</p>
+        <p class="list"><a href="http://benjy.multimediatechnology.at/" class="rounded button">Benjamin Medicke</a> (Gamedesign, Game Development)</p>
+        <br />
+        <br />
+        <p>Visit us on <a href="https://github.com/bmedicke/agar-agar" class="rounded button">Github</a>.</p>
+    </div>
+    
+    <div class="info rounded" id="feedback">
+        <div class="close">&nbsp;</div>
+        <h2>Feedback</h2>
+        <p>If you have some suggestions on how to improve the game or just want to tell us, how awesome you think it is, feel free to do so here:</p>
+        <form method="post" action="mailto:agaragargame@gmail.com?subject=Feedback-Form" enctype="text/plain">
+            <input type="text" id="mail" class="input" name="e-mail" value="Your e-mail (if you want us to answer)" onFocus="(function(el){if(el.defaultValue===el.value)el.value='';})(this)" />
+            <textarea class="input" id="textfield" name="comments"></textarea>
+            <input type="submit" class="input_button" value="Send us your feedback">
+        </form>
+    </div>
+    
+    <div class="info rounded" id="donate">
+        <div class="close">&nbsp;</div>
+        <h2>Donate</h2>
+        <p>If you like our game, please reward the work we put in it with a little donation here:
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+    ">
+                <input type="image" src="https://www.paypalobjects.com/de_DE/AT/i/btn/btn_donate_LG.gif" name="submit" alt="PayPal">
+                <a  src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+            </form>
+        </p>
+    </div>
+
+    <div class="info rounded" id="loser">
+        <div class="close">&nbsp;</div>
+        <h2>Your cell is dead!<br />You scored:</h2>
+        <h2 id="score">0</h2>
+        <a href="#" class="rounded" id="tryagain">START A NEW GAME</a>
+        <p>Or share your score on: 
+            <a href="http://www.facebook.com/pages/AGAR-AGAR/219247098092591" class="rounded button" id="facebooklink">Facebook</a> or 
+            <a href="https://twitter.com/?status=Check%20out%20%40AgarAgarGame%20http%3A%2F%2Fagaragargame.com%2F" class="rounded button" id="twitterlink">Twitter</a>
+        </p>
+    </div>
+    
+    <div class="info rounded" id="error">
+        <h2>ERROR</h2>
+        <p>Your browser does not support WebGL.</p>
+        <a href="http://get.webgl.org" class="rounded button">Get WebGL</a></p>
+    </div>
+
+<script id="vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+
+    attribute vec3 position;
+    
+    void main(void) {
+    
+       gl_Position = matrix * vec4(position, 1.0);
+       gl_PointSize = 3.0;
+    
+    }
+    
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+    
+    uniform vec4 color;
+    
+    void main(void) {
+    
+       gl_FragColor = color;
+       
+    }
+    
+</script>
+
+<script id="texture-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+
+    attribute vec2 position;
+    attribute vec2 textureCoord;
+
+    varying vec2 pointCoord;
+
+    void main(void) {
+
+       gl_Position = matrix * vec4(position, 1.0, 1.0);
+       
+       pointCoord = textureCoord;
+
+    }
+    
+</script>
+
+<script id="texture-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+    
+    uniform sampler2D texture;
+    uniform vec4 color;
+    
+    varying vec2 pointCoord;
+    
+    void main(void) {
+    
+        vec4 textureColor = texture2D( texture, pointCoord );
+        gl_FragColor = vec4( mix( textureColor.rgb, color.rgb, color.a ), textureColor.a );
+    
+    }
+
+</script>
+
+<script id="stardust-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+
+    attribute vec3 position;
+    
+    varying float alpha;
+    
+    void main(void) {
+    
+       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+       
+       gl_PointSize = 2.0;
+       
+       alpha = position.z;
+    
+    }
+    
+</script>
+
+<script id="stardust-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+    
+    uniform vec4 color;
+    
+    varying float alpha;
+    
+    void main(void) {
+    
+       gl_FragColor = vec4(.85, .85, .85, alpha);
+       
+    }
+    
+</script>
+
+<script id="particle-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+    uniform float size;
+
+    attribute vec4 position;
+    
+    varying float alpha;
+    varying float time;
+    
+    void main(void) {
+    
+       gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+       
+       gl_PointSize = size;
+       
+       alpha = position.z;
+       
+       time = position.w;
+    
+    }
+    
+</script>
+
+<script id="particle-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+    
+    uniform sampler2D texture;
+    
+    varying float alpha;
+    
+    varying float time;
+    
+    const vec2 center = vec2(0.5, 0.5);
+    
+    void main(void) {
+    
+        vec2 point = ( gl_PointCoord - center );
+
+        point *= 1.0 + 0.50 / 12.0 * sin( 2.0 * atan( point.y, point.x ) + time * 5.0 ) +
+                       0.50 / 12.0 * sin( 3.0 * atan( point.y, point.x ) - time * 2.5 );
+
+        gl_FragColor = texture2D( texture, point + center );
+        gl_FragColor.a *= alpha;
+       
+    }
+    
+</script>
+
+<script id="leukocyte-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+    
+    uniform mat4 matrix;
+    uniform float size;
+    uniform float radius;
+
+    attribute vec2 position;
+    attribute vec4 params;
+
+    varying float factor;
+    varying float rotation;
+    varying float direction;
+    varying float time;
+    
+    const float PI = 3.1415926535;
+
+    void main(void) {
+        
+        gl_Position = matrix * vec4( position, 1.0, 1.0 );
+    
+        gl_PointSize = size;
+    
+        float distance = clamp( params.x, 0.0, radius * 2.0 );
+        factor = sin( distance / ( radius * 2.0 ) * PI );
+        
+        rotation = params.y;
+        direction = -params.z;
+        time = params.w;
+        
+    }
+    
+</script>
+
+<script id="leukocyte-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+
+    uniform sampler2D texture;
+    uniform float radius;
+
+    varying float factor;
+    varying float rotation;
+    varying float direction;
+    varying float time;
+
+    const vec2 center = vec2( 0.5, 0.5 );
+    
+    void main(void) {
+        
+        vec2 point = gl_PointCoord - center;
+        
+        float angle = atan( point.y, point.x );
+        
+        float stretchFactor = factor * ( cos( angle - rotation ) );
+        float crushFactor = factor * ( sin( angle - rotation ) );
+        
+        vec2 stretch = vec2( cos( rotation ), sin( rotation ) ) * stretchFactor * 0.05;
+        vec2 crush = vec2( -sin( rotation ), cos( rotation ) ) * crushFactor * 0.05;
+        
+        point -= stretch - crush;
+        
+        point *= 1.0 + radius / 8.0 * 
+            sin( 2.0 * angle + time * 2.0 ) *
+            sin( 9.0 * angle - time * 4.0 );
+        
+        // point *= 1.0 + radius / 5.0 * 
+        //     sin( 5.0 * atan( point.y, point.x ) + time * 2.0 ) *
+        //     sin( 6.0 * atan( point.y, point.x ) - time * 5.0 );
+        
+        point = vec2(
+            cos( direction ) * point.x - sin( direction ) * point.y,
+            sin( direction ) * point.x + cos( direction ) * point.y
+        );
+        
+        gl_FragColor = texture2D( texture, point + center );
+        // gl_FragColor.a *= 2.0;
+    }
+    
+</script>
+
+<script id="devourer-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+
+    const float PI = 3.1415926535897932384626433832;
+
+    uniform sampler2D corpusTexture;
+    uniform sampler2D tentacleTexture;
+    
+    uniform float speed;
+    uniform float size;
+    
+    varying vec2 pointCoord;
+
+    const vec3 black = vec3(0.0, 0.0, 0.0);
+    const vec3 white = vec3(1.0, 1.0, 1.0);
+    const vec2 mid = vec2(0.5, 0.5);
+    
+    vec2 rotate( vec2 vector, float angle ) {
+    
+        return vec2(
+            cos( angle ) * vector.x - sin( angle ) * vector.y,
+            sin( angle ) * vector.x + cos( angle ) * vector.y
+        );
+        
+    }
+
+    void main(void) {
+        
+        vec2 vector = pointCoord - mid;
+        float len = length( vector );
+        float angle = len * speed * 1.5;
+        
+        float alpha = 0.0;
+   
+        alpha += texture2D( tentacleTexture, mid + rotate( vector, angle ) ).a;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.9, angle * 1.1 + 0.2 ) ).a;
+        alpha += texture2D( tentacleTexture, mid + rotate( vector * 0.95, angle * 1.15 + 0.15 ) ).a;
+        
+        vec4 tentacles = vec4( black, alpha );
+        
+        vec4 corpus = texture2D( corpusTexture, vector * 1.33 / size + mid );
+        
+        float mixFactor = clamp( 6.3 - 18.0 * len / size, 0.0, 0.95 );
+        
+        gl_FragColor = tentacles + corpus * mixFactor;
+        
+    }
+    
+</script>
+
+<script id="vectorfield-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+
+    uniform mat4 matrix;
+
+    attribute vec4 position;
+    
+    varying float rotation;
+    
+    void main(void) {
+    
+        gl_Position = matrix * vec4(position.xy, 1.0, 1.0);
+        
+        gl_PointSize = position.z;
+        
+        rotation = -position.w;
+    
+    }
+    
+</script>
+
+<script id="vectorfield-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+    
+    uniform sampler2D texture;
+    
+    varying float rotation;
+    
+    const vec2 center = vec2( 0.5, 0.5 );
+    
+    void main(void) {
+        
+        vec2 point = gl_PointCoord - center;
+        
+        point = vec2(
+            cos( rotation ) * point.x - sin( rotation ) * point.y,
+            sin( rotation ) * point.x + cos( rotation ) * point.y
+        ) + center;
+        
+        gl_FragColor = texture2D( texture, point );
+        
+    }
+    
+</script>
+
+<script id="entropyfier-vertex-shader" type="x-shader/x-vertex" charset="utf-8">
+    
+    uniform mat4 matrix;
+
+    attribute vec3 position;
+    
+    varying vec2 vPosition;
+
+    void main(void) {
+
+        gl_Position = matrix * vec4( position.xy, 1.0, 1.0 );
+        
+        vPosition = position.xy;
+        
+    }
+    
+</script>
+
+<script id="entropyfier-fragment-shader" type="x-shader/x-fragment" charset="utf-8">
+
+    precision mediump float;
+
+    uniform float lifeTime;
+
+    varying vec2 vPosition;
+    
+    const vec3 borderColor = vec3(0.85, 0.85, 0.85);
+    const vec3 fillColor = vec3(0.95, 0.95, 0.95);
+    
+    const vec3 whiteColor = vec3(1.0, 1.0, 1.0);
+    const vec2 glowCenter = vec2( -0.3, -0.3 );
+    
+    const float outerRadius = 1.0;
+    
+    const float PI = 3.1415926535;
+
+    void main(void) {
+
+        float len = length( vPosition );
+
+        float alphaFactor = clamp( 40.0 - 40.0 * len, 0.0, 1.0);
+
+        // innerRadius from 0.5 to 0.9
+        float innerRadius = clamp( 0.55 + lifeTime / 2.0, 0.5, 0.95);
+        
+        float mixFactor = cos( ( clamp( len, innerRadius, outerRadius ) - innerRadius ) / ( outerRadius - innerRadius ) * 2.0 * PI) * -0.5 + 0.5;
+        
+        mixFactor *= step( innerRadius, len ) * step( len, outerRadius );
+        
+        vec3 color = mix( fillColor, borderColor, mixFactor );
+        
+        // glow
+        color = mix( whiteColor, color, length( vPosition - glowCenter ) * 2.0 );
+        
+        gl_FragColor.rgb = mix( whiteColor, color, lifeTime );
+        gl_FragColor.a = 0.5;
+
+    }
+    
+</script>
+
+<script type="text/javascript" charset="utf-8" src="lib/requestAnimationFrame.js"></script>
+<script type="text/javascript" charset="utf-8" src="lib/Tween.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="lib/Stats.js"></script>
+<script type="text/javascript" charset="utf-8" src="lib/jquery-1.7.1.js"></script>
+
+<!-- Sound Manager Init -->
+<script type="text/javascript" src="lib/soundmanager2/soundmanager2.js"></script>
+<script type="text/javascript"> soundManager.url = 'lib/soundmanager2/swf/'; soundManager.debugMode = false;</script>
+
+<script type="text/javascript" charset="utf-8" src="js/Menu.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/Timer.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Animator.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/StateMachine.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/utilities.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/Vector.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Matrix.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/WebGLTexture.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/WebGLShader.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/WebGLUtilities.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/Entity.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Particle.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Leukocyte.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Cytoplast.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Devourer.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Entropyfier.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/Interface.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Glow.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Stardust.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/Vectorfield.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Inputhandler.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/Controller.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/Game.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/main.js"></script>
+
+</body>
+</html>
